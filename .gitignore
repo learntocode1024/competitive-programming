@@ -1,1 +1,5 @@
+# caches
 .ccls-cache
+
+# executables
+.exec

@@ -1,7 +1,5 @@
-// $FILEDIR
-// Author: $USERNAME
+// Author: misaka18931
 // Date: $DATE
-// URL: $PROBLEMURL
 // tag:
 // 
 
