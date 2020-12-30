@@ -15,6 +15,8 @@ typedef long long LL;
 typedef unsigned long long ULL;
 const int mod = 1e9 + 7;
 
+inline void 
+
 void solve() {
   
 }
