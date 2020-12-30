@@ -4,7 +4,7 @@ big_int::big_int() { clear(); }
 
 big_int::big_int(const std::string &s) {
   clear();
-  extract_string(s);
+  extract_string(s.c_str());
 }
 
 void big_int::clear() {

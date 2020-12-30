@@ -1,5 +1,5 @@
 // Original Author: misaka18931
-// Date: $DATE
+// Date: 12-30-20
 // tag:
 // 
 
@@ -14,8 +14,6 @@ using std::memset;
 typedef long long LL;
 typedef unsigned long long ULL;
 const int mod = 1e9 + 7;
-
-inline void 
 
 void solve() {
   
