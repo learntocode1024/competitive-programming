@@ -2,4 +2,4 @@
 .ccls-cache
 
 # executables
-.exec
+*.exec
