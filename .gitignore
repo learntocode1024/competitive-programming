@@ -3,5 +3,7 @@
 
 # executables
 *.exec
+*.e
+main
 .vscode
 !/.vscode
