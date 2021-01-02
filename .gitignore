@@ -3,4 +3,5 @@
 
 # executables
 *.exec
-problem/*/.vscode
+.vscode
+!/.vscode
