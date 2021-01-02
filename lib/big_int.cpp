@@ -1,3 +1,7 @@
+/// Name: FU
+/// Description: Find & Union
+/// Detail: Disjoint sets data structure in O(α n) proven by Tarjan(1975)
+/// Guarantee: struct FU {
 #include "big_int.hpp"
 
 big_int::big_int() { clear(); }
@@ -8,7 +12,7 @@ big_int::big_int(const std::string &s) {
 }
 
 void big_int::clear() {
-  flag = false;
+flag = false;
   digit = 0;
   std::memset(num, 0, sizeof(num));
 }
@@ -20,7 +24,7 @@ void big_int::swap(big_int& other) {
 }
 
 void big_int::extract_string(const char* const &ptr) {
-  if (ptr[0] == '-')
+if (ptr[0] == '-')
     flag = true;
   else
     flag = false;
