@@ -1,5 +1,5 @@
 // Original Author: misaka18931
-// Date: 01-02-21
+// Date: 01-04-21
 // tag:
 // 
 
@@ -16,7 +16,8 @@ typedef unsigned long long ULL;
 const int mod = 1e9 + 7;
 
 void solve() {
-  
+  int n;
+  cin >> n;
 }
 
 int main() {
