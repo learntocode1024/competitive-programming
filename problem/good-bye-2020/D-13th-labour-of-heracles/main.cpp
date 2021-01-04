@@ -3,10 +3,10 @@
 // Date: $DATE
 // URL: $PROBLEMURL
 // tag:
-// 
+//
 
-#include <cstdio>
 #include <algorithm>
+#include <cstdio>
 #include <cstring>
 #include <iostream>
 #include <utility>
@@ -26,7 +26,7 @@ inline bool cmp(std::pair<LL, int> a, std::pair<LL, int> b) {
   return a.first > b.first;
 }
 
-    void solve() {
+void solve() {
   int n;
   cin >> n;
   for (int i = 1; i <= n; ++i) {
@@ -36,7 +36,8 @@ inline bool cmp(std::pair<LL, int> a, std::pair<LL, int> b) {
   for (int i = 1; i < n; ++i) {
     int a, b;
     cin >> a >> b;
-    ++cnt[a];++cnt[b];
+    ++cnt[a];
+    ++cnt[b];
   }
   LL ans = 0;
   for (int i = 1; i <= n; ++i) {
@@ -47,7 +48,8 @@ inline bool cmp(std::pair<LL, int> a, std::pair<LL, int> b) {
   std::sort(val + 1, val + n + 1, cmp);
   int it = 1;
   for (int i = 2; i < n; ++i) {
-    while (cnt[val[it].second] == 0) ++it;
+    while (cnt[val[it].second] == 0)
+      ++it;
     --cnt[val[it].second];
     ans += val[it].first;
     cout << ans << " ";
