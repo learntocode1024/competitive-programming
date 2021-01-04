@@ -1,6 +1,6 @@
 // Original Author: misaka18931
 // Date: 12-30-20
-// tag:
+// tag: math 
 // AC
 
 #include <cstdio>
