@@ -1,5 +1,5 @@
 // Original Author: misaka18931
-// Date: 01-06-21
+// Date: 01-04-21
 // tag:
 // 
 
@@ -16,8 +16,15 @@ typedef unsigned long long ULL;
 const int mod = 1e9 + 7;
 
 void solve() {
-  int n;
-  cin >> n;
+  int a, b, c;
+  cin >> a >> b >> c;
+  int p, q;
+  q = p = 1;
+  while (~a & 1) a >>= 1, p *= 2;
+  while (~b & 1) b >>= 1, q *= 2;
+  if (p * q >= c) cout << "YES\n";
+  else
+    cout << "NO\n";
 }
 
 int main() {

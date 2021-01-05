@@ -1,7 +1,7 @@
 // Original Author: misaka18931
-// Date: 01-06-21
-// tag:
-// 
+// Date: 01-04-21
+// tag: easy
+// AC
 
 #include <cstdio>
 #include <cstring>
@@ -16,8 +16,17 @@ typedef unsigned long long ULL;
 const int mod = 1e9 + 7;
 
 void solve() {
-  int n;
-  cin >> n;
+  LL n, x;
+  cin >> n >> x;
+  LL a, b, c;
+  a = b = 0;
+  for (int i = 0; i < n; ++i) {
+    cin >> c;
+    a += c;
+    b += c / x + (bool)(c % x);
+  }
+  a = a / x + (bool)(a % x);
+  cout << a << " " << b << endl;
 }
 
 int main() {
