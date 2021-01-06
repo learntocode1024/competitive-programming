@@ -6,18 +6,25 @@
 #include <cstdio>
 #include <cstring>
 #include <iostream>
+#include <algorithm>
+#define LF << '\n'
+#define SPC << ' '
+#define CLRBUF cout << endl;
 #define MX
-using std::cin;
-using std::cout;
-using std::endl;
-using std::memset;
+using namespace std;
 typedef long long LL;
 typedef unsigned long long ULL;
-const int mod = 1e9 + 7;
+const LL mod = 1e9 + 7;
+
+inline void print(const bool &b) {
+  if (b) cout << "YES" << endl;
+  else cout << "NO" << endl;
+}
 
 void solve() {
   int n;
   cin >> n;
+  
 }
 
 int main() {
