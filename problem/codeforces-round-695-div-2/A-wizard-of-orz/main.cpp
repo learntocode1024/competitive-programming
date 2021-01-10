@@ -1,5 +1,5 @@
 // Original Author: misaka18931
-// Date: $DATE
+// Date: 01-08-21
 // tag:
 // 
 
@@ -24,7 +24,16 @@ inline void print(const bool &b) {
 void solve() {
   int n;
   cin >> n;
-  
+  if (n == 1){
+    cout << '9' LF;
+    return;
+  }
+  n -= 2;
+  cout << "98";
+  for (int i = 0; i < n; ++i) {
+    cout << "9012345678"[i % 10];
+  }
+  cout LF;
 }
 
 int main() {
@@ -36,3 +45,4 @@ int main() {
     solve();
   }
   return 0;
+}

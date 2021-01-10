@@ -1,5 +1,5 @@
 // Original Author: misaka18931
-// Date: $DATE
+// Date: 01-09-21
 // tag:
 // 
 
@@ -22,8 +22,8 @@ inline void print(const bool &b) {
 }
 
 void solve() {
-  int n;
-  cin >> n;
+  int a, b ,c, d;
+  cin >> a >> b >> c >> d;
   
 }
 
@@ -36,3 +36,4 @@ int main() {
     solve();
   }
   return 0;
+}
