@@ -22,6 +22,7 @@ inline void print(const bool &b) {
 }
 
 int a[MX];
+bool v[MX], h[MX];
 
 void solve() {
   int n;
@@ -31,11 +32,20 @@ void solve() {
   }
   int cnt = 0;
   for (int i = 1; i < n - 1; ++i) {
-    if (a[i - 1] > a[i] && a[i + 1] > a[i]) ++cnt;
-    if (a[i - 1] < a[i] && a[i + 1] < a[i]) ++cnt;
+    if (a[i - 1] > a[i] && a[i + 1] > a[i]) v[i] = 1, ++cnt;
+    if (a[i - 1] < a[i] && a[i + 1] < a[i]) h[i] = 1, ++cnt;
   }
+  int p = 0;
   for (int i = 1; i < n - 1; ++i) {
-    
+    if (h[i]) {
+      if (v[i - 1] && v[i + 1]) p = max(p, 3);
+      else if (v[i - 1] && a[i + 1] == a[i + 2]) p = max(p, 2);
+
+    } else if (v[i]) {
+
+    } else {
+
+    }
   }
 }
 
