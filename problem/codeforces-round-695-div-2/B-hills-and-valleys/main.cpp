@@ -1,7 +1,7 @@
 // Original Author: misaka18931
 // Date: 01-08-21
-// tag:
-// 
+// tag: simulation, *1700
+// AC
 
 #include <cstdio>
 #include <cstring>
@@ -13,8 +13,6 @@
 #define MX 300005
 using namespace std;
 typedef long long LL;
-typedef unsigned long long ULL;
-const LL mod = 1e9 + 7;
 
 inline void print(const bool &b) {
   if (b) cout << "YES" << endl;
@@ -22,10 +20,23 @@ inline void print(const bool &b) {
 }
 
 int a[MX];
-bool v[MX], h[MX];
+int v[MX];
+int n;
+
+int calc(int i) {
+  int ans = 0;
+  int cmp = v[i - 1] + v[i] + v[i + 1];
+  for (int j = i - 1; j <= i + 1; ++j) {
+    if (j <= 0 || j >= n - 1) continue;
+    if (a[j - 1] > a[j] && a[j + 1] > a[j])
+      ++ans;
+    if (a[j - 1] < a[j] && a[j + 1] < a[j])
+      ++ans;
+  }
+  return (cmp - ans);
+}
 
 void solve() {
-  int n;
   cin >> n;
   for (int i = 0; i < n; ++i) {
     cin >> a[i];
@@ -33,19 +44,20 @@ void solve() {
   int cnt = 0;
   for (int i = 1; i < n - 1; ++i) {
     if (a[i - 1] > a[i] && a[i + 1] > a[i]) v[i] = 1, ++cnt;
-    if (a[i - 1] < a[i] && a[i + 1] < a[i]) h[i] = 1, ++cnt;
+    if (a[i - 1] < a[i] && a[i + 1] < a[i]) v[i] = 1, ++cnt;
   }
   int p = 0;
   for (int i = 1; i < n - 1; ++i) {
-    if (h[i]) {
-      if (v[i - 1] && v[i + 1]) p = max(p, 3);
-      else if (v[i - 1] && a[i + 1] == a[i + 2]) p = max(p, 2);
-
-    } else if (v[i]) {
-
-    } else {
-
-    }
+    int bak = a[i];
+    a[i] = a[i - 1];
+    p = max(p, calc(i));
+    a[i] = a[i + 1];
+    p = max(p, calc(i));
+    a[i] = bak;
+  }
+  cout << cnt - p << endl;
+  for (int i = 0; i < n; ++i) {
+    a[i] = v[i] = 0;
   }
 }
 
@@ -59,3 +71,4 @@ int main() {
   }
   return 0;
 }
+

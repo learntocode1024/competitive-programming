@@ -1,7 +1,7 @@
 // Original Author: misaka18931
 // Date: 01-08-21
-// tag:
-// 
+// tag: dp(n^2), brute-force
+// AC
 
 #include <cstdio>
 #include <cstring>
@@ -21,10 +21,10 @@ inline void print(const bool &b) {
   else cout << "NO" << endl;
 }
 
-LL fib[MX];
 LL a[MX];
 LL c[MX];
 LL ans = 0;
+LL dp[MX][MX];
 
 void solve() {
   LL pos, t;
@@ -39,32 +39,22 @@ int main() {
   cin.tie(NULL);
   std::ios::sync_with_stdio(false);
   int n, k;
-  cin >> n >> k;++k;
+  cin >> n >> k;
+  ++k;
   int T = 1;
   cin >> T;
-  fib[0] = fib[1] = 1;
-  for (int i = 2; i <= k; ++i) {
-    fib[i] = (fib[i - 1] + fib[i - 2]) % mod;
+  for (int i = 1; i <= n; ++i) {
+    dp[0][i] = 1;
   }
-  c[1] = fib[k - 1] * 2;
-  for (int i = 2; i < k; ++i) {
-    if (k - 1 == 2 * i) {
-      c[1] = (c[1] + fib[i - 1]) % mod;
-      continue;
+  for (int i = 1; i < k; ++i) {
+    for (int j = 1; j <= n; ++j) {
+      dp[i][j] = (dp[i - 1][j - 1] + dp[i - 1][j + 1]) % mod;
     }
-    c[1] = (c[1] + fib[k - i] + fib[i - 1]) % mod;
   }
-  c[n] = c[1];
-  c[2] = fib[k] * 2;
-  for (int i = 2; i < k; ++i) {
-    if (k - 1 == 2 * i) {
-      c[2] = (c[2] + fib[i]) % mod;
-      continue;
+  for (int i = 1; i <= n; ++i) {
+    for (int j = 0; j < k; ++j) {
+      c[i] = (c[i] + dp[j][i] * dp[k - j - 1][i] % mod) % mod;
     }
-    c[2] = (c[2] + fib[k - i + 1] + fib[i]) % mod;
-  }
-  for (int i = 3; i < n; ++i) {
-    c[i] = c[2];
   }
   for (int i = 1; i <= n; ++i) {
     cin >> a[i];

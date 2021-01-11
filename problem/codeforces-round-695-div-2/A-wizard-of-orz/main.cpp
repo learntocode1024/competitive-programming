@@ -1,7 +1,7 @@
 // Original Author: misaka18931
 // Date: 01-08-21
-// tag:
-// 
+// tag: *900
+// AC
 
 #include <cstdio>
 #include <cstring>
@@ -33,7 +33,7 @@ void solve() {
   for (int i = 0; i < n; ++i) {
     cout << "9012345678"[i % 10];
   }
-  cout LF;
+  cout LF;\
 }
 
 int main() {
