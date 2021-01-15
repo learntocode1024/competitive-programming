@@ -1,12 +1,13 @@
 // Original Author: misaka18931
 // Date: 01-15-21
-// tag:
-// 
+// tag: easy
+// AC
 
+#include <algorithm>
 #include <cstdio>
 #include <cstring>
 #include <iostream>
-#include <algorithm>
+#include <string>
 #define LF << '\n'
 #define SPC << ' '
 #define CLRBUF cout << endl;
@@ -17,14 +18,24 @@ typedef unsigned long long ULL;
 const LL mod = 1e9 + 7;
 
 inline void print(const bool &b) {
-  if (b) cout << "YES" << endl;
-  else cout << "NO" << endl;
+  if (b)
+    cout << "YES" << endl;
+  else
+    cout << "NO" << endl;
 }
 
 void solve() {
-  int n;
-  cin >> n;
-  
+  string a, b, c;
+  cin >> a >> b;
+  for (int i = 0; i < a.size() * b.size() / __gcd(a.size(), b.size()); ++i) {
+    if (a[i % a.size()] == b[i % b.size()])
+      c.push_back(a[i % a.size()]);
+    else {
+      c = "-1";
+      break;
+    }
+  }
+  cout << c LF;
 }
 
 int main() {
@@ -35,5 +46,6 @@ int main() {
   while (T--) {
     solve();
   }
+  CLRBUF;
   return 0;
 }
