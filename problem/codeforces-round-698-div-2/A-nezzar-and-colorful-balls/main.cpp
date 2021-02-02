@@ -24,7 +24,16 @@ inline void print(const bool &b) {
 void solve() {
   int n;
   cin >> n;
-  
+  int ans = 0;
+  int cnt = 0;
+  int num, prev = 0;
+  while (n--) {
+    cin >> num;
+    if (num == prev) ++cnt;
+    else cnt = 1, prev = num;
+    ans = max(ans, cnt);
+  }
+  cout << ans LF;
 }
 
 int main() {

@@ -15,6 +15,7 @@ using namespace std;
 typedef long long LL;
 typedef unsigned long long ULL;
 const LL mod = 1e9 + 7;
+int cnt[10];
 
 inline void print(const bool &b) {
   if (b) cout << "YES" << endl;
@@ -22,9 +23,20 @@ inline void print(const bool &b) {
 }
 
 void solve() {
-  int n;
-  cin >> n;
-  
+  LL n;
+  int q, r, mod;
+  cin >> q >> mod;
+  for (int i = 0; i < 10; ++i) {
+    cnt[i] = 10;
+    for (int j = 9; j >= 0; --j) {
+      if ((j * mod + i) % 10 == 0) cnt[i] = j; 
+    }
+  }
+  while (q--) {
+    cin >> n;
+    r = n % mod;
+    print((cnt[r] < n / mod) || (cnt[r] == n / mod) && (cnt[r] == 10));
+  }
 }
 
 int main() {
