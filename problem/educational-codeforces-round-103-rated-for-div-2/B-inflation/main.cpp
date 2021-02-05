@@ -22,9 +22,20 @@ inline void print(const bool &b) {
 }
 
 void solve() {
-  int n;
-  cin >> n;
-  
+  int n, r, p, delta;
+  cin >> n >> r >> p;
+  int ans = 0;
+  for (int i = 1; i < n; ++i) {
+    cin >> delta;
+    if (delta * 100 > p * r) {
+      int tmp = delta + p;
+      p = -(int) ( -1e2 * delta / r) + delta;
+      ans += p - tmp;
+    } else {
+      p = p + delta;
+    }
+  }
+  cout << ans LF;
 }
 
 int main() {
