@@ -22,9 +22,10 @@ inline void print(const bool &b) {
 }
 
 void solve() {
-  int n;
-  cin >> n;
-  
+  int n, k;
+  cin >> n >> k;
+  if (n <= k) cout << ((k % n)? k/n + 1: k/n) LF;
+  else cout << ((n % k)? 2: 1) LF;
 }
 
 int main() {
