@@ -1,7 +1,7 @@
 // Original Author: misaka18931
 // Date: 02-05-21
-// tag:
-// 
+// tag: greedy
+// AC
 
 #include <cstdio>
 #include <cstring>
@@ -46,7 +46,7 @@ void solve() {
       curr = num[i] + 2;
     } else {
       ans = max(ans, curr + len[i] - num[i]); // force end
-      curr = max(curr + num[i], len[i] - num[i]) + 2;
+      curr = max(curr + num[i], len[i]) + 2;
     }
   }
   ans = max(curr + num[0], ans);
