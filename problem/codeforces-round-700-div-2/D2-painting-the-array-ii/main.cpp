@@ -25,6 +25,7 @@ void solve() {
   int n;
   cin >> n;
   
+  
 }
 
 int main() {

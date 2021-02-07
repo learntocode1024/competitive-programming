@@ -1,5 +1,5 @@
 // Original Author: misaka18931
-// Date: 02-07-21
+// Date: 02-04-21
 // tag:
 // 
 
@@ -24,7 +24,7 @@ inline void print(const bool &b) {
 void solve() {
   int n;
   cin >> n;
-  
+  9
 }
 
 int main() {
