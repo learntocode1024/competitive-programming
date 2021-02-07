@@ -1,7 +1,7 @@
 // Original Author: misaka18931
 // Date: 02-05-21
-// tag:
-// 
+// tag: simple-math
+// AC
 
 #include <cstdio>
 #include <cstring>
