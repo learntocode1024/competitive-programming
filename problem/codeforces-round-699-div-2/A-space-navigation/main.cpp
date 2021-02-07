@@ -1,5 +1,5 @@
 // Original Author: misaka18931
-// Date: 02-07-21
+// Date: 02-05-21
 // tag:
 // 
 
@@ -20,11 +20,19 @@ inline void print(const bool &b) {
   if (b) cout << "YES" << endl;
   else cout << "NO" << endl;
 }
-
+string s;
 void solve() {
-  int n;
-  cin >> n;
-  
+  int a, b, c, d;
+  a = b = c = d = 0;
+  int x, y;
+  cin >> x >> y >> s;
+  for (auto i : s) {
+    if (i == 'U') ++a;
+    if (i == 'D') ++b;
+    if (i == 'R') ++c;
+    if (i == 'L') ++d;
+  }
+  print(x <= c && x >= -d && y <= a && y >= -b);
 }
 
 int main() {
