@@ -1,11 +1,12 @@
 // Original Author: misaka18931
 // Date: 02-05-21
-// tag:
-// 
+// tag: greedy, simple-math
+// AC
 
 #include <cstdio>
 #include <cstring>
 #include <iostream>
+#include <cmath>
 #include <algorithm>
 #define LF << '\n'
 #define SPC << ' '
@@ -22,18 +23,13 @@ inline void print(const bool &b) {
 }
 
 void solve() {
-  int n, r, p, delta;
+  LL n, r, p, delta;
   cin >> n >> r >> p;
-  int ans = 0;
+  LL ans = 0;
   for (int i = 1; i < n; ++i) {
     cin >> delta;
-    if (delta * 100 > p * r) {
-      int tmp = delta + p;
-      p = -(int) ( -1e2 * delta / r) + delta;
-      ans += p - tmp;
-    } else {
-      p = p + delta;
-    }
+    ans = max(ans, (LL)ceil(100 * (float) delta / r) - p);
+    p += delta;
   }
   cout << ans LF;
 }
