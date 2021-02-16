@@ -1,5 +1,5 @@
 // Original Author: misaka18931
-// Date: 02-07-21
+// Date: 02-12-21
 // tag:
 // 
 
@@ -21,10 +21,9 @@ inline void print(const bool &b) {
   else cout << "NO" << endl;
 }
 
-void solve() {l
+void solve() {
   int n;
   cin >> n;
-    
   
 }
 

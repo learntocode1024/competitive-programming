@@ -3,6 +3,7 @@
 // tag:
 // 
 
+#include <cmath>
 #include <cstdio>
 #include <cstring>
 #include <iostream>
@@ -28,9 +29,13 @@ const LL mod = 1e9 + 7;
 
 
 void solve() {
-  int n;
+  LL n;
   cin >> n;
-  
+  n = n * 2 - 1;
+  LL t = sqrt(n);
+  while (t * t < n) ++t;
+  while (t * t > n) --t;
+  cout << (t + 1) / 2 - 1 << endl;
 }
 
 int main() {
