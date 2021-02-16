@@ -1,7 +1,7 @@
 // Original Author: misaka18931
-// Date: 02-07-21
-// tag:
-// 
+// Date: 02-12-21
+// tag: math(sum)
+// AC
 
 #include <cstdio>
 #include <cstring>
@@ -21,11 +21,16 @@ inline void print(const bool &b) {
   else cout << "NO" << endl;
 }
 
-void solve() {l
-  int n;
-  cin >> n;
-    
-  
+void solve() {
+  LL x, y;
+  cin >> x >> y;
+  LL ans = 0;
+  // a = d * (r + 1) ,(d < r)
+  // if either a or r is dirricult, why not try d?
+  for (LL d = 1; d * (d + 1) <= x; ++d) {
+    ans += max(0ll, min(y, x / d - 1) - d);
+  }
+  cout << ans << endl;
 }
 
 int main() {

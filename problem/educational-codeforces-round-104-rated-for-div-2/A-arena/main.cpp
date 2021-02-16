@@ -30,7 +30,18 @@ const LL mod = 1e9 + 7;
 void solve() {
   int n;
   cin >> n;
-  
+  int cnt, minv, curr;
+  cnt = 1;
+  cin >> minv;
+  for (register int i = 1; i < n; ++i) {
+    cin >> curr;
+    if (curr == minv) ++cnt;
+    if (curr < minv) {
+      minv = curr;
+      cnt = 1;
+    }
+  }
+  cout << n - cnt << endl;
 }
 
 int main() {
