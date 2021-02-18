@@ -1,5 +1,5 @@
 // Original Author: misaka18931
-// Date: 02-18-21
+// Date: 02-15-21
 // tag:
 // 
 
@@ -29,8 +29,15 @@ const LL mod = 1e9 + 7;
 
 void solve() {
   int n;
-  cin >> n;
-  
+  LL k;
+  cin >> n >> k;
+  if (n & 1) {
+    LL t = n / 2;
+    LL ans = (1ll * (k - 1) / t * (t + 1) + (k - 1) % t) % n;
+    cout << ans + 1 << endl;
+  } else {
+    cout << (k - 1) % n + 1 << endl;
+  }
 }
 
 int main() {

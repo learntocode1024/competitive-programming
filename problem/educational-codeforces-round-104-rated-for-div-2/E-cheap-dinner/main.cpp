@@ -1,5 +1,5 @@
 // Original Author: misaka18931
-// Date: 02-18-21
+// Date: 02-15-21
 // tag:
 // 
 
@@ -25,7 +25,6 @@ const LL mod = 1e9 + 7;
 #define min(X, Y)  ((X) < (Y) ? (X) : (Y))
 #define max(X, Y)  ((X) > (Y) ? (X) : (Y))
 #define MX
-
 
 void solve() {
   int n;

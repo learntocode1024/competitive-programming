@@ -1,5 +1,5 @@
 // Original Author: misaka18931
-// Date: 02-18-21
+// Date: 02-15-21
 // tag:
 // 
 
@@ -30,7 +30,30 @@ const LL mod = 1e9 + 7;
 void solve() {
   int n;
   cin >> n;
-  
+  if (n & 1) {
+    --n;
+    for (int i = 0; i < n; ++i) {
+      for (int j = 0; j < min(n / 2, n - i); ++j) {
+        cout << "1 ";
+      }
+      for (int j = n / 2; j < n - i; ++j) {
+        cout << "-1 ";
+      }
+    }
+  } else {
+    --n;
+    for (int i = 0; i < n; ++i) {
+      for (int j = 0; j < min(n / 2, n - i); ++j) {
+        cout << "1 ";
+      }
+      if (n / 2 < n - i)
+        cout << "0 ";
+      for (int j = n / 2 + 1; j < n - i; ++j) {
+        cout << "-1 ";
+      }
+    }
+  }
+  cout << endl;
 }
 
 int main() {
