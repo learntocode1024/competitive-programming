@@ -18,19 +18,35 @@ const LL mod = 1e9 + 7;
   T x; \
   cin >> x;
 #define printb(x) \
-  if ((bool)x) printf("YES"); \
-  else printf("NO");
+  if ((bool)x) printf("YES\n"); \
+  else printf("NO\n");
 #define pb(x) push_back(x)
 #define pf(x) push_front(x)
 #define min(X, Y)  ((X) < (Y) ? (X) : (Y))
 #define max(X, Y)  ((X) > (Y) ? (X) : (Y))
-#define MX
+#define MX 105
 
+LL a[MX];
 
 void solve() {
   int n;
   cin >> n;
-  
+  for (int i = 0; i < n; ++i) {
+    cin >> a[i];
+    a[i] -= i;
+  }
+  int k = 0;
+  for (int i = 0; i < n; ++ i) {
+    if (a[i] > 0) k += a[i];
+    else {
+      if (a[i] + k < 0) {
+        printb(0)
+        return;
+      }
+      k += a[i];
+    }
+  }
+  printb(1)
 }
 
 int main() {
