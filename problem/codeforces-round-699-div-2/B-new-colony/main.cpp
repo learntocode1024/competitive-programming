@@ -1,5 +1,5 @@
 // Original Author: misaka18931
-// Date: 02-18-21
+// Date: 02-05-21
 // tag:
 // 
 
@@ -7,30 +7,32 @@
 #include <cstring>
 #include <iostream>
 #include <algorithm>
+#define LF << '\n'
+#define SPC << ' '
+#define CLRBUF cout << endl;
+#define MX 105
 using namespace std;
 typedef long long LL;
 typedef unsigned long long ULL;
 const LL mod = 1e9 + 7;
-#define LF << '\n'
-#define SPC << ' '
-#define CLRBUF cout << endl;
-#define init(T, x) \
-  T x; \
-  cin >> x;
-#define printb(x) \
-  if ((bool)x) printf("YES"); \
-  else printf("NO");
-#define pb(x) push_back(x)
-#define pf(x) push_front(x)
-#define min(X, Y)  ((X) < (Y) ? (X) : (Y))
-#define max(X, Y)  ((X) > (Y) ? (X) : (Y))
-#define MX
 
+inline void print(const bool &b) {
+  if (b) cout << "YES" << endl;
+  else cout << "NO" << endl;
+}
+
+int h[MX];
 
 void solve() {
   int n;
   cin >> n;
-  
+  for (int i = 0; i < n; ++i) {
+    cin >> h[i];
+  }
+  int cap = 0;
+  for (int i = n - 1; i >= 0; --i) {
+    
+  }
 }
 
 int main() {
