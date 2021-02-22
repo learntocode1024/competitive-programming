@@ -1,7 +1,7 @@
 // Original Author: misaka18931
 // Date: 02-18-21
-// tag:
-// 
+// tag: binary-search
+// AC
 
 #include <cstdio>
 #include <cstring>
@@ -34,35 +34,33 @@ inline int query(const int &l, const int &r) {
   return ans - 1;
 }
 
-int calc(int l, int r, int second) {
-  if (r - l == 1) return l;
-  if (r - l == 2) return ((l == second)? l + 1: l);
-  if (r - l == 3) {
-    int a = query(l, r);
-    if (a == l) return (r - 1 == query(l + 1, r)? l + 1: r - 1);
-    if (a == r - 1)
-      return ((l == query(l, r - 1))? l + 1: l);
-    if (a == l + 1)
-      return ((l == query(l, r - 1)) ? l + 2 : l);
-  }
-  int mid = l + (r - l) / 2;
-  if (second < mid) {
-    int val = query(l, mid);
-    if (val == second)
-      return calc(l, mid, second);
-    else return calc(mid, r, query(mid, r));
-  } else {
-    int val = query(mid, r);
-    if (val == second) return calc(mid, r, second);
-    else return calc(l, mid, query(l, mid));
-  }
-}
-
-void solve() {
+int solve() {
   int n;
   cin >> n;
-  int ans = calc(0, n, query(0, n));
-  cout << "! " << ans + 1 << endl;
+  int second = query(0, n);
+  if (second == n - 1 || (second && second == query(0, second + 1))) {
+    // [0, second)
+    if (second == 1) return 0;
+    int l = 0, r = second, mid;
+    while (r - l > 1) { // [l, r)
+      mid = l + (r - l) / 2;
+      if (query(mid, second + 1) == second) // [mid, second]
+        l = mid;
+      else r = mid; // [l, mid)
+    }
+    return l;
+  } else { // right
+    // [second + 1, n)
+    if (second == n - 2) return n - 1;
+    int l = second + 1, r = n, mid;
+    while (r - l > 1) {
+      mid = l + (r - l) / 2;
+      if (query(second, mid) == second) // [second, mid)
+        r = mid;
+      else l = mid;
+    }
+    return l;
+  }
 }
 
 int main() {
@@ -71,7 +69,8 @@ int main() {
   int T = 1;
   // cin >> T;
   while (T--) {
-    solve();
+    printf("! %d\n", solve() + 1);
+    fflush(stdout);
   }
   return 0;
 }

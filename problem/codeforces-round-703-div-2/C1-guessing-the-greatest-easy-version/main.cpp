@@ -1,7 +1,7 @@
 // Original Author: misaka18931
 // Date: 02-18-21
-// tag:
-//
+// tag: binary-search
+// AC
 
 #include <algorithm>
 #include <cstdio>
