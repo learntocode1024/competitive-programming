@@ -1,7 +1,7 @@
 // Original Author: misaka18931
 // Date: 02-18-21
-// tag:
-// 
+// tag: math, abs
+// AC
 
 #include <cstdio>
 #include <cstring>

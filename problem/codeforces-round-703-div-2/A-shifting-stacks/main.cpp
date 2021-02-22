@@ -1,7 +1,7 @@
 // Original Author: misaka18931
 // Date: 02-18-21
-// tag:
-// 
+// tag: array-process
+// AC
 
 #include <cstdio>
 #include <cstring>
@@ -35,7 +35,7 @@ void solve() {
     cin >> a[i];
     a[i] -= i;
   }
-  int k = 0;
+  LL k = 0;
   for (int i = 0; i < n; ++ i) {
     if (a[i] > 0) k += a[i];
     else {
