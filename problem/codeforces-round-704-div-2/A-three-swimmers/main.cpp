@@ -10,7 +10,6 @@
 using namespace std;
 typedef long long LL;
 typedef unsigned long long ULL;
-const LL mod = 1e9 + 7;
 #define LF << '\n'
 #define SPC << ' '
 #define CLRBUF cout << endl;
@@ -28,9 +27,10 @@ const LL mod = 1e9 + 7;
 
 
 void solve() {
-  int n;
-  cin >> n;
-  
+  ULL p, a, b, c;
+  cin >> p >> a >> b >> c;
+  #define t(X) ((X - p % X) % X)
+  cout << min(t(a), min(t(b), t(c))) << endl;
 }
 
 int main() {
