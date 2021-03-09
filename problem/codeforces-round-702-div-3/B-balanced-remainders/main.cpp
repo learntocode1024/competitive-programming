@@ -21,10 +21,22 @@ inline void print(const bool &b) {
   else cout << "NO" << endl;
 }
 
+int c[3];
+
 void solve() {
-  int n;
+  int n, ans = 0;
   cin >> n;
-  
+  for (int i = 0; i < 3; ++i) {
+    c[i] = 0;
+  }
+  for (int i = 0, t; i < n; ++i) {
+    cin >> t;
+    ++c[t % 3];
+  }
+  for (int i = 0; i < 3; ++i) {
+    if (c[i] > n / 3) ans += 
+  }
+  cout << ans << endl;
 }
 
 int main() {
