@@ -21,6 +21,8 @@ inline void print(const bool &b) {
   else cout << "NO" << endl;
 }
 
+LL cube[10005];
+
 void solve() {
   int n;
   cin >> n;

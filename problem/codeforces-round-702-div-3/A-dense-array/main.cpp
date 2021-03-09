@@ -10,20 +10,20 @@
 #define LF << '\n'
 #define SPC << ' '
 #define CLRBUF cout << endl;
-#define MX
+#define MX 55
 using namespace std;
-typedef long long LL;
-typedef unsigned long long ULL;
-const LL mod = 1e9 + 7;
-
-inline void print(const bool &b) {
-  if (b) cout << "YES" << endl;
-  else cout << "NO" << endl;
-}
 
 void solve() {
   int n;
   cin >> n;
+  int ans = 0;
+  int a, b;
+  cin >> a;
+  for (int i = 1; i < n; ++i, a = b) {
+    cin >> b;
+    if (a / b < 2 || b / a < 2) continue;
+    
+  }
   
 }
 
