@@ -1,6 +1,6 @@
 // Original Author: misaka18931
-// Date: 03-18-21
-// tag:
+// Date: 03-17-21
+// tag: dp(DAG)
 // 
 
 #include <cstdio>
@@ -11,6 +11,9 @@ using namespace std;
 typedef long long LL;
 typedef unsigned long long ULL;
 const LL mod = 1e9 + 7;
+#define LF << '\n'
+#define SPC << ' '
+#define CLRBUF cout << endl;
 #define MX
 
 
