@@ -3,6 +3,8 @@ Code Contests
 
 ## Max poi☆poi poi poi！
 
+### Lyric By hawk5121, poi.
+
 [M]poi?
 
 [M]poi?
