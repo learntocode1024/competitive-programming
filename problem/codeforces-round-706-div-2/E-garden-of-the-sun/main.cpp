@@ -22,15 +22,29 @@ const LL mod = 1e9 + 7;
   else printf("NO");
 #define pb(x) push_back(x)
 #define pf(x) push_front(x)
-#define min(X, Y)  ((X) < (Y) ? (X) : (Y))
-#define max(X, Y)  ((X) > (Y) ? (X) : (Y))
-#define MX
+#define MX 505
 
+int n, m;
+string ch[MX];
 
 void solve() {
-  int n;
-  cin >> n;
-  
+  cin >> n >> m;
+  for (int i = 0; i < n; ++i) {
+    cin >> ch[i];
+  }
+  int pref = (m % 3 != 1);
+  for (int i = pref; i < m; i = i + 3) {
+    int flag = (i >= m - 2);
+    for (int j = 0; j < n; ++j) {
+      ch[j][i] = 'X';
+      if (!flag && ch[j][i + 1] == 'X') ch[j][i + 2] = 'X', flag = 1;
+      if (!flag && ch[j][i + 2] == 'X') ch[j][i + 1] = 'X', flag = 1;
+    }
+    if (!flag) ch[0][i + 1] = ch[0][i + 2] = 'X';
+  }
+  for (int i = 0; i < n; ++i) {
+    cout << ch[i] << endl;
+  }
 }
 
 int main() {

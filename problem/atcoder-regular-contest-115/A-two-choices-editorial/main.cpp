@@ -1,38 +1,23 @@
 // Original Author: misaka18931
 // Date: 03-23-21
-// tag:
-// 
+// tag: simple-math
+// AC
 
 #include <cstdio>
-#include <cstring>
-#include <iostream>
-#include <algorithm>
 using namespace std;
-typedef long long LL;
-typedef unsigned long long ULL;
-const LL mod = 1e9 + 7;
-#define printb(x) \
-  if ((bool)x) printf("YES"); \
-  else printf("NO");
-#define pb(x) push_back(x)
-#define pf(x) push_front(x)
-#define MX
-
-
-void solve() {
-  int n;
-  cin >> n;
-  
-}
 
 int main() {
-  cin.tie(NULL);
-  std::ios::sync_with_stdio(false);
-  int T = 1;
-  cin >> T;
-  while (T--) {
-    solve();
+  long long n, m, cnt = 0;
+  scanf("%lld%lld", &n, &m);
+  for (int i = 0; i < n; ++i) {
+    getchar();
+    int t = 0;
+    for (int j = 0; j < m; ++j) {
+      t += (getchar() == '1');
+    }
+    cnt += (t & 1);
   }
+  printf("%lld", cnt * (n - cnt));
   return 0;
 }
 

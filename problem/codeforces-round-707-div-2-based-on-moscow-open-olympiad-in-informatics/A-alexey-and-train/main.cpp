@@ -1,10 +1,9 @@
 // Original Author: misaka18931
-// Date: 03-03-21
+// Date: 03-13-21
 // tag:
 // 
 
 #include <cstdio>
-#include <cmath>
 #include <cstring>
 #include <iostream>
 #include <algorithm>
@@ -25,30 +24,32 @@ const LL mod = 1e9 + 7;
 #define pf(x) push_front(x)
 #define min(X, Y)  ((X) < (Y) ? (X) : (Y))
 #define max(X, Y)  ((X) > (Y) ? (X) : (Y))
-#define MX 100005
+#define MX 10//0005
 
-int a[MX];
+int a[MX], b[MX], tm[MX];
+int a1[MX], b1[MX];
 
 void solve() {
-  int n, k;
-  cin >> n >> k;
+  int n;
+  cin >> n;
   for (int i = 0; i < n; ++i) {
     cin >> a[i];
   }
-  sort(a, a + n);
-  int maxv, mexv;
-  mexv = (a[0] == 0);
-  maxv = a[n - 1];
-  int flag = 1;
-  for (int i = 1; i < n; ++i) {
-    mexv += (mexv == a[i]);
-  }
-  int tmp = ceil(mexv + (float)(maxv - mexv) / 2.0f);
   for (int i = 0; i < n; ++i) {
-    if (tmp == a[i]) flag = 0;
+    cin >> b[i];
   }
-  if (mexv < maxv) cout << n + flag * (k > 0) << endl;
-  else cout << n + k << endl;
+  for (int i = 0; i < n; ++i) {
+    cin >> tm[i];
+  }
+  for (int i = 1; i < n; ++i) {
+    tm[i] -= a[i] - b[i - 1];
+  }
+  b1[0] = b[0];
+  for (int i = 1; i < n; ++i) {
+    a1[i] = b1[i - 1] + tm[i];
+    b1[i] = max(b[i], a1[i] + (int)((b[i] - a[i]) / 2.0f + 0.5f));
+  }
+  cout << a1[n - 1] << endl;
 }
 
 int main() {
