@@ -1,37 +1,51 @@
 // Original Author: misaka18931
 // Date: 03-23-21
-// tag:
+// tag: simple-math
 // 
 
-#include <cstdio>
-#include <cstring>
-#include <iostream>
 #include <algorithm>
+#include <cstdio>
+#include <iostream>
 using namespace std;
-typedef long long LL;
-typedef unsigned long long ULL;
-const LL mod = 1e9 + 7;
 #define printb(x) \
-  if ((bool)x) printf("YES"); \
-  else printf("NO");
-#define pb(x) push_back(x)
-#define pf(x) push_front(x)
-#define MX
+  if ((bool)x) printf("Yes\n"); \
+  else printf("No\n");
+#define MX 505
 
-
-void solve() {
-  int n;
-  cin >> n;
-  
-}
+int a[MX], b[MX];
 
 int main() {
-  cin.tie(NULL);
-  std::ios::sync_with_stdio(false);
-  int T = 1;
-  cin >> T;
-  while (T--) {
-    solve();
+  int n;
+  cin >> n;
+  int minv = 1e9 + 7;
+  for (int i = 0; i < n; ++i) {
+    cin >> a[i];
+    minv = min(minv, a[i]);
+  }
+  b[0] = minv;
+  for (int i = 0; i < n; ++i) {
+    a[i] -= minv;
+  }
+  bool ans = true;
+  for (int i = 1; i < n; ++i) {
+    int curr;
+    cin >> curr;
+    b[i] = curr - a[0];
+    for (int j = 1; j < n; ++j) {
+      cin >> curr;
+      ans = ans && (curr - a[j] == b[i]);
+    }
+  }
+  printb(ans);
+  if (ans) {
+    for (int i = 0; i < n; ++i) {
+      printf("%d ", b[i]);
+    }
+    puts("");
+    for (int i = 0; i < n; ++i) {
+      printf("%d ", a[i]);
+    }
+    puts("");
   }
   return 0;
 }

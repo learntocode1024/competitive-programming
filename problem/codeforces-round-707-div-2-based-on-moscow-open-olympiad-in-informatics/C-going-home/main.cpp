@@ -1,10 +1,9 @@
 // Original Author: misaka18931
-// Date: 03-03-21
+// Date: 03-13-21
 // tag:
 // 
 
 #include <cstdio>
-#include <cmath>
 #include <cstring>
 #include <iostream>
 #include <algorithm>
@@ -25,30 +24,14 @@ const LL mod = 1e9 + 7;
 #define pf(x) push_front(x)
 #define min(X, Y)  ((X) < (Y) ? (X) : (Y))
 #define max(X, Y)  ((X) > (Y) ? (X) : (Y))
-#define MX 100005
+#define MX 200005
 
-int a[MX];
+
 
 void solve() {
-  int n, k;
-  cin >> n >> k;
-  for (int i = 0; i < n; ++i) {
-    cin >> a[i];
-  }
-  sort(a, a + n);
-  int maxv, mexv;
-  mexv = (a[0] == 0);
-  maxv = a[n - 1];
-  int flag = 1;
-  for (int i = 1; i < n; ++i) {
-    mexv += (mexv == a[i]);
-  }
-  int tmp = ceil(mexv + (float)(maxv - mexv) / 2.0f);
-  for (int i = 0; i < n; ++i) {
-    if (tmp == a[i]) flag = 0;
-  }
-  if (mexv < maxv) cout << n + flag * (k > 0) << endl;
-  else cout << n + k << endl;
+  int n;
+  cin >> n;
+  
 }
 
 int main() {
