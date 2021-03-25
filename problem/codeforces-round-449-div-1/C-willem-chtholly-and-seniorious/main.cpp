@@ -1,32 +1,37 @@
 // Original Author: misaka18931
 // Date: 03-23-21
 // tag:
-//
+// 
 
-#include <algorithm>
 #include <cstdio>
 #include <cstring>
 #include <iostream>
+#include <algorithm>
 using namespace std;
-#define MX 100005
+typedef long long LL;
+typedef unsigned long long ULL;
+const LL mod = 1e9 + 7;
+#define printb(x) \
+  if ((bool)x) printf("YES"); \
+  else printf("NO");
+#define pb(x) push_back(x)
+#define pf(x) push_front(x)
+#define MX
 
-int out[MX], pri[MX], vis[MX], cnt;
 
-int main() {
+void solve() {
   int n;
   cin >> n;
-  out[1] = vis[1] = 1;
-  for (int i = 2; i <= n; ++i) {
-    if (!vis[i]) {
-      vis[i] = i;
-      pri[cnt++] = i;
-      out[i] = 1;
-    }
-    for (int k = 0; k < cnt; ++k) {
-      if (pri[k] > vis[i] || pri[k] * i > n) break;
-      vis[pri[k] * i] = pri[k];
-       
-    }
+  
+}
+
+int main() {
+  cin.tie(NULL);
+  std::ios::sync_with_stdio(false);
+  int T = 1;
+  cin >> T;
+  while (T--) {
+    solve();
   }
   return 0;
 }
