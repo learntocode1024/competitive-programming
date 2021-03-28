@@ -1,32 +1,38 @@
 // Original Author: misaka18931
 // Date: 03-23-21
 // tag:
-//
+// 
 
-#include <algorithm>
+#include <bitset>
 #include <cstdio>
-#include <cstring>
 #include <iostream>
+#include <algorithm>
 using namespace std;
-#define MX 100005
+#define MX 1505
 
-int out[MX], pri[MX], vis[MX], cnt;
+int a[MX][MX], b[MX][MX];
+bitset<MX> mask, curr;
+
+int n, m;
+
+void solve() {
+  cin >> n >> m;
+  for (int i = 0; i < n; ++i)
+    for (int j = 0; j < m; ++j)
+      cin >> a[j][i];
+  for (int i = 0; i < n; ++i)
+    for (int j = 0; j < m; ++j)
+      cin >> b[j][i];
+  
+}
 
 int main() {
-  int n;
-  cin >> n;
-  out[1] = vis[1] = 1;
-  for (int i = 2; i <= n; ++i) {
-    if (!vis[i]) {
-      vis[i] = i;
-      pri[cnt++] = i;
-      out[i] = 1;
-    }
-    for (int k = 0; k < cnt; ++k) {
-      if (pri[k] > vis[i] || pri[k] * i > n) break;
-      vis[pri[k] * i] = pri[k];
-       
-    }
+  cin.tie(NULL);
+  std::ios::sync_with_stdio(false);
+  int T = 1;
+  cin >> T;
+  while (T--) {
+    solve();
   }
   return 0;
 }
