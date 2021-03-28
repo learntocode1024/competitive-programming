@@ -1,33 +1,53 @@
 // Original Author: misaka18931
 // Date: 03-23-21
 // tag:
-//
+// 
 
-#include <algorithm>
 #include <cstdio>
 #include <cstring>
 #include <iostream>
+#include <algorithm>
 using namespace std;
-#define MX 100005
+typedef long long LL;
 
-int out[MX], pri[MX], vis[MX], cnt;
+char f0[] = "What are you doing at the end of the world? Are you busy? Will you save us?";
+char f[] = "What are you doing while sending \"\"? Are you busy? Will you send \"\"?";
+
+const LL INF = 1e18 + 70;
+
+inline LL len(const int &n) {
+  if (n >= 53) return INF;
+  return ((143ll << n) - 68);
+}
+
+char calc(int n, LL k) {
+  if (n < 0 || k >= len(n)) return '.';
+  if (n == 0) return f0[k];
+  if (k < 34) return f[k];
+  LL tmp = len(n - 1);
+  if (k < 34 + tmp) return calc(n - 1, k - 34);
+  if (k < 66 + tmp) return f[k - tmp];
+  if (k < 66 + 2 * tmp) return calc(n - 1, k - 66 - tmp);
+  return f[k - 2 * tmp];
+}
+
+void solve() {
+  int n;
+  LL k;
+  cin >> n >> k;
+  cout << calc(n, k - 1);
+  fflush(stdout);
+}
 
 int main() {
-  int n;
-  cin >> n;
-  out[1] = vis[1] = 1;
-  for (int i = 2; i <= n; ++i) {
-    if (!vis[i]) {
-      vis[i] = i;
-      pri[cnt++] = i;
-      out[i] = 1;
-    }
-    for (int k = 0; k < cnt; ++k) {
-      if (pri[k] > vis[i] || pri[k] * i > n) break;
-      vis[pri[k] * i] = pri[k];
-       
-    }
+  cin.tie(NULL);
+  std::ios::sync_with_stdio(false);
+  int T = 1;
+  cin >> T;
+  while (T--) {
+    solve();
   }
+  puts("");
   return 0;
 }
 
