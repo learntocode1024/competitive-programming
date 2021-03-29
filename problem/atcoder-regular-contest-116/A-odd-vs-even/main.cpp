@@ -1,5 +1,5 @@
 // Original Author: misaka18931
-// Date: 03-25-21
+// Date: 03-28-21
 // tag:
 // 
 
@@ -7,47 +7,30 @@
 #include <cstring>
 #include <iostream>
 #include <algorithm>
-#include <vector>
 using namespace std;
+typedef long long LL;
+typedef unsigned long long ULL;
+const LL mod = 1e9 + 7;
+#define printb(x) \
+  if ((bool)x) printf("YES"); \
+  else printf("NO");
 #define pb(x) push_back(x)
 #define pf(x) push_front(x)
-#define MX 200005
+#define MX
 
-struct seg {
-  int minv, maxv;
-  seg() : minv(1e9 + 10), maxv(-1e9 - 10) {};
-  int dist() const { return maxv - minv; };
-  void insert(const int &val) {
-    minv = min(minv, val);
-    maxv = max(maxv, val);
-  }
-};
-
-vector<seg> t;
-int ans[MX][2];
+string ans[4] = {"Even", "Odd", "Same", "Odd"};
 
 void solve() {
-  int n;
+  LL n;
   cin >> n;
-  t = vector<seg>(n);
-  for (int i = 0; i < n; ++i) {
-    int x, c;
-    cin >> x >> c;
-    t[c].insert(x);
-  }
-  int tot = 0;
-  for (int i = 0; i < n; ++i) {
-    if (t[i].dist() > 2e9) continue;
-    int curr = ++tot;
-    ans[curr][0] = min((t[i].minv - ans[curr - 1][0]) )
-  }
+  cout << ans[n % 4] << endl;
 }
 
 int main() {
   cin.tie(NULL);
   std::ios::sync_with_stdio(false);
   int T = 1;
-  // cin >> T;
+  cin >> T;
   while (T--) {
     solve();
   }

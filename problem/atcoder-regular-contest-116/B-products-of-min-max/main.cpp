@@ -1,46 +1,48 @@
 // Original Author: misaka18931
-// Date: 03-25-21
+// Date: 03-28-21
 // tag:
 // 
 
 #include <cstdio>
-#include <cstring>
 #include <iostream>
 #include <algorithm>
-#include <vector>
 using namespace std;
+typedef unsigned long long LL;
+const LL mod = 998244353;
+#define printb(x) \
+  if ((bool)x) printf("YES"); \
+  else printf("NO");
 #define pb(x) push_back(x)
 #define pf(x) push_front(x)
 #define MX 200005
 
-struct seg {
-  int minv, maxv;
-  seg() : minv(1e9 + 10), maxv(-1e9 - 10) {};
-  int dist() const { return maxv - minv; };
-  void insert(const int &val) {
-    minv = min(minv, val);
-    maxv = max(maxv, val);
-  }
-};
-
-vector<seg> t;
-int ans[MX][2];
+LL pow[MX], inv[MX];
+LL a[MX], b[MX];
 
 void solve() {
   int n;
   cin >> n;
-  t = vector<seg>(n);
-  for (int i = 0; i < n; ++i) {
-    int x, c;
-    cin >> x >> c;
-    t[c].insert(x);
+  inv[0] = pow[0] = 1;
+  pow[1] = 2, inv[1] = 499122177;
+  for (int i = 2; i <= n; ++i) {
+    inv[i] = inv[i - 1] * 499122177ll % mod;
+    pow[i] = pow[i - 1] * 2 % mod;
   }
-  int tot = 0;
+  for (int i = 0; i < n; ++i)
+    cin >> a[i];
+  sort(a, a + n);
+  for (int i = 0; i < n; ++i)
+    b[i] = a[i] * pow[i] % mod;
+  for (int i = 1; i < n; ++i)
+    b[i] += b[i - 1];
+  LL ans = 0;
   for (int i = 0; i < n; ++i) {
-    if (t[i].dist() > 2e9) continue;
-    int curr = ++tot;
-    ans[curr][0] = min((t[i].minv - ans[curr - 1][0]) )
+    LL curr = a[i] * a[i] % mod;
+    if (i < n - 1)
+      curr = (curr + (mod + b[n - 1] - b[i]) % mod * inv[i + 1] % mod * a[i] % mod ) % mod;
+    ans = (ans + curr) % mod;
   }
+  cout << ans << endl;
 }
 
 int main() {
