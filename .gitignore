@@ -8,4 +8,5 @@ main
 .vscode
 !/.vscode
 /template/current.cpp
-debug
+bin
+
