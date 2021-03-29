@@ -7,5 +7,6 @@
 main
 .vscode
 !/.vscode
-/template/current.cpp
-debug
+template/current.cpp
+bin
+
