@@ -3,36 +3,61 @@
 // tag:
 // 
 
+#include <cmath>
 #include <cstdio>
-#include <cstring>
+#include <string>
 #include <iostream>
 #include <algorithm>
 using namespace std;
-typedef long long LL;
-typedef unsigned long long ULL;
-const LL mod = 1e9 + 7;
-#define printb(x) \
-  if ((bool)x) printf("YES"); \
-  else printf("NO");
-#define pb(x) push_back(x)
-#define pf(x) push_front(x)
-#define MX
 
+struct pt {
+  double x, y;
+  pt() : x(0), y(0){};
+  pt(double a, double b) : x(a), y(b){};
+  double dist(const pt &b) const {
+    double a = x - b.x;
+    double c = y - b.y;
+    return sqrt(a * a + c * c);
+  };
+  pt operator/(const double t) const {
+    pt ans = *this;
+    ans.x /= t;
+    ans.y /= t;
+    return ans;
+  }
+  pt operator+(const pt &b) const {
+    pt ans = *this;
+    ans.x += b.x;
+    ans.y += b.y;
+    return ans;
+  }
+  pt operator-(const pt &b) const {
+    pt ans = *this;
+    ans.x -= b.x;
+    ans.y -= b.y;
+    return ans;
+  }
+  pt rotate(const double angel) const {
+    double theta = atan2(y, x);
+    theta += angel;
+    double r = sqrt(x * x + y * y);
+    return pt(r * cos(theta), r * sin(theta));
+  }
+};
 
-void solve() {
-  int n;
-  cin >> n;
-  
+istream &operator>>(istream &buf, pt& p) {
+  buf >> p.x >> p.y;
+  return buf;
 }
 
 int main() {
-  cin.tie(NULL);
-  std::ios::sync_with_stdio(false);
-  int T = 1;
-  cin >> T;
-  while (T--) {
-    solve();
-  }
+  pt p0, p_half;
+  int N;
+  cin >> N >> p0 >> p_half;
+  pt c = (p0 + p_half) / 2;
+  pt p = p0 - c;
+  pt ans = c + p.rotate(2 * M_PI / (double)N);
+  cout << ans.x << ' ' << ans.y << endl;
   return 0;
 }
 
