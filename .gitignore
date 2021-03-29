@@ -7,5 +7,9 @@
 main
 .vscode
 !/.vscode
+<<<<<<< HEAD
 /template/current.cpp
+=======
+template/current.cpp
+>>>>>>> e9f5809edf93f28187d08097f5fbf36672c94e2d
 bin
