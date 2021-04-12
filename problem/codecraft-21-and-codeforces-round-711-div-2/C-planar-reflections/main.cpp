@@ -1,6 +1,6 @@
 // Original Author: misaka18931
-// Date: $DATE
-// tag:
+// Date: 03-31-21
+// tag: bruteforce, simulation
 // 
 
 #include <cstdio>
@@ -16,12 +16,31 @@ const LL mod = 1e9 + 7;
   else printf("NO");
 #define pb(x) push_back(x)
 #define pf(x) push_front(x)
-#define MX
+#define MX 1005
+
+LL ray[MX];
 
 void solve() {
-  int n;
-  cin >> n;
-  
+  int n, k;
+  cin >> n >> k;
+  for (int i = 1; i <= n; ++i)
+    ray[i] = 0;
+  ray[0] = 1;
+  LL ans = 0;
+  for (int t = 0; t < k; ++t) {
+    if (~t & 1) {
+      for (int i = 1; i <= n; ++i)
+        ray[i] = (ray[i - 1] + ray[i]) % mod;
+      ans = (ans + ray[n]) % mod;
+      ray[n] = 0;
+    } else {
+      for (int i = n - 1; i >= 0; --i)
+        ray[i] = (ray[i + 1] + ray[i]) % mod;
+      ans = (ans + ray[0]) % mod;
+      ray[0] = 0;
+    }
+  }
+  cout << ans << endl;
 }
 
 int main() {

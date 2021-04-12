@@ -1,6 +1,6 @@
 // Original Author: misaka18931
-// Date: $DATE
-// tag:
+// Date: 03-31-21
+// tag: bitmask, greedy
 // 
 
 #include <cstdio>
@@ -18,10 +18,31 @@ const LL mod = 1e9 + 7;
 #define pf(x) push_front(x)
 #define MX
 
+int cnt[21];
+
 void solve() {
-  int n;
-  cin >> n;
-  
+  for (int i = 0; i < 21; ++i)
+    cnt[i] = 0;
+  int n, w;
+  cin >> n >> w;
+  for (int i = 0; i < n; ++i) {
+    int t;
+    cin >> t;
+    int lg = -1;
+    while (t)
+      ++lg, t >>= 1;
+    ++cnt[lg];
+  }
+  int ans = 0;
+  while (n) {
+    ++ans;
+    int rem = w;
+    for (int i = 20; i >= 0; --i)
+      while (cnt[i] && rem >= (1 << i))
+        --cnt[i], --n, rem -= (1 << i);
+    // cerr << rem << endl;
+  }
+  cout << ans << endl;
 }
 
 int main() {
@@ -31,7 +52,7 @@ int main() {
     solve();
   return 0;
 }
-
+ 
 /************************************ Man Of Culture **************************************
 ⣿⣷⡄⠙⠿⠏⢸⣷⣶⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣾⣽⢿⣿⣿⣿⣿⣿⣿⣿⣿⣷⡆⠄⠄⢴⣾⣿⣿⣿⣿⣿⣿⣿⣿⣦⣍⠷⣎⠸⢄⠸⣿⣇⢐⠸⡿⠏⡐⢐⢄⠹⣿⣮⡹⢿⣿⣿⣿⣯⡹⣷
 ⣿⣿⣿⠄⠄⠄⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣮⡹⢿⣿⣿⣿⣿⣿⠏⠁⠄⣼⣷⣶⣍⡻⢿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣎⡳⣎⡡⢌⠻⡆⡃⠃⠘⠄⢀⡐⣗⠸⢿⣷⣎⢻⣿⣿⣿⣇⡸
