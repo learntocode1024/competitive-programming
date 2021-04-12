@@ -1,6 +1,6 @@
 // Original Author: misaka18931
-// Date: $DATE
-// tag:
+// Date: 03-29-21
+// tag: bruteforce
 // 
 
 #include <cstdio>
@@ -8,27 +8,36 @@
 #include <iostream>
 #include <algorithm>
 using namespace std;
-typedef long long LL;
-typedef unsigned long long ULL;
-const LL mod = 1e9 + 7;
-#define printb(x) \
-  if ((bool)x) printf("YES"); \
-  else printf("NO");
-#define pb(x) push_back(x)
-#define pf(x) push_front(x)
-#define MX
+typedef unsigned long long LL;
+
+bool calc(LL v) {
+  LL mod = 1;
+  LL sum = 0;
+  for (int i = 0; i < 19; ++i) {
+    sum += (v / mod )% 10ll;
+    mod *= 10;
+  }
+  return __gcd(sum, v) > 1;
+}
 
 void solve() {
-  int n;
+  LL n;
   cin >> n;
-  
+  for (int i = 0; i < 3; ++i) {
+    if (calc(n)) break;
+    ++n;
+  }
+  cout << n << endl;
 }
 
 int main() {
+  cin.tie(NULL);
+  std::ios::sync_with_stdio(false);
   int T = 1;
   cin >> T;
-  while (T--)
+  while (T--) {
     solve();
+  }
   return 0;
 }
 
