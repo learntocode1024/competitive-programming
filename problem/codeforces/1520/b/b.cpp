@@ -1,19 +1,21 @@
 // Original Author: misaka18931
 // Date: $DATE
 // tag:
-// 
+//
 
+#include <algorithm>
 #include <cstdio>
 #include <cstring>
 #include <iostream>
-#include <algorithm>
 using namespace std;
 typedef long long LL;
 typedef unsigned long long ULL;
 const LL mod = 1e9 + 7;
-#define printb(x) \
-  if ((bool)x) printf("YES"); \
-  else printf("NO");
+#define printb(x)                                                              \
+  if ((bool)x)                                                                 \
+    printf("YES");                                                             \
+  else                                                                         \
+    printf("NO");
 #define pb(x) push_back(x)
 #define pf(x) push_front(x)
 #define MX
@@ -23,10 +25,12 @@ void solve() {
   cin >> n;
   int tmp = n;
   int t = 0;
-  while(n > 9) n /= 10, ++t;
+  while (n > 9)
+    n /= 10, ++t;
   int ans = 9 * t + n - 1;
   int cmp = n;
-  for (int i = 0; i < t; ++i) cmp = cmp * 10 + n;
+  for (int i = 0; i < t; ++i)
+    cmp = cmp * 10 + n;
   ans += tmp >= cmp;
   cout << ans << endl;
 }

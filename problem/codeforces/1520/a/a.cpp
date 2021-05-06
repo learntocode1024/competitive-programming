@@ -1,19 +1,21 @@
 // Original Author: misaka18931
 // Date: $DATE
 // tag:
-// 
+//
 
-#include <cstdio>
-#include <string>
-#include <iostream>
 #include <algorithm>
+#include <cstdio>
+#include <iostream>
+#include <string>
 using namespace std;
 typedef long long LL;
 typedef unsigned long long ULL;
 const LL mod = 1e9 + 7;
-#define printb(x) \
-  if ((bool)x) printf("YES"); \
-  else printf("NO");
+#define printb(x)                                                              \
+  if ((bool)x)                                                                 \
+    printf("YES");                                                             \
+  else                                                                         \
+    printf("NO");
 #define pb(x) push_back(x)
 #define pf(x) push_front(x)
 #define MX
@@ -24,16 +26,17 @@ string s;
 void solve() {
   int n;
   cin >> n >> s;
-  for (int i = 0; i < 26; ++i) done[i] = 0;
+  for (int i = 0; i < 26; ++i)
+    done[i] = 0;
   char prev = s[0];
   for (int i = 1; i < n; ++i) {
-	if (done[s[i] - 'A']) {
-		cout << "NO" << endl;
-		return;
-	}
-	if (s[i] != prev)
-	  done[prev - 'A'] = true;
-	prev = s[i];
+    if (done[s[i] - 'A']) {
+      cout << "NO" << endl;
+      return;
+    }
+    if (s[i] != prev)
+      done[prev - 'A'] = true;
+    prev = s[i];
   }
   cout << "YES" << endl;
 }

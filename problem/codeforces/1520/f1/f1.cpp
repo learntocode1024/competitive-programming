@@ -29,10 +29,14 @@ int query(int l, int r) {
 void solve() {
   int n, t, k;
   cin >> n >> t >> k;
-  int l = 1, r = n + 1;
+  if (n == 1) {
+    cout << "! 1" << endl;
+    return;
+  }
+  int l = 0, r = n;
   while (l + 1 < r) {
     int mid = l + (r - l) / 2;
-    if (query(1, mid) > mid - k) l = mid;
+    if (mid - query(1, mid) < k) l = mid;
     else r = mid;
   }
   cout << "! " << r << endl;

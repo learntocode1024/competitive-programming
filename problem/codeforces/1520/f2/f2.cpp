@@ -21,7 +21,7 @@ const LL mod = 1e9 + 7;
 void solve() {
   int n;
   cin >> n;
-  
+
 }
 
 int main() {

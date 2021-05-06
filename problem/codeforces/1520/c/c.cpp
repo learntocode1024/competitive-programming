@@ -1,19 +1,21 @@
 // Original Author: misaka18931
 // Date: $DATE
 // tag:
-// 
+//
 
+#include <algorithm>
 #include <cstdio>
 #include <cstring>
 #include <iostream>
-#include <algorithm>
 using namespace std;
 typedef long long LL;
 typedef unsigned long long ULL;
 const LL mod = 1e9 + 7;
-#define printb(x) \
-  if ((bool)x) printf("YES"); \
-  else printf("NO");
+#define printb(x)                                                              \
+  if ((bool)x)                                                                 \
+    printf("YES");                                                             \
+  else                                                                         \
+    printf("NO");
 #define pb(x) push_back(x)
 #define pf(x) push_front(x)
 #define MX
@@ -21,10 +23,13 @@ const LL mod = 1e9 + 7;
 void solve() {
   int n;
   cin >> n;
-  if (n == 1) {cout << 1 << endl; return;}
+  if (n == 1) {
+    cout << 1 << endl;
+    return;
+  }
   if (n == 2) {
-		cout << -1 << endl;
-  return;  
+    cout << -1 << endl;
+    return;
   }
   if (n == 3) {
     cout << R"(
@@ -32,7 +37,7 @@ void solve() {
 4 6 3
 1 8 5
 )" << endl;
-return;
+    return;
   }
   if (n == 4) {
     cout << R"(
@@ -41,12 +46,14 @@ return;
 11 9 12 10
 15 13 16 14
 )" << endl;
-}
+    return;
+  }
   int half = n / 2 + (n & 1);
   for (int i = 0; i < n * n; i += n) {
     for (int j = 1; j <= n / 2; ++j)
-		  cout << j + i << ' ' << i + j + half << ' ';
-    if (n & 1) cout << i + half;
+      cout << j + i << ' ' << i + j + half << ' ';
+    if (n & 1)
+      cout << i + half;
     cout << endl;
   }
 }
