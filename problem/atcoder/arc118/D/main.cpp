@@ -30,12 +30,14 @@ void solve() {
   pa.pb(1);
   for (LL curr = a; curr != 1; curr = curr * a % p) {
     pa.pb(curr);
-    if (b == curr) flaga = true;
+    if (b == curr)
+      flaga = true;
   }
   pb.pb(1);
   for (LL curr = b; curr != 1; curr = curr * b % p) {
     pb.pb(curr);
-    if (a == curr) flagb = true;
+    if (a == curr)
+      flagb = true;
   }
   if (pa.size() == p - 1) {
     cout << "Yes" << endl;
@@ -53,21 +55,30 @@ void solve() {
     cout << 1 << endl;
     return;
   }
-  if (flaga && flagb || pa.size() * pb*size() != ) {
+  if (flaga && flagb || pa.size() * pb.size() < p - 1) {
     cout << "No" << endl;
     return;
   }
-  LL init = 1;
-  cout << "Yes" << endl << "1 ";
-  for (int t = 0; t < (p - 1) / pa.size(); ++t) {
-    for (int T = 1; T < pa.size(); ++T) {
-      init = init * a % p;
-      cout << init << ' ';
-    }
-    init = init * b % p;
-    if (t != (p - 1) / pa.size() - 1) cout << init << ' ';
+  int sa = pa.size(), sb = pb.size();
+  LL cur = 1;
+  if (sb & 1) {
+    swap(a, b);
+    swap(sa, sb);
+    swap(pa, pb);
   }
-  cout << 1;
+  for (int i = 0; i < (p - 1) / sa; ++i) {
+    if (i & 1) {
+      for (int j = sa - 1; j >= 0; --j) {
+        cout << pa[j] * cur % p << ' ';
+      }
+    } else {
+      for (int j = 0; j < sa; ++j) {
+        cout << pa[j] * cur % p << ' ';
+      }
+    }
+    cur = cur * b % p;
+  }
+  cout << 1 << endl;
 }
 
 int main() {
