@@ -21,63 +21,61 @@ const LL mod = 1e9 + 7;
 #define pf(x) push_front(x)
 #define MX
 
+bool vis[100005];
+
 void solve() {
   LL p, a, b;
   cin >> p >> a >> b;
-  vector<LL> pa, pb;
-  bool flaga = (b == 1);
-  bool flagb = (a == 1);
-  pa.pb(1);
-  for (LL curr = a; curr != 1; curr = curr * a % p) {
-    pa.pb(curr);
-    if (b == curr)
-      flaga = true;
-  }
-  pb.pb(1);
-  for (LL curr = b; curr != 1; curr = curr * b % p) {
-    pb.pb(curr);
-    if (a == curr)
-      flagb = true;
-  }
-  if (pa.size() == p - 1) {
-    cout << "Yes" << endl;
-    for (auto i : pa) {
-      cout << i << ' ';
-    }
-    cout << 1 << endl;
+  if (p == 2) {
+    cout << "Yes\n1 1\n";
     return;
   }
-  if (pb.size() == p - 1) {
-    cout << "Yes" << endl;
-    for (auto i : pb) {
-      cout << i << ' ';
-    }
-    cout << 1 << endl;
-    return;
-  }
-  if (flaga && flagb || pa.size() * pb.size() < p - 1) {
+  LL sa = 0;
+  LL sb = 1;
+  for (LL i = 1; !vis[i]; i = i * a % p)
+    vis[i] = 1, ++sa;
+  for (LL i = b; !vis[i]; i = i * b % p)
+    vis[i] = 1, ++sb;
+  if (sa * sb != p - 1) {
     cout << "No" << endl;
     return;
   }
-  int sa = pa.size(), sb = pb.size();
-  LL cur = 1;
+  cout << "Yes" << endl;
   if (sb & 1) {
     swap(a, b);
     swap(sa, sb);
-    swap(pa, pb);
   }
-  for (int i = 0; i < (p - 1) / sa; ++i) {
+  vector<LL> buf, tmp;
+  for (LL i = a, t = 1; t < sa; i = i * a % p, ++t)
+    buf.pb(i);
+  for (LL i = 1, t = 0; t < sb; i = i * b % p, ++t)
+    tmp.pb(i), cout << i << ' ';
+  for (int i = 0; i < sb; ++i) {
     if (i & 1) {
-      for (int j = sa - 1; j >= 0; --j) {
-        cout << pa[j] * cur % p << ' ';
+      for (int j = sa - 2; j >= 0; --j) {
+        cout << buf[j] * tmp[sb - i - 1] % p << ' ';
       }
     } else {
-      for (int j = 0; j < sa; ++j) {
-        cout << pa[j] * cur % p << ' ';
+      for (int j = 0; j < sa - 1; ++j) {
+        cout << buf[j] * tmp[sb - i - 1] % p << ' ';
       }
     }
-    cur = cur * b % p;
   }
+
+  // That's Fucking wrong with incomplete secondary loop
+  /* LL cur = 1; */
+  /* for (int i = 0; i < sb; ++i) { */
+  /*   if (i & 1) { */
+  /*     for (int j = sa - 1; j >= 0; --j) { */
+  /*       cout << buf[j] * cur % p << ' '; */
+  /*     } */
+  /*   } else { */
+  /*     for (int j = 0; j < sa; ++j) { */
+  /*       cout << buf[j] * cur % p << ' '; */
+  /*     } */
+  /*   } */
+  /*   cur = cur * b % p; */
+  /* } */
   cout << 1 << endl;
 }
 
