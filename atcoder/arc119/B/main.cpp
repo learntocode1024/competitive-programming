@@ -4,7 +4,7 @@
 //
 
 #include <algorithm>
-#include <bitset>
+#include <vector>
 #include <cstdio>
 #include <cstring>
 #include <iostream>
@@ -21,22 +21,30 @@ const LL mod = 1e9 + 7;
 #define pf(x) push_front(x)
 #define MX
 
-bitset<500000> a, b, c;
+vector<int> s, t;
 
 void solve() {
   int n;
-  cin >> n >> a >> b;
-  c = a ^ b;
-  if (c.count() & 1) {
+  cin >> n;
+  for (int i = 0; i < n; ++i) {
+    char c;
+    cin >> c;
+    if (c == '0') s.pb(i);
+  }
+  for (int i = 0; i < n; ++i) {
+    char c;
+    cin >> c;
+    if (c == '0') t.pb(i);
+  }
+  if (s.size() != t.size()) {
     cout << -1 << endl;
     return;
   }
-  if (!c.any()) {
-    cout << 0 << endl;
-    return;
-  }
   int ans = 0;
-
+  for (int i = 0; i < s.size(); ++i) {
+    if (s[i] != t[i])
+      ++ans;
+  }
   cout << ans << endl;
 }
 
