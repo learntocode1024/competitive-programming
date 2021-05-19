@@ -15,16 +15,28 @@ typedef unsigned long long ULL;
 #define pf(x) push_front(x)
 #define MX
 
-long long N;
-scanf("%lld", &N);
+int n;
 
-void solve() {}
+void solve(int t, int rt, string str) {
+  if (rt > t) return;
+  if (t == n) {
+    cout << str;
+    for (int i = rt; i < n; ++i)
+      cout << ')';
+    cout << endl;
+    return;
+  }
+  solve(t + 1, rt, str + "(");
+  solve(t, rt + 1, str + ")");
+}
 
 int main() {
-  int T = 1;
-  cin >> T;
-  while (T--)
-    solve();
+  cin >> n;
+  if (n & 1) {
+    return 0;
+  }
+  n >>= 1;
+  solve(0, 0, "");
   return 0;
 }
 

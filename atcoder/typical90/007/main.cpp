@@ -7,6 +7,7 @@
 #include <cstdio>
 #include <cstring>
 #include <iostream>
+#include <set>
 using namespace std;
 typedef long long LL;
 typedef unsigned long long ULL;
@@ -15,24 +16,26 @@ typedef unsigned long long ULL;
 #define pf(x) push_front(x)
 #define MX
 
-long long N;
-scanf("%lld", &N);
-std::vector<long long> A(N);
-for (int i = 0; i < N; i++) {
-  scanf("%lld", &A[i]);
+void solve() {
+  set<int> s;
+  int n;
+  cin >> n;
+  for (int i = 0; i < n; ++i) {
+    int tmp;
+    cin >> tmp;
+    s.insert(tmp);
+  }
+  cin >> n;
+  while (n--) {
+    int tmp;
+    cin >> tmp;
+    cout << min(tmp - *(s.lower_bound(tmp)--), *s.upper_bound(tmp) - tmp) << endl;
+  }
 }
-long long Q;
-scanf("%lld", &Q);
-std::vector<long long> B(Q);
-for (int i = 0; i < Q; i++) {
-  scanf("%lld", &B[i]);
-}
-
-void solve() {}
 
 int main() {
   int T = 1;
-  cin >> T;
+  /* cin >> T; */
   while (T--)
     solve();
   return 0;

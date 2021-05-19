@@ -13,22 +13,48 @@ typedef unsigned long long ULL;
 
 #define pb(x) push_back(x)
 #define pf(x) push_front(x)
-#define MX
+#define MX 100005
 
-long long N;
-scanf("%lld", &N);
-std::vector<long long> A(N - 1);
-std::vector<long long> B(N - 1);
-for (int i = 0; i < N - 1; i++) {
-  scanf("%lld", &A[i]);
-  scanf("%lld", &B[i]);
+int n;
+int head[MX], to[MX * 2], nxt[MX * 2], tot;
+#define add_edge(X, Y)                                                         \
+  to[++tot] = Y;                                                               \
+  nxt[tot] = head[X];                                                          \
+  head[X] = tot;
+
+int maxd;
+
+int dfs(int u, int fa) {
+  int ret = 0, a = 0, b = 0;
+  for (int i = head[u]; i; i = nxt[i]) {
+    int &v = to[i];
+    if (v == fa) continue;
+    int tmp = dfs(v, u);
+    ret = max(ret, tmp);
+    if (tmp > a) {
+      swap(a, b);
+      a = tmp;
+    } else if (tmp > b) {
+      b = tmp;
+    }
+  }
+  maxd = max(maxd, a + b + 1);
+  return ret + 1;
 }
 
-void solve() {}
+void solve() {cin >> n;
+  for (int i = 1; i < n; ++i) {
+    int a, b;
+    cin >> a >> b;
+    add_edge(a, b) add_edge(b, a)
+  }
+  dfs(1, 0);
+  cout << maxd << endl;
+}
 
 int main() {
   int T = 1;
-  cin >> T;
+  /* cin >> T; */
   while (T--)
     solve();
   return 0;
