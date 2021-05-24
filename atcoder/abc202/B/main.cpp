@@ -1,12 +1,12 @@
 // Original Author: misaka18931
 // Date: $DATE
 // tag:
-// 
+//
 
-#include <cstdio>
-#include <cstring>
-#include <iostream>
 #include <algorithm>
+#include <cstdio>
+#include <string>
+#include <iostream>
 using namespace std;
 typedef long long LL;
 typedef unsigned long long ULL;
@@ -14,25 +14,20 @@ typedef unsigned long long ULL;
 #define pb(x) push_back(x)
 #define pf(x) push_front(x)
 #define MX
-{% if mod %}
-const long long mod = {{ mod }};
-{% endif %}
-{% if yes_str %}
-const string YES = "{{ yes_str }}";
-{% endif %}
-{% if no_str %}
-const string NO = "{{ no_str }}";
-#define FALSE_EXIT
-  { cout << NO << endl; return; }
-{% endif %}
 
 void solve() {
-
+  string s;
+  cin >> s;
+  reverse(s.begin(), s.end());
+  for (auto i : s) {
+    cout << "0100009086"[i - '0'];
+  }
+  cout << endl;
 }
 
-int main(){
+int main() {
   int T = 1;
-  cin >> T;
+  /* cin >> T; */
   while (T--)
     solve();
   return 0;

@@ -10,29 +10,32 @@
 using namespace std;
 typedef long long LL;
 typedef unsigned long long ULL;
-
+const LL mod = 998244353;
+#define printb(x) \
+  if ((bool)x) printf("YES"); \
+  else printf("NO");
 #define pb(x) push_back(x)
 #define pf(x) push_front(x)
-#define MX
-{% if mod %}
-const long long mod = {{ mod }};
-{% endif %}
-{% if yes_str %}
-const string YES = "{{ yes_str }}";
-{% endif %}
-{% if no_str %}
-const string NO = "{{ no_str }}";
-#define FALSE_EXIT
-  { cout << NO << endl; return; }
-{% endif %}
+#define MX 1000005
 
-void solve() {
-
+inline LL f(int n) {
+  return 31 - __builtin_clz(n);
 }
 
-int main(){
+void solve() {
+  int n;
+  cin >> n;
+  LL ans = 0;
+  for (int i = 2; i < 2 * n; ++i) {
+    ans = (ans + f(i) * f(2 * n - i) % mod) % mod;
+  }
+  ans = (ans + f(2 * n)) % mod;
+  cout << ans << endl;
+}
+
+int main() {
   int T = 1;
-  cin >> T;
+  /* cin >> T; */
   while (T--)
     solve();
   return 0;

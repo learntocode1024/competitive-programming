@@ -7,30 +7,78 @@
 #include <cstring>
 #include <iostream>
 #include <algorithm>
+#include <vector>
+#include <map>
 using namespace std;
-typedef long long LL;
-typedef unsigned long long ULL;
-
+/* typedef long long LL; */
+typedef __int128 LL;
+const LL mod = 1e9 + 7;
+#define printb(x) \
+  if ((bool)x) printf("YES"); \
+  else printf("NO");
 #define pb(x) push_back(x)
 #define pf(x) push_front(x)
 #define MX
-{% if mod %}
-const long long mod = {{ mod }};
-{% endif %}
-{% if yes_str %}
-const string YES = "{{ yes_str }}";
-{% endif %}
-{% if no_str %}
-const string NO = "{{ no_str }}";
-#define FALSE_EXIT
-  { cout << NO << endl; return; }
-{% endif %}
+typedef vector<LL> arr;
+map<long long, arr> a;
+std::ostream&
+operator<<( std::ostream& dest, __int128_t value )
+{
+    std::ostream::sentry s( dest );
+    if ( s ) {
+        __uint128_t tmp = value < 0 ? -value : value;
+        char buffer[ 128 ];
+        char* d = std::end( buffer );
+        do
+        {
+            -- d;
+            *d = "0123456789"[ tmp % 10 ];
+            tmp /= 10;
+        } while ( tmp != 0 );
+        if ( value < 0 ) {
+            -- d;
+            *d = '-';
+        }
+        int len = std::end( buffer ) - d;
+        if ( dest.rdbuf()->sputn( d, len ) != len ) {
+            dest.setstate( std::ios_base::badbit );
+        }
+    }
+    return dest;
+}
+LL N;
 
-void solve() {
-
+LL calc(const arr &a) {
+  LL ans = 0, sum = 0, sum2 = 0, isum = 0;
+  LL n = a.size();
+  for (LL k = 0; k < n; ++k) {
+    const LL i = a[k];
+    sum += i;
+    sum2 += i * i;
+    isum += (n - k - 1) * i;
+  }
+  LL ret = (N + 1) * isum - ((sum * sum - sum2) >> 1);
+  return ret;
 }
 
-int main(){
+void solve() {
+  int n;
+  cin >> n;
+  N = n;
+  a.clear();
+  for (int i = 1; i <= n; ++i) {
+    long long tmp;
+    cin >> tmp;
+    a[tmp].push_back(i);
+  }
+  LL ans = 0;
+  for (auto i : a) {
+    ans += calc(i.second);
+  }
+  cout << ans << endl;
+}
+// Why would this fucking problem needs int128?
+int main() {
   int T = 1;
   cin >> T;
   while (T--)

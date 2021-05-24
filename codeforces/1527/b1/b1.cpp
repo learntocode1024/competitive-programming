@@ -4,33 +4,35 @@
 // 
 
 #include <cstdio>
-#include <cstring>
+#include <string>
 #include <iostream>
 #include <algorithm>
 using namespace std;
 typedef long long LL;
 typedef unsigned long long ULL;
-
+const LL mod = 1e9 + 7;
+#define printb(x) \
+  if ((bool)x) printf("YES"); \
+  else printf("NO");
 #define pb(x) push_back(x)
 #define pf(x) push_front(x)
 #define MX
-{% if mod %}
-const long long mod = {{ mod }};
-{% endif %}
-{% if yes_str %}
-const string YES = "{{ yes_str }}";
-{% endif %}
-{% if no_str %}
-const string NO = "{{ no_str }}";
-#define FALSE_EXIT
-  { cout << NO << endl; return; }
-{% endif %}
 
 void solve() {
-
+  int n;
+  string s;
+  cin >> n >> s;
+  int cnt = 0;
+  for (auto i : s)
+    cnt += i == '0';
+  if (cnt == 1 || ~cnt & 1) {
+    cout << "BOB" << endl;
+  } else {
+    cout << "ALICE" << endl;
+  }
 }
 
-int main(){
+int main() {
   int T = 1;
   cin >> T;
   while (T--)
