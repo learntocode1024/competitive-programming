@@ -1,36 +1,68 @@
 // Original Author: misaka18931
 // Date: $DATE
 // tag:
-// 
+//
 
-#include <cstdio>
-#include <cstring>
-#include <iostream>
 #include <algorithm>
+#include <cstdio>
+#include <iostream>
+#include <string>
 using namespace std;
 typedef long long LL;
 typedef unsigned long long ULL;
-
+const LL mod = 1e9 + 7;
+#define printb(x)                                                              \
+  if ((bool)x)                                                                 \
+    printf("YES");                                                             \
+  else                                                                         \
+    printf("NO");
 #define pb(x) push_back(x)
 #define pf(x) push_front(x)
 #define MX
-{% if mod %}
-const long long mod = {{ mod }};
-{% endif %}
-{% if yes_str %}
-const string YES = "{{ yes_str }}";
-{% endif %}
-{% if no_str %}
-const string NO = "{{ no_str }}";
-#define FALSE_EXIT
-  { cout << NO << endl; return; }
-{% endif %}
 
-void solve() {
+int n;
+string s;
 
+void solvep() {
+  int cnt = 0;
+  for (auto i : s)
+    cnt += i == '0';
+  if (cnt == 1 || ~cnt & 1) {
+    cout << "BOB" << endl;
+  } else {
+    cout << "ALICE" << endl;
+  }
 }
 
-int main(){
+void solve() {
+  cin >> n >> s;
+  string rev = s;
+  reverse(rev.begin(), rev.end());
+  if (s == rev) {
+    solvep();
+    return;
+  }
+  if (n & 1 && s[n / 2] == '1') {
+    s = s.substr(0, n / 2) + s.substr(n / 2 + 1, n);
+    --n;
+  }
+  if (~n & 1) {
+    int cnt = 0;
+    for (auto i : s)
+      cnt += i == '0';
+    int t = 0;
+    for (int i = 0; i < n / 2; ++i) {
+      t += s[i] != s[n - i - 1];
+    }
+    if (cnt == 1 || ~t & 1) {
+      cout << "BOB" << endl;
+    } else {
+      cout << "ALICE" << endl;
+    }
+  } else {}
+}
+
+int main() {
   int T = 1;
   cin >> T;
   while (T--)

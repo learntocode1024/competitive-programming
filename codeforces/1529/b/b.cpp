@@ -7,30 +7,50 @@
 #include <cstring>
 #include <iostream>
 #include <algorithm>
+#include <vector>
 using namespace std;
 typedef long long LL;
 typedef unsigned long long ULL;
-
+const LL mod = 1e9 + 7;
+#define printb(x) \
+  if ((bool)x) printf("YES"); \
+  else printf("NO");
 #define pb(x) push_back(x)
 #define pf(x) push_front(x)
-#define MX
-{% if mod %}
-const long long mod = {{ mod }};
-{% endif %}
-{% if yes_str %}
-const string YES = "{{ yes_str }}";
-{% endif %}
-{% if no_str %}
-const string NO = "{{ no_str }}";
-#define FALSE_EXIT
-  { cout << NO << endl; return; }
-{% endif %}
+#define int LL 
+
+vector<int> v1, v2;
 
 void solve() {
-
+  v1.clear();
+  v2.clear();
+  int n;
+  cin >> n;
+  int cnt = 0;
+  for (int i = 0; i < n; ++i) {
+    int tmp;
+    cin >> tmp;
+    if (tmp > 0) {
+      v2.pb(tmp);
+    } else {
+      v1.pb(tmp);
+    }
+  }
+  if (v1.empty()) {
+    cout << 1 << endl;
+    return;
+  }
+  sort(v1.begin(), v1.end());
+  sort(v2.begin(), v2.end());
+  int mn = 1e9 + 7;
+  for (int i = 1; i < v1.size(); ++i) {
+    mn = min(mn, v1[i] - v1[i - 1]);
+  }
+  if (!v2.empty() && v2[0] <= mn) v1.pb(114514);
+  cout << v1.size() << endl;
 }
 
-int main(){
+int32_t main() {
   int T = 1;
   cin >> T;
   while (T--)

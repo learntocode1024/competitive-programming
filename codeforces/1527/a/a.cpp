@@ -10,27 +10,24 @@
 using namespace std;
 typedef long long LL;
 typedef unsigned long long ULL;
-
+const LL mod = 1e9 + 7;
+#define printb(x) \
+  if ((bool)x) printf("YES"); \
+  else printf("NO");
 #define pb(x) push_back(x)
 #define pf(x) push_front(x)
 #define MX
-{% if mod %}
-const long long mod = {{ mod }};
-{% endif %}
-{% if yes_str %}
-const string YES = "{{ yes_str }}";
-{% endif %}
-{% if no_str %}
-const string NO = "{{ no_str }}";
-#define FALSE_EXIT
-  { cout << NO << endl; return; }
-{% endif %}
+#define lowbit(X) ((X) & (-X))
 
 void solve() {
-
+  int n;
+  cin >> n;
+  while (n > lowbit(n))
+    n -= lowbit(n);
+  cout << n - 1 << endl;
 }
 
-int main(){
+int main() {
   int T = 1;
   cin >> T;
   while (T--)
