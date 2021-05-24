@@ -5,41 +5,37 @@
 
 #include <algorithm>
 #include <cstdio>
-#include <cmath>
+#include <cstring>
 #include <iostream>
-#include <set>
 using namespace std;
 typedef long long LL;
 typedef unsigned long long ULL;
 
 #define pb(x) push_back(x)
 #define pf(x) push_front(x)
-#define MX 2005
+#define MX 200005
 
-LL x[MX], y[MX];
-set<double> s;
-double ans = 0;
+int a[MX << 1];
 
 void solve() {
-  int n;
-  cin >> n;
+  int n, k;
+  cin >> n >> k;
   for (int i = 0; i < n; ++i) {
-    cin >> x[i] >> y[i];
+    int x, b;
+    cin >> x >> b;
+    a[i] = -b;
+    a[n + i] = -x + b;
   }
-  for (int i = 0; i < n - 1; ++i) {
-    s.clear();
-    double curr = 0;
-    for (int j = i + 1; j < n; ++i)
-      s.insert(atan2(y[j] - y[i], x[j] - x[i]));
-    for (int j = i + i; j < n; ++j) {
-      int opp = 
-    }
+  sort(a, a + 2 * n);
+  LL ret = 0;
+  for (int i = 0; i < k; ++i) {
+    ret -= a[i];
   }
+  cout << ret << endl;
 }
 
 int main() {
   int T = 1;
-  cin >> T;
   while (T--)
     solve();
   return 0;

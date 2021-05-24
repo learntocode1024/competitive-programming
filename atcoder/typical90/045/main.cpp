@@ -1,45 +1,54 @@
 // Original Author: misaka18931
 // Date: $DATE
-// tag:
+// tag: subset BIT-dp
 //
 
 #include <algorithm>
 #include <cstdio>
-#include <cmath>
+#include <cstring>
 #include <iostream>
-#include <set>
 using namespace std;
 typedef long long LL;
 typedef unsigned long long ULL;
 
 #define pb(x) push_back(x)
 #define pf(x) push_front(x)
-#define MX 2005
+#define MX 15
+#define MX_BIT (1 << MX)
+#define lowbit(X) (X & (-X))
 
 LL x[MX], y[MX];
-set<double> s;
-double ans = 0;
+LL d[MX_BIT], dp[MX][MX_BIT]; 
 
 void solve() {
-  int n;
-  cin >> n;
+  int n, k;
+  cin >> n >> k;
   for (int i = 0; i < n; ++i) {
     cin >> x[i] >> y[i];
   }
-  for (int i = 0; i < n - 1; ++i) {
-    s.clear();
-    double curr = 0;
-    for (int j = i + 1; j < n; ++i)
-      s.insert(atan2(y[j] - y[i], x[j] - x[i]));
-    for (int j = i + i; j < n; ++j) {
-      int opp = 
+  for (int i = 1; i < (1 << n); ++i) {
+    int to = i - lowbit(i);
+    int u = __builtin_ffs(lowbit(i)) - 1;
+    d[i] = d[to];
+    for (int v = 0; v < n; ++v) {
+      if (to & (1 << v))
+        d[i] = max(d[i], (x[u] - x[v]) * (x[u] - x[v]) + (y[u] - y[v]) * (y[u] - y[v]));
     }
   }
+  memcpy(dp[1], d, sizeof(d));
+  for (int i = 2; i <= k; ++i) {
+    for (int u = 1; u < (1 << n); ++u) {
+      dp[i][u] = INT64_MAX;
+      for (int v = u; v; v = (v - 1) & u) {
+        dp[i][u] = min(dp[i][u], max(dp[i - 1][v], d[u - v]));
+      }
+    }
+  }
+  cout << dp[k][(1 << n) - 1] << endl;
 }
 
 int main() {
   int T = 1;
-  cin >> T;
   while (T--)
     solve();
   return 0;
