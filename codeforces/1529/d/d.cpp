@@ -1,36 +1,43 @@
 // Original Author: misaka18931
 // Date: $DATE
 // tag:
-// 
+//
 
+#include <algorithm>
 #include <cstdio>
 #include <cstring>
 #include <iostream>
-#include <algorithm>
 using namespace std;
 typedef long long LL;
 typedef unsigned long long ULL;
 const LL mod = 998244353;
-#define printb(x) \
-  if ((bool)x) printf("YES"); \
-  else printf("NO");
+#define printb(x)                                                              \
+  if ((bool)x)                                                                 \
+    printf("YES");                                                             \
+  else                                                                         \
+    printf("NO");
 #define pb(x) push_back(x)
 #define pf(x) push_front(x)
 #define MX 1000005
 
-inline LL f(int n) {
-  return 31 - __builtin_clz(n);
-}
+LL f[MX];
 
 void solve() {
   int n;
   cin >> n;
   LL ans = 0;
-  for (int i = 2; i < 2 * n; ++i) {
-    ans = (ans + f(i) * f(2 * n - i) % mod) % mod;
+  LL sum = 0;
+  for (int i = 1; i <= n; i++) {
+    for (int j = i + i; j <= n; j += i) {
+      f[j]++;
+    }
   }
-  ans = (ans + f(2 * n)) % mod;
-  cout << ans << endl;
+  f[0] = sum = 1;
+  for (int i = 1; i <= n; ++i) {
+    f[i] = (f[i] + sum) % mod;
+    sum = (sum + f[i]) % mod;
+  }
+  cout << f[n] << endl;
 }
 
 int main() {
