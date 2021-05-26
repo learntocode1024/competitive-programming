@@ -13,18 +13,11 @@ typedef unsigned long long ULL;
 
 #define pb(x) push_back(x)
 #define pf(x) push_front(x)
-#define MX
+#define MX 5005
 
-long long N;
-scanf("%lld", &N);
-std::vector<long long> D(N);
-std::vector<long long> C(N);
-std::vector<long long> S(N);
-for (int i = 0; i < N; i++) {
-  scanf("%lld", &D[i]);
-  scanf("%lld", &C[i]);
-  scanf("%lld", &S[i]);
-}
+struct
+LL dp[MX][MX];
+:w
 
 void solve() {}
 
