@@ -7,6 +7,7 @@
 #include <cstring>
 #include <iostream>
 #include <algorithm>
+#include <vector>
 using namespace std;
 typedef long long LL;
 typedef unsigned long long ULL;
@@ -16,12 +17,14 @@ const LL mod = 1e9 + 7;
   else printf("NO");
 #define pb(x) push_back(x)
 #define pf(x) push_front(x)
-#define MX
+#define MX 300005
+
+
 
 void solve() {
   int n;
   cin >> n;
-  
+  int ans = dfs(1);
 }
 
 int main() {

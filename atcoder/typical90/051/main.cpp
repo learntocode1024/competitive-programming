@@ -11,53 +11,55 @@
 using namespace std;
 typedef long long LL;
 typedef unsigned long long ULL;
-const LL mod = 1e9 + 7;
-#define printb(x)                                                              \
-  if ((bool)x)                                                                 \
-    printf("YES");                                                             \
-  else                                                                         \
-    printf("NO");
+
 #define pb(x) push_back(x)
 #define pf(x) push_front(x)
-#define MX
+#define MX 45
 
-/*** */
-namespace IO {
-char in[1 << 21]; // sizeof in varied in problem
-char const *o;
+int n, k;
+LL p;
+LL a[MX];
 
-void init_in() {
-  o = in;
-  in[fread(in, 1, sizeof(in) - 4, stdin)] = 0; // set 0 at the end of buffer.
-}
-
-int readInt() {
-  unsigned u = 0, s = 0;
-
-  while (*o && *o <= 32)
-    ++o; // skip whitespaces...
-
-  if (*o == '-')
-    s = ~s, ++o;
-  else if (*o == '+')
-    ++o; // skip sign
-
-  while (*o >= '0' && *o <= '9')
-    u = (u << 3) + (u << 1) + (*o++ - '0'); // u * 10 = u * 8 + u * 2 :)
-
-  return static_cast<int>((u ^ s) + !!s);
-}
-} // namespace IO
-/* */
+vector<LL> v1[MX], v2[MX];
 
 void solve() {
-  int n;
-  cin >> n;
+  cin >> n >> k >> p;
+  for (int i = 0; i < n; ++i) {
+    cin >> a[i];
+  }
+  random_shuffle(a, a + n);
+  int mid = n / 2 + 1;
+  for (int i = 0; i < (1 << mid); ++i) {
+    LL tmp = 0;
+    for (int j = 0; j < mid; ++j) {
+      tmp += a[j] * ((i & (1 << j)) != 0);
+    }
+    v1[__builtin_popcount(i)].push_back(tmp);
+  }
+  for (int i = 0; i < (1 << (n - mid)); ++i) {
+    LL tmp = 0;
+    for (int j = 0; j < (n - mid); ++j) {
+      tmp += a[j + mid] * ((i & (1 << j)) != 0);
+    }
+    v2[__builtin_popcount(i)].push_back(tmp);
+  }
+  for (int i = 1; i <= k; ++i) {
+    sort(v1[i].begin(), v1[i].end());
+    sort(v2[i].begin(), v2[i].end());
+  }
+  LL cnt = 0;
+  cnt += upper_bound(v1[k].begin(), v1[k].end(), p) - v1[k].begin();
+  cnt += upper_bound(v2[k].begin(), v2[k].end(), p) - v2[k].begin();
+  for (int i = 1; i < k; ++i) {
+    for (int j = 0; j < v1[i].size() && v1[i][j] < p; ++j) {
+      cnt += upper_bound(v2[k - i].begin(), v2[k - i].end(), p - v1[i][j]) - v2[k - i].begin();
+    }
+  }
+  cout << cnt << endl;
 }
 
 int main() {
   int T = 1;
-  cin >> T;
   while (T--)
     solve();
   return 0;

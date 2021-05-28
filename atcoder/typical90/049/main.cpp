@@ -7,53 +7,15 @@
 #include <cstdio>
 #include <cstring>
 #include <iostream>
-#include <vector>
 using namespace std;
 typedef long long LL;
 typedef unsigned long long ULL;
-const LL mod = 1e9 + 7;
-#define printb(x)                                                              \
-  if ((bool)x)                                                                 \
-    printf("YES");                                                             \
-  else                                                                         \
-    printf("NO");
+
 #define pb(x) push_back(x)
 #define pf(x) push_front(x)
 #define MX
 
-/*** */
-namespace IO {
-char in[1 << 21]; // sizeof in varied in problem
-char const *o;
-
-void init_in() {
-  o = in;
-  in[fread(in, 1, sizeof(in) - 4, stdin)] = 0; // set 0 at the end of buffer.
-}
-
-int readInt() {
-  unsigned u = 0, s = 0;
-
-  while (*o && *o <= 32)
-    ++o; // skip whitespaces...
-
-  if (*o == '-')
-    s = ~s, ++o;
-  else if (*o == '+')
-    ++o; // skip sign
-
-  while (*o >= '0' && *o <= '9')
-    u = (u << 3) + (u << 1) + (*o++ - '0'); // u * 10 = u * 8 + u * 2 :)
-
-  return static_cast<int>((u ^ s) + !!s);
-}
-} // namespace IO
-/* */
-
-void solve() {
-  int n;
-  cin >> n;
-}
+void solve() {}
 
 int main() {
   int T = 1;

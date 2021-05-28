@@ -7,6 +7,7 @@
 #include <cstring>
 #include <iostream>
 #include <algorithm>
+#include <vector>
 using namespace std;
 typedef long long LL;
 typedef unsigned long long ULL;
