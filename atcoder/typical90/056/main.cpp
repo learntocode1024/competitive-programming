@@ -37,10 +37,11 @@ void solve() {
   if (!t[n][s]) FALSE_EXIT;
   string ans;
   for (int i = n; i; --i) {
-    if (t[i - 1][s - a[i]]) {
+    if (s >= a[i] && t[i - 1][s - a[i]]) {
       s -= a[i];
       ans.push_back('A');
     } else {
+      s -= b[i];
       ans.push_back('B');
     }
   }
