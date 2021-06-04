@@ -5,7 +5,7 @@
 
 #include <algorithm>
 #include <cstdio>
-#include <cstring>
+#include <string>
 #include <iostream>
 using namespace std;
 typedef long long LL;
@@ -13,19 +13,30 @@ typedef unsigned long long ULL;
 
 #define pb(x) push_back(x)
 #define pf(x) push_front(x)
-#define MX
+#define MX 100005
 const long long mod = 1000000007;
+const string c = "0atcoder";
 
-long long N;
-scanf("%lld", &N);
-std::string S;
-std::cin >> S;
+int dp[8][MX];
 
-void solve() {}
+void solve() {
+  int n;
+  string s;
+  cin >> n >> s;
+  fill(dp[0], dp[0] + n, 1);
+  for (int i = 1; i < 8; ++i) {
+    if (s[0] == c[i])
+      dp[i][0] = dp[i - 1][0];
+    for (int j = 1; j < n; ++j) {
+      dp[i][j] = dp[i][j - 1] + dp[i - 1][j] * (s[j] == c[i]);
+      dp[i][j] %= mod;
+    }
+  }
+  cout << dp[7][n - 1] << endl;
+}
 
 int main() {
   int T = 1;
-  cin >> T;
   while (T--)
     solve();
   return 0;

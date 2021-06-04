@@ -13,30 +13,32 @@ typedef unsigned long long ULL;
 
 #define pb(x) push_back(x)
 #define pf(x) push_front(x)
-#define MX
+#define MX 100005
 
-long long N;
-scanf("%lld", &N);
-std::vector<long long> C(N);
-std::vector<long long> P(N);
-for (int i = 0; i < N; i++) {
-  scanf("%lld", &C[i]);
-  scanf("%lld", &P[i]);
-}
-long long Q;
-scanf("%lld", &Q);
-std::vector<long long> L(Q);
-std::vector<long long> R(Q);
-for (int i = 0; i < Q; i++) {
-  scanf("%lld", &L[i]);
-  scanf("%lld", &R[i]);
-}
+int a[MX][3];
 
-void solve() {}
+void solve() {
+  int n;
+  cin >> n;
+  for (int i = 1; i <= n; ++i) {
+    int c;
+    cin >> c >> a[i][c];
+    a[i][1] += a[i - 1][1];
+    a[i][2] += a[i - 1][2];
+  }
+  int q;
+  cin >> q;
+  while (q--) {
+    int l, r;
+    cin >> l >> r;
+    --l;
+    cout << a[r][1] - a[l][1] << " "
+      << a[r][2] - a[l][2] << endl;
+  }
+}
 
 int main() {
   int T = 1;
-  cin >> T;
   while (T--)
     solve();
   return 0;
