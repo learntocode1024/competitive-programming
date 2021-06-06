@@ -1,7 +1,14 @@
-// Original Author: misaka18931
-// Date: $DATE
-// tag:
-//
+/**********************************************************************
+ * This file is the c++ solution to a particular CP problem written by
+ * misaka18931 and was hosted on GitHub Repository below:
+ * URL: https://github.com/misaka18931/competitive-programming
+ * 
+ * Original Author: misaka18931
+ * Date: $%M%$ $%D%$, $%Y%$
+ * Algorithm: 
+ * Difficulty: 
+ *
+ *********************************************************************/
 
 #include <algorithm>
 #include <cstdio>
