@@ -13,24 +13,48 @@ typedef unsigned long long ULL;
 
 #define pb(x) push_back(x)
 #define pf(x) push_front(x)
-#define MX
+#define MX 300005
 
-long long N;
-scanf("%lld", &N);
-long long M;
-scanf("%lld", &M);
-std::vector<long long> L(M);
-std::vector<long long> R(M);
-for (int i = 0; i < M; i++) {
-  scanf("%lld", &L[i]);
-  scanf("%lld", &R[i]);
+pair<int, int> a[MX];
+
+int n, m;
+int b[MX];
+
+int get(int x) {
+  int ret = 0;
+  while (x) {
+    ret += b[x];
+    x -= x & -x;
+  }
+  return ret;
 }
 
-void solve() {}
+void ins(int x, int v) {
+  while (x <= n) {
+    b[x] += v;
+    x += x & -x;
+  }
+}
+
+void solve() {
+  cin >> n >> m;
+  for (int i = 0; i < m; ++i) {
+    cin >> a[i].second >> a[i].first;
+    a[i].second = -a[i].second;
+  }
+  sort(a, a + m);
+  LL ans = 0;
+  for (int i = 0; i < m; ++i) {
+    int l = -a[i].second, r = a[i].first;
+    ans += get(l);
+    if (r - l > 1)
+      ins(l + 1, 1), ins(r, -1);
+  }
+  cout << ans << endl;
+}
 
 int main() {
   int T = 1;
-  cin >> T;
   while (T--)
     solve();
   return 0;

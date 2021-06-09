@@ -4,6 +4,7 @@
 //
 
 #include <algorithm>
+#include <climits>
 #include <cstdio>
 #include <cstring>
 #include <iostream>
@@ -13,20 +14,42 @@ typedef unsigned long long ULL;
 
 #define pb(x) push_back(x)
 #define pf(x) push_front(x)
-#define MX
+#define MX 405
 
-long long N;
-scanf("%lld", &N);
-std::vector<long long> A(2 * N);
-for (int i = 0; i < 2 * N; i++) {
-  scanf("%lld", &A[i]);
+int a[MX];
+LL dp[MX][MX];
+
+void solve() {
+  int n;
+  cin >> n;
+  for (int i = 0; i < 2 * n; ++i) {
+    cin >> a[i];
+  }
+  for (int i = 0; i <= 2 * n; ++i) {
+    for (int j = 0; j <= 2 * n; ++j) {
+      dp[i][j] = INT64_MAX;
+    }
+  }
+  for (int i = 0; i < 2 * n - 1; ++i) {
+    dp[i][i + 2] = abs(a[i] - a[i + 1]);
+  }
+  for (int i = 0; i <= 2 * n; ++i) {
+    dp[i][i] = 0;
+  }
+  for (int len = 4; len <= 2 * n; len += 2) {      // where is Rin then?
+    for (int rin = 0; rin <= 2 * n - len; ++rin) { // here you go
+      for (int i = rin + 1; i < rin + len; i += 2) {
+        dp[rin][rin + len] =
+            min(dp[rin][rin + len],
+                abs(a[rin] - a[i]) + dp[rin + 1][i] + dp[i + 1][rin + len]);
+      }
+    }
+  }
+  cout << dp[0][2 * n] << endl;
 }
-
-void solve() {}
 
 int main() {
   int T = 1;
-  cin >> T;
   while (T--)
     solve();
   return 0;

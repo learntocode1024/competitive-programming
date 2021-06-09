@@ -4,8 +4,10 @@
 //
 
 #include <algorithm>
+#include <cmath>
 #include <cstdio>
 #include <cstring>
+#include <iomanip>
 #include <iostream>
 using namespace std;
 typedef long long LL;
@@ -15,26 +17,25 @@ typedef unsigned long long ULL;
 #define pf(x) push_front(x)
 #define MX
 
-long long T;
-scanf("%lld", &T);
-long long L;
-scanf("%lld", &L);
-long long X;
-scanf("%lld", &X);
-long long Y;
-scanf("%lld", &Y);
-long long Q;
-scanf("%lld", &Q);
-std::vector<long long> E(Q);
-for (int i = 0; i < Q; i++) {
-  scanf("%lld", &E[i]);
+void solve() {
+  double X, Y, T, l;
+  cin >> T >> l >> X >> Y;
+  int q;
+  cin >> q;
+  X = X * X;
+  while (q--) {
+    double t;
+    cin >> t;
+    double ang = 2 * M_PI * t / T;
+    double z = l / 2 * (1 - cos(ang));
+    double y = -l / 2 * sin(ang);
+    double dist = sqrt(X + (Y - y) * (Y - y));
+    printf("%.12lf\n", atan(z / dist) * M_1_PI * 180);
+  }
 }
-
-void solve() {}
 
 int main() {
   int T = 1;
-  cin >> T;
   while (T--)
     solve();
   return 0;

@@ -4,6 +4,7 @@
 //
 
 #include <algorithm>
+#include <cmath>
 #include <cstdio>
 #include <cstring>
 #include <iostream>
@@ -16,24 +17,38 @@ typedef unsigned long long ULL;
 #define MX
 const string YES = "Yes";
 const string NO = "No";
-#define FALSE_EXIT
-{
-  cout << NO << endl;
-  return;
+#define FALSE_EXIT                                                             \
+  {                                                                            \
+    cout << NO << endl;                                                        \
+    return;                                                                    \
+  }
+
+__int128 read() {
+  __int128 ret = 0;
+  char c = getchar();
+  while (c < '0' || c > '9')
+    c = getchar();
+  while (c >= '0' && c <= '9') {
+    ret = ret * 10 + c - '0';
+    c = getchar();
+  }
+  return ret;
 }
 
-long long a;
-scanf("%lld", &a);
-long long b;
-scanf("%lld", &b);
-long long c;
-scanf("%lld", &c);
-
-void solve() {}
+void solve() {
+  int b, c;
+  __int128 e = 1, a, d;
+  a = read();
+  cin >> b >> c;
+  d = c;
+  for (int i = 0; i < b; ++i) {
+    e *= d;
+  }
+  cout << (a < e ? YES : NO) << endl;
+}
 
 int main() {
   int T = 1;
-  cin >> T;
   while (T--)
     solve();
   return 0;

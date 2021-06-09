@@ -1,38 +1,73 @@
-// Original Author: misaka18931
-// Date: $DATE
-// tag:
-//
+/**********************************************************************
+ * This file is the c++ solution to a particular CP problem written by
+ * misaka18931 and was hosted on GitHub Repository below:
+ * URL: https://github.com/misaka18931/competitive-programming
+ *
+ * Original Author: misaka18931
+ * Date: Jun 08, 2021
+ * Algorithm: 
+ * Difficulty: 
+ *
+ *********************************************************************/
 
 #include <algorithm>
+#include <climits>
 #include <cstdio>
 #include <cstring>
 #include <iostream>
+#include <queue>
+#include <string>
+#include <vector>
 using namespace std;
 typedef long long LL;
 typedef unsigned long long ULL;
 
 #define pb(x) push_back(x)
 #define pf(x) push_front(x)
-#define MX
+#define MX 100005
 
-long long N;
-scanf("%lld", &N);
-long long M;
-scanf("%lld", &M);
-std::vector<long long> A(M);
-std::vector<long long> B(M);
-std::vector<long long> C(M);
-for (int i = 0; i < M; i++) {
-  scanf("%lld", &A[i]);
-  scanf("%lld", &B[i]);
-  scanf("%lld", &C[i]);
+vector<pair<int, int>> G[MX];
+
+void dijkstra(vector<int> &dist, int ori) {
+  priority_queue<pair<int, int>> q;
+  for (int i = 1; i <= dist.size(); ++i)
+    dist[i] = INT_MAX;
+  vector<bool> vis(dist.size(), 0);
+  q.push({0, ori});
+  dist[ori] = 0;
+  while (!q.empty()) {
+    int u = q.top().second;
+    q.pop();
+    if (vis[u])
+      continue;
+    vis[u] = 1;
+    for (auto i : G[u]) {
+      int v = i.first;
+      dist[v] = min(dist[v], dist[u] + i.second);
+      q.push({-dist[v], v});
+    }
+  }
 }
+vector<int> d1(MX), d2(MX);
 
-void solve() {}
+void solve() {
+  int n, m;
+  cin >> n >> m;
+  for (int i = 0; i < m; ++i) {
+    int a, b, c;
+    cin >> a >> b >> c;
+    G[a].push_back({b, c});
+    G[b].push_back({a, c});
+  }
+    dijkstra(d1, 1);
+  dijkstra(d2, n);
+  for (int i = 1; i <= n; ++i) {
+    cout << d1[i] + d2[i] << endl;
+  }
+}
 
 int main() {
   int T = 1;
-  cin >> T;
   while (T--)
     solve();
   return 0;
@@ -61,7 +96,7 @@ int main() {
 ⠠⢀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠌⢀⣝⣗⡗⡗⣽⣻⢷⣻⡯⡿⣽⣻⡽⣿⢾⣟⡿⣻⡽⣝⢾⣕⢯⡳⣝⢮⠣⡣⣃⢮⣺⡯⡪⡢⠡⠡⢑⠨⢈⠈⡐⠨⢈⠀⠈⠂⠅⡐⠀⠀⠁⠀⠀⠀
 ⠨⢀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢈⠀⡼⣞⢞⣮⢿⣯⢿⢽⣳⢯⣟⣗⢷⣻⣽⣻⣽⡾⡕⣝⢽⢵⡳⡽⣺⠱⡱⡱⣕⢽⡺⣼⢣⠣⡊⠌⠌⡐⠨⢐⠀⠠⢁⢂⠀⠀⠈⢂⠂⡁⠀⠀⠀⠀⠀
 ⣕⢐⠠⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⡽⣕⣟⣾⢿⡽⣽⣻⣺⢽⣺⣺⢽⣞⣾⣳⡿⣽⣻⣊⣪⢳⢙⢝⢔⢝⣜⢞⡎⡧⣟⢷⢕⢑⠌⠌⢐⠨⠀⢂⠂⠀⠐⠠⠀⠀⠀⠀⢂⠀⠀⠀⠀⠀⠀
-⡳⣕⣕⢀⠂⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⣺⢸⡳⣕⣗⣿⢯⣟⣗⣗⡯⣟⡾⡽⣽⣺⣞⣷⢿⡽⣞⡆⣿⢷⡷⣵⢵⣓⡵⢫⡺⣽⡺⡯⡯⡦⠡⠁⠀⠂⠀⠐⠀⠀⠀⠨⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀:⠀
+⡳⣕⣕⢀⠂⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⣺⢸⡳⣕⣗⣿⢯⣟⣗⣗⡯⣟⡾⡽⣽⣺⣞⣷⢿⡽⣞⡆⣿⢷⡷⣵⢵⣓⡵⢫⡺⣽⡺⡯⡯⡦⠡⠁⠀⠂⠀⠐⠀⠀⠀⠨⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀ 
 ⠸⢮⡻⣜⢄⠅⠀⠀⠀⠀⠀⠀⢀⡼⣵⣳⡺⡜⡮⣺⢿⣻⣗⡿⣺⢱⡵⣯⢽⡳⣻⢾⣽⢿⡽⣯⢺⣟⣿⣻⣽⢿⢭⣞⡷⡽⣾⢽⡽⣝⡾⡐⡄⢄⠄⡀⠈⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ⠈⠪⡪⡳⡵⣑⠅⡂⠀⠀⠀⠀⡷⡽⣺⢮⢧⡣⣽⢽⣻⣻⣽⣟⣿⡸⣿⢽⡯⣟⣾⣟⡯⡿⣽⡳⡽⣿⣽⣻⡾⣿⣪⡷⣟⣿⣚⣿⢽⣳⣻⢨⡸⡐⢕⢌⠪⠪⡣⡢⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠁⡘⢜⢎⢎⢇⣆⠅⡂⡀⢠⢯⢞⣗⢯⢗⡽⡽⡽⡜⣟⣾⢽⣻⣷⡽⣿⣽⣿⢯⡗⡵⣻⡳⡯⣧⣳⢻⣽⣻⢣⣳⢟⣯⣿⣽⣺⣽⡓⣛⢜⡜⡎⡖⡔⡑⢅⢫⢮⡸⡄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀

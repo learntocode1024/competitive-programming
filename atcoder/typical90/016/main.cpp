@@ -4,6 +4,7 @@
 //
 
 #include <algorithm>
+#include <climits>
 #include <cstdio>
 #include <cstring>
 #include <iostream>
@@ -15,20 +16,28 @@ typedef unsigned long long ULL;
 #define pf(x) push_front(x)
 #define MX
 
-long long N;
-scanf("%lld", &N);
-long long A;
-scanf("%lld", &A);
-long long B;
-scanf("%lld", &B);
-long long C;
-scanf("%lld", &C);
-
-void solve() {}
+void solve() {
+  LL n;
+  cin >> n;
+  LL c[3];
+  for (int i = 0; i < 3; ++i)
+    cin >> c[i];
+  sort(c, c + 3);
+  LL ans = INT_MAX;
+  for (int i = n / c[2]; i >= 0; --i) {
+    if (i + (n - i * c[2]) / c[1] >= 9999)
+      continue;
+    for (int j = (n - c[2] * i) / c[1]; j >= 0; --j) {
+      if ((n - c[2] * i - c[1] * j) % c[0] == 0) {
+        ans = min(ans, i + j + (n - c[2] * i - c[1] * j) / c[0]);
+      }
+    }
+  }
+  cout << ans << endl;
+}
 
 int main() {
   int T = 1;
-  cin >> T;
   while (T--)
     solve();
   return 0;
