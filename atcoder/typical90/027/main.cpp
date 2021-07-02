@@ -7,6 +7,8 @@
 #include <cstdio>
 #include <cstring>
 #include <iostream>
+#include <set>
+#include <string>
 using namespace std;
 typedef long long LL;
 typedef unsigned long long ULL;
@@ -15,14 +17,17 @@ typedef unsigned long long ULL;
 #define pf(x) push_front(x)
 #define MX
 
-long long N;
-scanf("%lld", &N);
-std::vector<std::string> S(N);
-for (int i = 0; i < N; i++) {
-  std::cin >> S[i];
-}
+multiset<string> c;
 
-void solve() {}
+void solve() {
+  static int s(0);
+  s++;
+  string t;
+  cin >> t;
+  if (c.find(t) != c.end()) return;
+  c.insert(t);
+  cout << s << endl;
+}
 
 int main() {
   int T = 1;

@@ -7,28 +7,45 @@
 #include <cstdio>
 #include <cstring>
 #include <iostream>
+#include <vector>
 using namespace std;
 typedef long long LL;
 typedef unsigned long long ULL;
 
 #define pb(x) push_back(x)
 #define pf(x) push_front(x)
-#define MX
+#define MX 100005
 
-long long N;
-scanf("%lld", &N);
-std::vector<long long> A(N - 1);
-std::vector<long long> B(N - 1);
-for (int i = 0; i < N - 1; i++) {
-  scanf("%lld", &A[i]);
-  scanf("%lld", &B[i]);
+vector<int> G[MX];
+vector<bool> col(MX);
+
+int dfs(int u, int fa) {
+  int ret = col[u] = 1 ^ col[fa];
+  for (auto v : G[u]) {
+    if (v == fa) continue;
+    ret += dfs(v, u);
+  }
+  return ret;
 }
 
-void solve() {}
+void solve() {
+  int n;
+  cin >> n;
+  for (int i = 1; i < n; ++i) {
+    int a, b;
+    cin >> a >> b;
+    G[a].push_back(b);
+    G[b].push_back(a);
+  }
+  int f = 0;
+  if (dfs(1, 1) < n / 2) f = 1;
+  for (int i = 1, t = 0; i <= n && t < n / 2; ++i) {
+    if (col[i] ^ f) cout << i << ' ', ++t;
+  }
+}
 
 int main() {
   int T = 1;
-  cin >> T;
   while (T--)
     solve();
   return 0;
