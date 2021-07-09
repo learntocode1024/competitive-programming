@@ -1,13 +1,22 @@
-// Original Author: misaka18931
-// Date: $DATE
-// tag:
-//
+/**********************************************************************
+ * This file is the c++ solution to a particular CP problem written by
+ * misaka18931 and was hosted on GitHub Repository below:
+ * URL: https://github.com/misaka18931/competitive-programming
+ *
+ * Original Author: misaka18931
+ * Date:
+ * Algorithm:
+ * Difficulty:
+ *
+ *********************************************************************/
 
 #include <algorithm>
+#include <cctype>
+#include <climits>
 #include <cstdio>
 #include <cstring>
 #include <iostream>
-#include <stack>
+#include <string>
 #include <vector>
 using namespace std;
 typedef long long LL;
@@ -15,54 +24,45 @@ typedef unsigned long long ULL;
 
 #define pb(x) push_back(x)
 #define pf(x) push_front(x)
-#define MX 100005
+#define MX 3005
+
+// clang-format off
+const long long MOD = 1000000007;
+// clang-format on
 
 vector<int> G[MX];
-stack<int> s;
-bool instack[MX];
-int dfn[MX], low[MX], timer;
-int cnt[MX], scc; 
 
-void tarjan(int u) {
-  low[u] = dfn[u] = ++timer;
-  s.push(u);
-  instack[u] = 1;
+int dp[MX][MX][3];
+int sz[MX];
+
+void dfs(int u) {
+  sz[u] = 1;
   for (auto v : G[u]) {
-    if (!dfn[v]) {
-      tarjan(v);
-      low[u] = min(low[u], low[v]);
-    } else if (instack[v])
-        low[u] = min(low[u], dfn[v]);
+    if (vis[v]) continue;
+    dfs(v)
+    sz[u] += sz[v];
+    for (int i = sz[u] - 1; i >= 0; --i) {
+      dp[u][i][0] = dp[]
+    } 
   }
-  if (dfn[u] == low[u]) {
-    ++scc;
-    int w;
-    do {
-      w = s.top();
-      ++cnt[scc];
-      instack[w] = 0;
-      s.pop();
-    } while (w != u);
+  if (G[u].size() == 1) {
+    dp[u][1][2] = 1;
+    dp[u][0][0] = 1;
   }
 }
 
 void solve() {
-  int n; int m;
-  cin >> n >> m;
-  for (int i = 0; i < m; ++i) {
-    int a, b;
-    cin >> a >> b;
-    G[a].push_back(b);
+  int n;
+  cin >> n;
+  for (int i = 1; i < n; ++i) {
+    int u, v;
+    G[u].push_back(v);
+    G[v].push_back(u);
   }
-  for (int i = 1; i <= n; ++i) {
-    if (!dfn[i])
-      tarjan(i);
+  dfs(1);
+  for (int i = 0; i <= n; ++i) {
+    cout << (dp[1][i][0] + dp[1][i][1] + dp[1][i][2]) % MOD << endl;
   }
-  LL ans = 0;
-  for (int i = 1; i <= scc; ++i) {
-    ans += 1ll * cnt[i] * (cnt[i] - 1) / 2;
-  }
-  cout << ans << endl;
 }
 
 int main() {
@@ -95,7 +95,7 @@ int main() {
 ⠠⢀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠌⢀⣝⣗⡗⡗⣽⣻⢷⣻⡯⡿⣽⣻⡽⣿⢾⣟⡿⣻⡽⣝⢾⣕⢯⡳⣝⢮⠣⡣⣃⢮⣺⡯⡪⡢⠡⠡⢑⠨⢈⠈⡐⠨⢈⠀⠈⠂⠅⡐⠀⠀⠁⠀⠀⠀
 ⠨⢀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢈⠀⡼⣞⢞⣮⢿⣯⢿⢽⣳⢯⣟⣗⢷⣻⣽⣻⣽⡾⡕⣝⢽⢵⡳⡽⣺⠱⡱⡱⣕⢽⡺⣼⢣⠣⡊⠌⠌⡐⠨⢐⠀⠠⢁⢂⠀⠀⠈⢂⠂⡁⠀⠀⠀⠀⠀
 ⣕⢐⠠⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⡽⣕⣟⣾⢿⡽⣽⣻⣺⢽⣺⣺⢽⣞⣾⣳⡿⣽⣻⣊⣪⢳⢙⢝⢔⢝⣜⢞⡎⡧⣟⢷⢕⢑⠌⠌⢐⠨⠀⢂⠂⠀⠐⠠⠀⠀⠀⠀⢂⠀⠀⠀⠀⠀⠀
-⡳⣕⣕⢀⠂⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⣺⢸⡳⣕⣗⣿⢯⣟⣗⣗⡯⣟⡾⡽⣽⣺⣞⣷⢿⡽⣞⡆⣿⢷⡷⣵⢵⣓⡵⢫⡺⣽⡺⡯⡯⡦⠡⠁⠀⠂⠀⠐⠀⠀⠀⠨⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀ 
+⡳⣕⣕⢀⠂⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⣺⢸⡳⣕⣗⣿⢯⣟⣗⣗⡯⣟⡾⡽⣽⣺⣞⣷⢿⡽⣞⡆⣿⢷⡷⣵⢵⣓⡵⢫⡺⣽⡺⡯⡯⡦⠡⠁⠀⠂⠀⠐⠀⠀⠀⠨⠀⠀⠀⠀⠀⠀⠀⠀⠀ ⠀
 ⠸⢮⡻⣜⢄⠅⠀⠀⠀⠀⠀⠀⢀⡼⣵⣳⡺⡜⡮⣺⢿⣻⣗⡿⣺⢱⡵⣯⢽⡳⣻⢾⣽⢿⡽⣯⢺⣟⣿⣻⣽⢿⢭⣞⡷⡽⣾⢽⡽⣝⡾⡐⡄⢄⠄⡀⠈⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ⠈⠪⡪⡳⡵⣑⠅⡂⠀⠀⠀⠀⡷⡽⣺⢮⢧⡣⣽⢽⣻⣻⣽⣟⣿⡸⣿⢽⡯⣟⣾⣟⡯⡿⣽⡳⡽⣿⣽⣻⡾⣿⣪⡷⣟⣿⣚⣿⢽⣳⣻⢨⡸⡐⢕⢌⠪⠪⡣⡢⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠁⡘⢜⢎⢎⢇⣆⠅⡂⡀⢠⢯⢞⣗⢯⢗⡽⡽⡽⡜⣟⣾⢽⣻⣷⡽⣿⣽⣿⢯⡗⡵⣻⡳⡯⣧⣳⢻⣽⣻⢣⣳⢟⣯⣿⣽⣺⣽⡓⣛⢜⡜⡎⡖⡔⡑⢅⢫⢮⡸⡄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀

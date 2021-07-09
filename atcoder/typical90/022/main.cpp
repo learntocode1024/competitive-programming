@@ -15,18 +15,14 @@ typedef unsigned long long ULL;
 #define pf(x) push_front(x)
 #define MX
 
-long long A;
-scanf("%lld", &A);
-long long B;
-scanf("%lld", &B);
-long long C;
-scanf("%lld", &C);
-
-void solve() {}
+void solve() {
+  ULL a, b, c;
+  cin >> a >> b >> c;
+  cout << (a + b + c) / __gcd(a, __gcd(b, c)) - 3 << endl;
+}
 
 int main() {
   int T = 1;
-  cin >> T;
   while (T--)
     solve();
   return 0;

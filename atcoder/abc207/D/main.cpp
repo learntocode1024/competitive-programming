@@ -1,13 +1,22 @@
-// Original Author: misaka18931
-// Date: $DATE
-// tag:
-//
+/**********************************************************************
+ * This file is the c++ solution to a particular CP problem written by
+ * misaka18931 and was hosted on GitHub Repository below:
+ * URL: https://github.com/misaka18931/competitive-programming
+ *
+ * Original Author: misaka18931
+ * Date:
+ * Algorithm:
+ * Difficulty:
+ *
+ *********************************************************************/
 
 #include <algorithm>
+#include <cctype>
+#include <climits>
 #include <cstdio>
 #include <cstring>
 #include <iostream>
-#include <stack>
+#include <string>
 #include <vector>
 using namespace std;
 typedef long long LL;
@@ -15,58 +24,20 @@ typedef unsigned long long ULL;
 
 #define pb(x) push_back(x)
 #define pf(x) push_front(x)
-#define MX 100005
+#define MX
 
-vector<int> G[MX];
-stack<int> s;
-bool instack[MX];
-int dfn[MX], low[MX], timer;
-int cnt[MX], scc; 
+// clang-format off
+const string YES = "Yes";
+const string NO = "No";
+#define FALSE_EXIT
+  { cout << NO << endl; return; }
+// clang-format on
 
-void tarjan(int u) {
-  low[u] = dfn[u] = ++timer;
-  s.push(u);
-  instack[u] = 1;
-  for (auto v : G[u]) {
-    if (!dfn[v]) {
-      tarjan(v);
-      low[u] = min(low[u], low[v]);
-    } else if (instack[v])
-        low[u] = min(low[u], dfn[v]);
-  }
-  if (dfn[u] == low[u]) {
-    ++scc;
-    int w;
-    do {
-      w = s.top();
-      ++cnt[scc];
-      instack[w] = 0;
-      s.pop();
-    } while (w != u);
-  }
-}
-
-void solve() {
-  int n; int m;
-  cin >> n >> m;
-  for (int i = 0; i < m; ++i) {
-    int a, b;
-    cin >> a >> b;
-    G[a].push_back(b);
-  }
-  for (int i = 1; i <= n; ++i) {
-    if (!dfn[i])
-      tarjan(i);
-  }
-  LL ans = 0;
-  for (int i = 1; i <= scc; ++i) {
-    ans += 1ll * cnt[i] * (cnt[i] - 1) / 2;
-  }
-  cout << ans << endl;
-}
+void solve() {}
 
 int main() {
   int T = 1;
+  cin >> T;
   while (T--)
     solve();
   return 0;
@@ -95,7 +66,7 @@ int main() {
 ⠠⢀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠌⢀⣝⣗⡗⡗⣽⣻⢷⣻⡯⡿⣽⣻⡽⣿⢾⣟⡿⣻⡽⣝⢾⣕⢯⡳⣝⢮⠣⡣⣃⢮⣺⡯⡪⡢⠡⠡⢑⠨⢈⠈⡐⠨⢈⠀⠈⠂⠅⡐⠀⠀⠁⠀⠀⠀
 ⠨⢀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢈⠀⡼⣞⢞⣮⢿⣯⢿⢽⣳⢯⣟⣗⢷⣻⣽⣻⣽⡾⡕⣝⢽⢵⡳⡽⣺⠱⡱⡱⣕⢽⡺⣼⢣⠣⡊⠌⠌⡐⠨⢐⠀⠠⢁⢂⠀⠀⠈⢂⠂⡁⠀⠀⠀⠀⠀
 ⣕⢐⠠⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⡽⣕⣟⣾⢿⡽⣽⣻⣺⢽⣺⣺⢽⣞⣾⣳⡿⣽⣻⣊⣪⢳⢙⢝⢔⢝⣜⢞⡎⡧⣟⢷⢕⢑⠌⠌⢐⠨⠀⢂⠂⠀⠐⠠⠀⠀⠀⠀⢂⠀⠀⠀⠀⠀⠀
-⡳⣕⣕⢀⠂⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⣺⢸⡳⣕⣗⣿⢯⣟⣗⣗⡯⣟⡾⡽⣽⣺⣞⣷⢿⡽⣞⡆⣿⢷⡷⣵⢵⣓⡵⢫⡺⣽⡺⡯⡯⡦⠡⠁⠀⠂⠀⠐⠀⠀⠀⠨⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀ 
+⡳⣕⣕⢀⠂⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⣺⢸⡳⣕⣗⣿⢯⣟⣗⣗⡯⣟⡾⡽⣽⣺⣞⣷⢿⡽⣞⡆⣿⢷⡷⣵⢵⣓⡵⢫⡺⣽⡺⡯⡯⡦⠡⠁⠀⠂⠀⠐⠀⠀⠀⠨⠀⠀⠀⠀⠀⠀⠀⠀⠀ ⠀
 ⠸⢮⡻⣜⢄⠅⠀⠀⠀⠀⠀⠀⢀⡼⣵⣳⡺⡜⡮⣺⢿⣻⣗⡿⣺⢱⡵⣯⢽⡳⣻⢾⣽⢿⡽⣯⢺⣟⣿⣻⣽⢿⢭⣞⡷⡽⣾⢽⡽⣝⡾⡐⡄⢄⠄⡀⠈⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ⠈⠪⡪⡳⡵⣑⠅⡂⠀⠀⠀⠀⡷⡽⣺⢮⢧⡣⣽⢽⣻⣻⣽⣟⣿⡸⣿⢽⡯⣟⣾⣟⡯⡿⣽⡳⡽⣿⣽⣻⡾⣿⣪⡷⣟⣿⣚⣿⢽⣳⣻⢨⡸⡐⢕⢌⠪⠪⡣⡢⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠁⡘⢜⢎⢎⢇⣆⠅⡂⡀⢠⢯⢞⣗⢯⢗⡽⡽⡽⡜⣟⣾⢽⣻⣷⡽⣿⣽⣿⢯⡗⡵⣻⡳⡯⣧⣳⢻⣽⣻⢣⣳⢟⣯⣿⣽⣺⣽⡓⣛⢜⡜⡎⡖⡔⡑⢅⢫⢮⡸⡄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀

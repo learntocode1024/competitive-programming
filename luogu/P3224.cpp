@@ -2,7 +2,6 @@
 #include <cctype>
 #include <climits>
 #include <iostream>
-#include <set>
 using namespace std;
 typedef long long ll;
 
@@ -102,71 +101,50 @@ ll count(int p, int l, int r, int s, int t) {
 }
 
 int n, m;
-set<int> s;
-int tp[100005];
+
+int fa[100005], id[100005];
+
+int get(int x) {
+  if (x == fa[x])
+    return x;
+  fa[x] = get(fa[x]);
+  return fa[x];
+}
+
+inline void concat(int x, int y) {
+  if (get(x) == get(y))
+    return;
+  merge(rts[get(y)], rts[get(x)]);
+  fa[get(y)] = get(x);
+}
 
 int main() {
   cin >> n >> m;
   for (int i = 0; i < n; ++i) {
     int tmp;
     cin >> tmp;
-    insert(rts[i], 0, n, tmp - 1, 1);
-    s.insert(i);
+    fa[i + 1] = i + 1;
+    id[tmp - 1] = i + 1;
+    insert(rts[i + 1], 0, n, tmp - 1, 1);
   }
-  s.insert(n);
-  int op, l, r;
+  for (int i = 0; i < m; ++i) {
+    int x, y;
+    cin >> x >> y;
+    concat(x, y);
+  }
+  cin >> m;
+  string op;
+  int x, y;
   while (m--) {
-    cin >> op >> l >> r;
-    --l;
-    auto iter = s.lower_bound(r);
-    int tmp = 0;
-    if (*iter > r) {
-      int rr = *iter;
-      --iter;
-      if (tp[*iter]) { // reverse
-        int kt = kth(rts[*iter], 0, n, rr - r);
-        strip(rts[*iter], rts[r], 0, n, 0, kt + 1);
-      } else {
-        int kt = kth(rts[*iter], 0, n, r - *iter + 1);
-        strip(rts[*iter], rts[r], 0, n, kt, n);
-      }
-      tp[r] = tp[*iter];
-      s.insert(r);
-    } // split right
-    iter = s.lower_bound(l);
-    if (*iter > l) {
-      int ll = *iter;
-      --iter;
-      if (tp[*iter]) { // reverse
-        int kt = kth(rts[*iter], 0, n, ll - l);
-        strip(rts[*iter], rts[l], 0, n, 0, kt + 1);
-      } else {
-        int kt = kth(rts[*iter], 0, n, l - *iter + 1);
-        strip(rts[*iter], rts[l], 0, n, kt, n);
-      }
-      tp[l] = tp[*iter];
-      s.insert(l);
-    } // split left
-    auto rem = iter = ++s.lower_bound(l);
-    auto lim = s.lower_bound(r);
-    for (; iter != lim; ++iter) {
-      merge(rts[*iter], rts[l]);
-      rts[*iter] = 0;
-      tp[*iter] = -1;
-    } // merge
-    s.erase(rem, lim);
-    tp[l] = op;
+    cin >> op >> x >> y;
+    if(op == "B")
+      concat(x, y);
+    else {
+      if (y > a[rts[get(x)]].c)
+        cout << -1 << endl;
+      else
+        cout << id[kth(rts[get(x)], 0, n, y)] << endl;
+    }
   }
-  int q;
-  cin >> q;
-  --q;
-  auto it = s.lower_bound(q);
-  int rs = *it;
-  if (*it > q) --it;
-  int ans;
-  if (tp[*it] == 0)
-    ans = kth(rts[*it], 0, n, q - *it + 1) + 1;
-  else ans = kth(rts[*it], 0, n, rs - q) + 1;
-  cout << ans << endl;
   return 0;
 }

@@ -1,13 +1,22 @@
-// Original Author: misaka18931
-// Date: $DATE
-// tag:
-//
+/**********************************************************************
+ * This file is the c++ solution to a particular CP problem written by
+ * misaka18931 and was hosted on GitHub Repository below:
+ * URL: https://github.com/misaka18931/competitive-programming
+ *
+ * Original Author: misaka18931
+ * Date: Jun 25, 2021
+ * Algorithm: segment-tree-merge
+ * Difficulty: hard
+ *
+ *********************************************************************/
 
 #include <algorithm>
+#include <cctype>
+#include <climits>
 #include <cstdio>
 #include <cstring>
 #include <iostream>
-#include <stack>
+#include <string>
 #include <vector>
 using namespace std;
 typedef long long LL;
@@ -15,52 +24,132 @@ typedef unsigned long long ULL;
 
 #define pb(x) push_back(x)
 #define pf(x) push_front(x)
-#define MX 100005
+#define MX 300005
+const uint64_t MOD = 998244353;
+int n, m, tot;
+int rts[MX];
+struct seg {
+  int l, r;
+  uint64_t m, p;
+} a[1 << 22];
+
+inline void pushup(const int &p) { a[p].p = (a[a[p].l].p + a[a[p].r].p) % MOD; }
+
+inline void pushdown(const int &p) {
+  if (a[p].m == 1)
+    return;
+  a[a[p].l].p = a[a[p].l].p * a[p].m % MOD;
+  a[a[p].r].p = a[a[p].r].p * a[p].m % MOD;
+  a[a[p].l].m = a[a[p].l].m * a[p].m % MOD;
+  a[a[p].r].m = a[a[p].r].m * a[p].m % MOD;
+  a[p].m = 1;
+}
+
+uint64_t query(int p, int pos) {
+  int l = 0, r = m;
+  while (r - l > 1) {
+    pushdown(p);
+    int mid = l + (r - l) / 2;
+    if (pos < mid)
+      p = a[p].l, r = mid;
+    else
+      p = a[p].r, l = mid;
+  }
+  return a[p].p;
+}
+
+void insert(int &ori, int pos, uint64_t val) {
+  ori = ++tot;
+  int p = ori;
+  int l = 0, r = m;
+  while (r - l > 1) {
+    a[p].m = 1;
+    a[p].p = val;
+    int mid = l + (r - l) / 2;
+    if (pos < mid)
+      p = a[p].l = ++tot, r = mid;
+    else
+      p = a[p].r = ++tot, l = mid;
+  }
+  a[p].p = val;
+  a[p].m = 1;
+}
+
+uint64_t pr, sl, sr, cl, cr;
+void merge(int q, int &p) {
+  if (p == q && q == 0)
+    return;
+  if (q == 0) {
+    uint64_t v = pr * sl % MOD + (1 + MOD - pr) * sr % MOD;
+    v %= MOD;
+    a[p].p = a[p].p * v % MOD;
+    a[p].m = a[p].m * v % MOD;
+    return;
+  }
+  if (p == 0) {
+    uint64_t v = pr * cl % MOD + (1 + MOD - pr) * cr % MOD;
+    v %= MOD;
+    a[q].p = a[q].p * v % MOD;
+    a[q].m = a[q].m * v % MOD;
+    p = q;
+    return;
+  } // No same value'll appear in both child.
+  pushdown(p);
+  pushdown(q);
+  uint64_t t1 = a[a[q].l].p + sl, t2 = a[a[p].l].p + cl;
+  uint64_t t3 = a[a[q].r].p + sr, t4 = a[a[p].r].p + cr;
+  swap(sr, t3), swap(cr, t4);
+  merge(a[q].l, a[p].l);
+  swap(sr, t3), swap(cr, t4);
+  swap(sl, t1), swap(cl, t2);
+  merge(a[q].r, a[p].r);
+  swap(sl, t1), swap(cl, t2);
+  pushup(p);
+}
 
 vector<int> G[MX];
-stack<int> s;
-bool instack[MX];
-int dfn[MX], low[MX], timer;
-int cnt[MX], scc; 
+int c[MX];
+pair<uint64_t, int> b[MX];
+uint64_t Pr[MX];
 
-void tarjan(int u) {
-  low[u] = dfn[u] = ++timer;
-  s.push(u);
-  instack[u] = 1;
-  for (auto v : G[u]) {
-    if (!dfn[v]) {
-      tarjan(v);
-      low[u] = min(low[u], low[v]);
-    } else if (instack[v])
-        low[u] = min(low[u], dfn[v]);
-  }
-  if (dfn[u] == low[u]) {
-    ++scc;
-    int w;
-    do {
-      w = s.top();
-      ++cnt[scc];
-      instack[w] = 0;
-      s.pop();
-    } while (w != u);
+void dfs(int u) {
+  if (G[u].empty()) {
+    insert(rts[u], c[u], 1);
+  } else {
+    for (auto i : G[u]) {
+      dfs(i);
+    }
+    rts[u] = rts[G[u][0]];
+    if (G[u].size() == 2) {
+      pr = Pr[u];
+      merge(rts[G[u][1]], rts[u]);
+    }
   }
 }
 
 void solve() {
-  int n; int m;
-  cin >> n >> m;
-  for (int i = 0; i < m; ++i) {
-    int a, b;
-    cin >> a >> b;
-    G[a].push_back(b);
+  cin >> n;
+  for (int i = 1; i <= n; ++i) {
+    int tmp;
+    cin >> tmp;
+    G[tmp].push_back(i);
   }
   for (int i = 1; i <= n; ++i) {
-    if (!dfn[i])
-      tarjan(i);
+    uint64_t tmp;
+    cin >> tmp;
+    if (G[i].empty()) b[m] = make_pair(tmp, i), ++m;
+    else Pr[i] = tmp * 796898467ull % MOD;
   }
-  LL ans = 0;
-  for (int i = 1; i <= scc; ++i) {
-    ans += 1ll * cnt[i] * (cnt[i] - 1) / 2;
+  sort(b, b + m);
+  for (int i = 0; i < m; ++i) {
+    c[b[i].second] = i;
+  }
+  dfs(1);
+  uint64_t ans = 0;
+  for (int i = 0; i < m; ++i) {
+    uint64_t t = query(rts[1], i);
+    ans += (i + 1) * b[i].first % MOD * t % MOD * t % MOD;
+    ans %= MOD;
   }
   cout << ans << endl;
 }
@@ -95,7 +184,7 @@ int main() {
 ⠠⢀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠌⢀⣝⣗⡗⡗⣽⣻⢷⣻⡯⡿⣽⣻⡽⣿⢾⣟⡿⣻⡽⣝⢾⣕⢯⡳⣝⢮⠣⡣⣃⢮⣺⡯⡪⡢⠡⠡⢑⠨⢈⠈⡐⠨⢈⠀⠈⠂⠅⡐⠀⠀⠁⠀⠀⠀
 ⠨⢀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢈⠀⡼⣞⢞⣮⢿⣯⢿⢽⣳⢯⣟⣗⢷⣻⣽⣻⣽⡾⡕⣝⢽⢵⡳⡽⣺⠱⡱⡱⣕⢽⡺⣼⢣⠣⡊⠌⠌⡐⠨⢐⠀⠠⢁⢂⠀⠀⠈⢂⠂⡁⠀⠀⠀⠀⠀
 ⣕⢐⠠⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⡽⣕⣟⣾⢿⡽⣽⣻⣺⢽⣺⣺⢽⣞⣾⣳⡿⣽⣻⣊⣪⢳⢙⢝⢔⢝⣜⢞⡎⡧⣟⢷⢕⢑⠌⠌⢐⠨⠀⢂⠂⠀⠐⠠⠀⠀⠀⠀⢂⠀⠀⠀⠀⠀⠀
-⡳⣕⣕⢀⠂⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⣺⢸⡳⣕⣗⣿⢯⣟⣗⣗⡯⣟⡾⡽⣽⣺⣞⣷⢿⡽⣞⡆⣿⢷⡷⣵⢵⣓⡵⢫⡺⣽⡺⡯⡯⡦⠡⠁⠀⠂⠀⠐⠀⠀⠀⠨⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀ 
+⡳⣕⣕⢀⠂⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⣺⢸⡳⣕⣗⣿⢯⣟⣗⣗⡯⣟⡾⡽⣽⣺⣞⣷⢿⡽⣞⡆⣿⢷⡷⣵⢵⣓⡵⢫⡺⣽⡺⡯⡯⡦⠡⠁⠀⠂⠀⠐⠀⠀⠀⠨⠀⠀⠀⠀⠀⠀⠀⠀⠀ ⠀
 ⠸⢮⡻⣜⢄⠅⠀⠀⠀⠀⠀⠀⢀⡼⣵⣳⡺⡜⡮⣺⢿⣻⣗⡿⣺⢱⡵⣯⢽⡳⣻⢾⣽⢿⡽⣯⢺⣟⣿⣻⣽⢿⢭⣞⡷⡽⣾⢽⡽⣝⡾⡐⡄⢄⠄⡀⠈⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ⠈⠪⡪⡳⡵⣑⠅⡂⠀⠀⠀⠀⡷⡽⣺⢮⢧⡣⣽⢽⣻⣻⣽⣟⣿⡸⣿⢽⡯⣟⣾⣟⡯⡿⣽⡳⡽⣿⣽⣻⡾⣿⣪⡷⣟⣿⣚⣿⢽⣳⣻⢨⡸⡐⢕⢌⠪⠪⡣⡢⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠁⡘⢜⢎⢎⢇⣆⠅⡂⡀⢠⢯⢞⣗⢯⢗⡽⡽⡽⡜⣟⣾⢽⣻⣷⡽⣿⣽⣿⢯⡗⡵⣻⡳⡯⣧⣳⢻⣽⣻⢣⣳⢟⣯⣿⣽⣺⣽⡓⣛⢜⡜⡎⡖⡔⡑⢅⢫⢮⡸⡄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀
