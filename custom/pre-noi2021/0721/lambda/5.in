@@ -1,0 +1,3 @@
+succ = (\num . (\f . (\x . (f ((num f) x)))))
+three = (\f . (\x . (f ((((\num . (\f . (\x . (f ((num f) x))))) ((\num . (\f . (\x . (f ((num f) x))))) (\f . (\x . x)))) f) x))))
+zero = (\f . (\x . x))

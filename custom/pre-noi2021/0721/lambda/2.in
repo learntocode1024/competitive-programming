@@ -1,0 +1,8 @@
+a = (\x . x)
+and = (\x . (\y . (\a . (\b . ((x ((y a) b)) ((x a) b))))))
+b = (\y . y)
+false = (\x . (\y . y))
+not = (\x . (\y . (\z . ((x z) y))))
+or = (\x . (\y . (\a . (\b . ((x ((x a) b)) ((y a) b))))))
+true = (\x . (\y . x))
+xor = (\x . (\y . (\a . (\b . ((x ((y b) a)) ((y a) b))))))
