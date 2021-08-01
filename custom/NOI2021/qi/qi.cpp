@@ -65,6 +65,10 @@ void solve() {
 }
 }
 
+
+int main() {
+  //freopen("qi.in", "r", stdin);
+  //freopen("qi.out", "w", stdout);
   jmp['0'] = 0;
   jmp['1'] = 1;
   jmp['2'] = 2;
@@ -81,9 +85,6 @@ void solve() {
   jmp['D'] = 13;
   jmp['E'] = 14;
   jmp['F'] = 15;
-int main() {
-  freopen("qi.in", "r", stdin);
-  freopen("qi.out", "w", stdout);
   cin.tie(0);
   ios::sync_with_stdio(0);
   cin >> n >> m >> a1 >> a2;

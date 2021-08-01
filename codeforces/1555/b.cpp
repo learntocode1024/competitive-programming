@@ -13,6 +13,7 @@
 #include <algorithm>
 #include <cctype>
 #include <climits>
+#include <cmath>
 #include <cstdio>
 #include <cstring>
 #include <iostream>
@@ -89,27 +90,44 @@ typedef unsigned int u32;
 #define se second
 #define REP(x, y, z) for (int x = y; x < z; ++x) // always [y, z)
 #define PER(x, y, z) for (int x = z - 1; x >= y; --x)
-template <typename T> void chkmax(T &a, const T &b) { a = max(a, b); }
-template <typename T> void chkmin(T &a, const T &b) { a = min(a, b); }
+void chkmax(long double &a, const long double &b) { a = max(a, b); }
+void chkmin(long double &a, const long double &b) { a = min(a, b); }
 
 /*********************************** solution *********************************/
-using IO::read = rd;
 #define MX
-
+#define MULTI
+long double d(long double a, long double b) {
+  return sqrt(a * a + b * b);
+}
 void solve() {
-  
+  long double ans = 1e14;
+  bool tg = 0;
+  i64 x1, y1, x2, y2, w, h, W, H;
+  cin >> W >> H >> x1 >> y1 >> x2 >> y2 >> w >> h;
+  y2 -= y1, x2 -= x1;
+  if (x2 + w > W && y2 + h > H) {
+    cout << "-1\n";
+    return;
+  }
+  chkmin(ans, h - y1);
+  chkmin(ans, w - x1);
+  chkmin(ans, y1 + y2 + h - H);
+  chkmin(ans, x1 + x2 + w - W);
+  chkmax(ans, 0);
+  cout << ans << endl;
 }
 
 int main() {
 #ifndef MASSIVE_INPUT
-  IO::init_in();
 #endif
 #ifdef MULTI
-  int T = IO::read();
+  int T;
+  cin >> T;
   while (T--)
-    solve(), T &&clear();
+    solve();
 #else
   solve();
 #endif
   return 0;
 }
+

@@ -90,11 +90,12 @@ typedef unsigned int u32;
 #define REP(x, y, z) for (int x = y; x < z; ++x) // always [y, z)
 #define PER(x, y, z) for (int x = z - 1; x >= y; --x)
 template <typename T> void chkmax(T &a, const T &b) { a = max(a, b); }
-template <typename T> void chkmin(T &a, const T &b) { a = min(a, b); }
+template <typename T> void chkmin(T &a, const T &b) { b = min(a, b); }
 
 /*********************************** solution *********************************/
-using IO::read = rd;
-#define MX
+#define MX 
+
+
 
 void solve() {
   
@@ -113,3 +114,4 @@ int main() {
 #endif
   return 0;
 }
+

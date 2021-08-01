@@ -4,9 +4,9 @@
  * URL: https://github.com/misaka18931/competitive-programming
  *
  * Original Author: misaka18931
- * Date:
- * Algorithm:
- * Difficulty:
+ * Date: Aug  1, 2021
+ * Algorithm: ST-table
+ * Difficulty: mid, remind
  *
  *********************************************************************/
 
@@ -53,7 +53,7 @@ inline int read() {
 } // namespace IO
 #else
 namespace IO {
-char in[1 << 23]; // sizeof in varied in problem
+char in[1 << 26]; // sizeof in varied in problem
 char const *o;
 
 void init_in() {
@@ -93,11 +93,65 @@ template <typename T> void chkmax(T &a, const T &b) { a = max(a, b); }
 template <typename T> void chkmin(T &a, const T &b) { a = min(a, b); }
 
 /*********************************** solution *********************************/
-using IO::read = rd;
-#define MX
+using IO::read;
+#define MX 100005
+int n, m, q;
+
+struct bus {
+  int s, t, to, id;
+  bus(int x, int y, int z, int w) : s(x), t(y), to(z), id(w) {}
+  bool operator<(int x) const { return s < x; }
+  bool operator<(const bus &x) const { return s < x.s; }
+};
+
+vector<bus> G[MX];
+int u[MX], v[MX], s[MX], t[MX];
+int st[MX][20];
 
 void solve() {
-  
+  n = read(), m = read(), q = read();
+  for (int i = 1; i <= m; ++i) {
+    u[i] = read(), v[i] = read(), s[i] = read(), t[i] = read();
+    G[u[i]].emplace_back(s[i], t[i], v[i], i);
+  }
+  for (int i = 1; i <= n; ++i) {
+    sort(begin(G[i]), end(G[i]));
+  }
+  for (int i = 1; i <= m; ++i) {
+    if (!G[v[i]].empty()) {
+      auto ret = lower_bound(begin(G[v[i]]), end(G[v[i]]), t[i]);
+      if (ret != G[v[i]].end())
+        st[i][0] = ret->id;
+    }
+  }
+  for (int i = 1; i < 20; ++i) {
+    for (int j = 1; j <= m; ++j) {
+      st[j][i] = st[st[j][i - 1]][i - 1];
+    }
+  }
+  s[0] = 0x3f3f3f3f;
+  while (q--) {
+    i64 x = read(), y = read(), z = read();
+    swap(x, y);
+    int a = 0;
+    if (!G[x].empty()) {
+      auto ret = lower_bound(begin(G[x]), end(G[x]), y);
+      if (ret != G[x].end())
+        a = ret->id;
+    } // Caution!!! Manual validation over NIL value required!
+    if (s[a] >= z) {
+      cout << x << '\n';
+      continue;
+    }
+    for (int i = 19; i >= 0; --i) {
+      if (s[st[a][i]] < z)
+        a = st[a][i];
+    }
+    if (t[a] < z)
+      cout << v[a] << '\n';
+    else
+      cout << u[a] << ' ' << v[a] << '\n';
+  }
 }
 
 int main() {

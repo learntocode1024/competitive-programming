@@ -93,11 +93,36 @@ template <typename T> void chkmax(T &a, const T &b) { a = max(a, b); }
 template <typename T> void chkmin(T &a, const T &b) { a = min(a, b); }
 
 /*********************************** solution *********************************/
-using IO::read = rd;
-#define MX
+using IO::read;
+#define MX 5005
+int mod = 998244353;
 
+vector<int> G[MX];
+int n, m, k;
 void solve() {
-  
+  n = read(), m = read(), k = read();
+  for (int i = 0, u, v; i < m; ++i) {
+    u = read(), v = read();
+    G[u].push_back(v);
+    G[v].push_back(u);
+  }
+  vector<i64> dp(n + 1, 0);
+  dp[1] = 1;
+  for (int t = 0; t < k; ++t) {
+    i64 s = 0;
+    for (int i = 1; i <= n; ++i) s += dp[i];
+    s %= mod;
+    vector<i64> cur(n + 1, s);
+    cur[0] = 0;
+    for (int u = 1; u <= n; ++u) {
+      cur[u] = (cur[u] - dp[u] + mod) % mod;
+      for (auto v : G[u]) {
+        cur[u] = (cur[u] - dp[v] + mod) % mod;
+      }
+    }
+    dp.swap(cur);
+  }
+  cout << dp[1] << '\n';
 }
 
 int main() {
@@ -113,3 +138,4 @@ int main() {
 #endif
   return 0;
 }
+

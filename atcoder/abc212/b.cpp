@@ -93,16 +93,26 @@ template <typename T> void chkmax(T &a, const T &b) { a = max(a, b); }
 template <typename T> void chkmin(T &a, const T &b) { a = min(a, b); }
 
 /*********************************** solution *********************************/
-using IO::read = rd;
 #define MX
 
+char s[10];
+
 void solve() {
-  
+  cin >> s;
+  bool a, b;
+  a = b = 1;
+  for (int i = 1; i < 3; ++i) {
+        if (s[i] != s[0]) a = 0;
+    }
+    for (int i = 1; i < 3; ++i) {
+        if (s[i] != s[0] + i - 10 * (s[0] + i > '9')) b = 0;
+    }
+    if (a || b) cout << "Weak\n";
+    else cout << "Strong\n";
 }
 
 int main() {
 #ifndef MASSIVE_INPUT
-  IO::init_in();
 #endif
 #ifdef MULTI
   int T = IO::read();
@@ -113,3 +123,4 @@ int main() {
 #endif
   return 0;
 }
+

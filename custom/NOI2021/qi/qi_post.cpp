@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <cstdio>
 #include <cstdint>
+#include <cstring>
 #include <iostream>
 #include <vector>
 using namespace std;
@@ -17,8 +18,17 @@ void chkmin(T& a, const T& b) {
 uint16_t jmp[128];
 typedef unsigned long long ull;
 const int N = 400000;
-bool s[N+1][256];
-uint16_t d[N][256];
+uint16_t d[N][16];
+uint64_t opt[N][4];
+
+void print(uint16_t *v) {
+  for (int i = 0; i < 16; ++i) {
+    for (int j = 0; j < 16; ++j) {
+      cout << ((v[i] >> j) & 1);
+    }
+  }
+  cout << endl;
+}
 
 ull myRand(ull &k1, ull &k2) {
     ull k3 = k1, k4 = k2;
@@ -38,6 +48,7 @@ uint16_t last = 0;
 ull a1, a2;
 char str[100];
 uint16_t t[16];
+uint64_t tt[4];
 
 vector<int> tab[16][1 << 16];
 
@@ -47,20 +58,29 @@ void solve() {
       tab[j][d[i][j]].push_back(i);
     }
   }
+  for (int i = 0; i < n; ++i) {
+    for (int j = 0; j < 4; ++j) {
+      opt[i][j] = (uint64_t)d[i][(j << 2)] | ((uint64_t)d[i][(j << 2) + 1] << 16) | ((uint64_t)d[i][(j << 2) + 2] << 32) | ((uint64_t)d[i][(j << 2) + 3] << 48);
+    }
+  }
   int k;
   for (int i = 0; i < m; ++i) {
     cin >> str >> k;
-    for (int k = 0; k < 64; ++k) {
-      t[k >> 2] |= (jmp[str[k]] ^ last) << (k & 3);
+    memset(t, 0, sizeof(t));
+    for (int p = 0; p < 64; ++p) {
+      t[p >> 2] |= (jmp[str[p]] ^ last) << ((p & 3) << 2);
+    }
+    for (int j = 0; j < 4; ++j) {
+      tt[j] = (uint64_t)t[(j << 2)] | ((uint64_t)t[(j << 2) + 1] << 16) | ((uint64_t)t[(j << 2) + 2] << 32) | ((uint64_t)t[(j << 2) + 3] << 48);
     }
     int pop = 60;
     for (int id = 0; id < 16; ++id) {
       for (auto cur : tab[id][t[id]]) {
         int ans = 0;
-        for (int p = 0; p < 16; ++p) {
-          ans += __builtin_popcount(t[p] ^ d[cur][p]);
+        for (int p = 0; p < 4; ++p) {
+          ans += __builtin_popcountll(tt[p] ^ opt[cur][p]);
         }
-        chkmin(pop, cur);
+        chkmin(pop, ans);
       }
     }
     if (pop > k) {
@@ -96,4 +116,3 @@ int main() {
   solve();
   return 0;
 }
-

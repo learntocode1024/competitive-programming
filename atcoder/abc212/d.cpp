@@ -16,6 +16,7 @@
 #include <cstdio>
 #include <cstring>
 #include <iostream>
+#include <queue>
 #include <string>
 #include <vector>
 using namespace std;
@@ -93,11 +94,30 @@ template <typename T> void chkmax(T &a, const T &b) { a = max(a, b); }
 template <typename T> void chkmin(T &a, const T &b) { a = min(a, b); }
 
 /*********************************** solution *********************************/
-using IO::read = rd;
+using IO::read;
 #define MX
 
+priority_queue<i64> Q;
+i64 all;
 void solve() {
-  
+  int q = read();
+  while (q--) {
+    int p;
+    i64 x;
+    p = read();
+    if (p == 3) {
+      cout << -Q.top() + all << endl;
+      Q.pop();
+    } else {
+      x = read();
+      if (p == 2) {
+        all += x;
+      } else {
+        x -= all;
+        Q.push(-x);
+      }
+    }
+  }
 }
 
 int main() {
@@ -113,3 +133,4 @@ int main() {
 #endif
   return 0;
 }
+ 

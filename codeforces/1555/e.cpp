@@ -93,16 +93,83 @@ template <typename T> void chkmax(T &a, const T &b) { a = max(a, b); }
 template <typename T> void chkmin(T &a, const T &b) { a = min(a, b); }
 
 /*********************************** solution *********************************/
-using IO::read = rd;
-#define MX
+#define MX 1000005
+int n, m;
+namespace seg {
+struct node {
+  int v = 1e7, t;
+} a[MX << 2];
+void down(int u) {
+  if (a[u].t) {
+    int t = a[u].t;
+    if (a[u * 2].v >= t) {
+      a[u * 2].v = a[u * 2].t = t;
+    }
+    if (a[u * 2 + 1].v >= t) {
+      a[u * 2 + 1].v = a[u * 2 + 1].t = t;
+    }
+  }
+}
+void up(int u) {
+  a[u].v = max(a[u * 2].v, a[u * 2 + 1].v);
+}
+void mod(int s, int t, int v, int l = 0, int r = m, int u = 1) {
+  if (s == l && t == r) {
+    if (v <= a[u].v) {
+      a[u].v = a[u].t = v;
+    }
+    return;
+  }
+  down(u);
+  int mid = l + (r - l) / 2;
+  int lc = u << 1, rc = lc + 1;
+  if (s < mid) mod(s, min(mid, t), v, l, mid, lc);
+  if (t > mid) mod(max(mid, s), t, v, mid, r, rc);
+  up(u);
+}
+int get(int s, int t, int l = 0, int r = m, int u = 1) {
+  if (s == l && t == r) {
+    return a[u].v;
+  }
+  down(u);
+  int mid = l + (r - l) / 2;
+  int lc = u << 1, rc = lc + 1;
+  int ret = 0;
+  if (s < mid) chkmax(ret, get(s, min(mid, t), l, mid, lc));
+  if (t > mid) chkmax(ret, get(max(mid, s), t, mid, r, rc));
+  return ret;
+}
+}
+
+struct line {
+  int l, r, w;
+  inline void in() {
+    cin >> l >> r >> w;
+  }
+  bool operator< (const line &b) const {
+    return w < b.w;
+  }
+} q[MX];
 
 void solve() {
-  
+  cin >> n >> m;
+  for (int i = 0; i < n; ++i) q[i].in();
+  sort(q, q + n);
+  int ans = 1e7;
+  for (int i = n - 1; i >= 0; --i) {
+    int t = q[i].w;
+    --q[i].l, --q[i].r;
+    seg::mod(q[i].l, q[i].r, t);
+    if (q[i].l > 0) chkmax(t, seg::get(0, q[i].l));
+    if (q[i].r < m - 1) chkmax(t, seg::get(q[i].r, m - 1));
+    if (t == 1e7) continue;
+    chkmin(ans, t - q[i].w);
+  }
+  cout << ans << endl;
 }
 
 int main() {
 #ifndef MASSIVE_INPUT
-  IO::init_in();
 #endif
 #ifdef MULTI
   int T = IO::read();
@@ -113,3 +180,4 @@ int main() {
 #endif
   return 0;
 }
+

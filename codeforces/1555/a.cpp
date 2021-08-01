@@ -90,26 +90,31 @@ typedef unsigned int u32;
 #define REP(x, y, z) for (int x = y; x < z; ++x) // always [y, z)
 #define PER(x, y, z) for (int x = z - 1; x >= y; --x)
 template <typename T> void chkmax(T &a, const T &b) { a = max(a, b); }
-template <typename T> void chkmin(T &a, const T &b) { a = min(a, b); }
+template <typename T> void chkmin(T &a, const T &b) { b = min(a, b); }
 
 /*********************************** solution *********************************/
-using IO::read = rd;
 #define MX
+#define MULTI
 
 void solve() {
-  
+  i64 n;
+  cin >> n;
+  n = (n + 1) >> 1;
+  chkmax(n, 3ll);
+  cout << n * 5 << endl;
 }
 
 int main() {
 #ifndef MASSIVE_INPUT
-  IO::init_in();
 #endif
 #ifdef MULTI
-  int T = IO::read();
+  int T;
+  cin >> T;
   while (T--)
-    solve(), T &&clear();
+    solve();
 #else
   solve();
 #endif
   return 0;
 }
+

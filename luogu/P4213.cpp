@@ -16,10 +16,11 @@
 #include <cstdio>
 #include <cstring>
 #include <iostream>
+#include <unordered_map>
 #include <string>
 #include <vector>
 using namespace std;
-
+#define MULTI
 /********************************** buffer IO *********************************/
 #ifdef MASSIVE_INPUT
 namespace IO {
@@ -90,26 +91,76 @@ typedef unsigned int u32;
 #define REP(x, y, z) for (int x = y; x < z; ++x) // always [y, z)
 #define PER(x, y, z) for (int x = z - 1; x >= y; --x)
 template <typename T> void chkmax(T &a, const T &b) { a = max(a, b); }
-template <typename T> void chkmin(T &a, const T &b) { a = min(a, b); }
+template <typename T> void chkmin(T &a, const T &b) { b = min(a, b); }
 
 /*********************************** solution *********************************/
-using IO::read = rd;
-#define MX
+const int N = 1664515;
+i64 phi[N], u[N], s1[N], s2[N];
+int low[N], p[N], tot;
+
+void seive() {
+  phi[1] = u[1] = 1;
+  for (int i = 2; i < N; ++i) {
+    if (!low[i])
+      low[i] = p[tot++] = i, phi[i] = i - 1, u[i] = -1;
+    for (int j = 0; j < tot && p[j] * i < N; ++j) {
+      low[i * p[j]] = p[j];
+      if (p[j] < low[i]) {
+        phi[i * p[j]] = phi[i] * (p[j] - 1);
+        u[i * p[j]] = -u[i];
+      } else {
+        phi[i * p[j]] = phi[i] * p[j];
+        u[i * p[j]] = 0;
+      }
+    }
+  }
+  for (int i = 1; i < N; ++i) {
+    s1[i] = s1[i - 1] + phi[i];
+    s2[i] = s2[i - 1] + u[i];
+  }
+}
+
+unordered_map<i64, i64> mp, mu;
+
+i64 S_phi(i64 n) {
+  if (n < N) return s1[n];
+  if (mp.find(n) != mp.end()) return mp[n];
+  i64 ret = 1ll * n * (n + 1) / 2;
+  for (i64 i = 2, j; i <= n; i = j + 1) {
+    j = n / (n / i);
+    ret -= S_phi(n / i) * (j - i + 1);
+  }
+  return mp[n] = ret;
+}
+
+i64 S_u(i64 n) {
+  if (n < N) return s2[n];
+  if (mu.find(n) != mu.end()) return mu[n];
+  i64 ret = 1;
+  for (i64 i = 2, j; i <= n; i = j + 1) {
+    j = n / (n / i);
+    ret -= S_u(n / i) * (j - i + 1);
+  }
+  return mu[n] = ret;
+}
 
 void solve() {
-  
+  int n = IO::read();
+  cout << S_phi(n) << ' ' << S_u(n) << '\n';
 }
 
 int main() {
+  seive();
 #ifndef MASSIVE_INPUT
   IO::init_in();
 #endif
 #ifdef MULTI
   int T = IO::read();
   while (T--)
-    solve(), T &&clear();
+    solve();
 #else
   solve();
 #endif
   return 0;
 }
+

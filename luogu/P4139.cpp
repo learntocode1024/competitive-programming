@@ -4,9 +4,9 @@
  * URL: https://github.com/misaka18931/competitive-programming
  *
  * Original Author: misaka18931
- * Date:
- * Algorithm:
- * Difficulty:
+ * Date: Jul 30, 2021
+ * Algorithm: extend_Euler's_theorem, linear_seive
+ * Difficulty: clear
  *
  *********************************************************************/
 
@@ -19,7 +19,7 @@
 #include <string>
 #include <vector>
 using namespace std;
-
+#define MULTI
 /********************************** buffer IO *********************************/
 #ifdef MASSIVE_INPUT
 namespace IO {
@@ -90,24 +90,65 @@ typedef unsigned int u32;
 #define REP(x, y, z) for (int x = y; x < z; ++x) // always [y, z)
 #define PER(x, y, z) for (int x = z - 1; x >= y; --x)
 template <typename T> void chkmax(T &a, const T &b) { a = max(a, b); }
-template <typename T> void chkmin(T &a, const T &b) { a = min(a, b); }
+template <typename T> void chkmin(T &a, const T &b) { b = min(a, b); }
 
 /*********************************** solution *********************************/
-using IO::read = rd;
-#define MX
+#define MX 10000005
+const int N = 10000000;
+
+int phi[MX];
+int p[MX], tot;
+int low[MX];
+
+void seive() {
+  phi[1] = 1;
+  for (int i = 2; i <= N; ++i) {
+    if (!low[i])
+      low[i] = p[tot++] = i, phi[i] = i - 1;
+    int j;
+    for (j = 0; j < tot && i * p[j] <= N; ++j) {
+      low[i * p[j]] = p[j];
+      if (p[j] < low[i])
+        phi[i * p[j]] = phi[i] * (p[j] - 1);
+      else {
+        phi[i * p[j]] = phi[i] * p[j];
+        break;
+      }
+    }
+  }
+  for (int i = 1; i <= 20; ++i)
+    cerr << phi[i] << ' ';
+}
+
+i64 Q_pow2(i64 x, i64 p) {
+  i64 ret = 1, a = 2;
+  while (x) {
+    if (x & 1) ret = ret * a % p;
+    a = a * a % p;
+    x >>= 1;
+  }
+  return ret;
+}
+
+i64 work(i64 p) {
+  if (p == 1) return 0;
+  return Q_pow2(work(phi[p]) + phi[p], p);
+}
 
 void solve() {
-  
+  i64 p = IO::read();
+  cout << work(p) << '\n';
 }
 
 int main() {
+  seive();
 #ifndef MASSIVE_INPUT
   IO::init_in();
 #endif
 #ifdef MULTI
   int T = IO::read();
   while (T--)
-    solve(), T &&clear();
+    solve();
 #else
   solve();
 #endif

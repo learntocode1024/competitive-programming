@@ -93,16 +93,46 @@ template <typename T> void chkmax(T &a, const T &b) { a = max(a, b); }
 template <typename T> void chkmin(T &a, const T &b) { a = min(a, b); }
 
 /*********************************** solution *********************************/
-using IO::read = rd;
-#define MX
+using IO::read;
+#define MX 1000005
+i64 mod = 998244353;
+i64 p[MX], tot;
+i64 c[MX];
+
+i64 getphi(i64 n) {
+  i64 ret = 1;
+  for (int i = 0; i < tot; ++i) {
+    if (n % p[i] == 0) {
+      i64 cur = 1;
+      while (n % p[i] == 0) cur = cur * p[i], n /= p[i];
+      ret = ret * (cur - cur / p[i]) % mod;
+    }
+  }
+  return ret;
+}
 
 void solve() {
-  
+  i64 P;
+  cin >> P;
+  i64 cur = P - 1;
+  for (i64 i = 2; i * i <= cur; ++i) {
+    if (cur % i == 0) p[tot++] = i;
+    while (cur % i == 0) ++c[tot - 1], cur /= i;
+  }
+  if (cur > 1) p[tot++] = cur;
+  i64 n = P - 1;
+  i64 ans = 0;
+  for (i64 i = 1; i * i <= n; ++i) {
+    if (n % i) continue;
+    i64 cur = i * getphi(i) % mod;
+    if (i * i < n) cur = (cur + n / i * getphi(n / i) % mod) % mod;
+    ans = (ans + cur) % mod;
+  }
+  cout << ans + 1 << '\n';
 }
 
 int main() {
 #ifndef MASSIVE_INPUT
-  IO::init_in();
 #endif
 #ifdef MULTI
   int T = IO::read();
@@ -113,3 +143,4 @@ int main() {
 #endif
   return 0;
 }
+

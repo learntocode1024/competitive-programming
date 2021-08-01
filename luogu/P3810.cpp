@@ -4,9 +4,9 @@
  * URL: https://github.com/misaka18931/competitive-programming
  *
  * Original Author: misaka18931
- * Date:
- * Algorithm:
- * Difficulty:
+ * Date: Jul 31, 2021
+ * Algorithm: CDQ's_divide_and_conquer
+ * Difficulty: template
  *
  *********************************************************************/
 
@@ -90,14 +90,75 @@ typedef unsigned int u32;
 #define REP(x, y, z) for (int x = y; x < z; ++x) // always [y, z)
 #define PER(x, y, z) for (int x = z - 1; x >= y; --x)
 template <typename T> void chkmax(T &a, const T &b) { a = max(a, b); }
-template <typename T> void chkmin(T &a, const T &b) { a = min(a, b); }
+template <typename T> void chkmin(T &a, const T &b) { b = min(a, b); }
 
 /*********************************** solution *********************************/
-using IO::read = rd;
-#define MX
+#define MX 200005
+int n, k, tot;
+struct node {
+  int a, b, c, id;
+  inline void in() {
+    a = IO::read();
+    b = IO::read();
+    c = IO::read();
+    id = tot++;
+  }
+} a[MX], b[MX];
+
+int f[MX], ans[MX];
+int c[MX];
+
+int get(int x) {
+  int ret = 0;
+  while (x) {
+    ret += c[x];
+    x -= x & -x;
+  }
+  return ret;
+}
+
+void ins(int x, int v) {
+  while (x <= k) {
+    c[x] += v;
+    x += x & -x;
+  }
+}
+void solve(int l, int r) {
+  if (r - l == 1) return;
+  int mid = l + (r - l) / 2;
+  solve(l, mid);
+  memcpy(b + l, a + l, (r - l) * sizeof(node));
+  for (int i = l; i < r; ++i) {
+    b[i].a = i < mid;
+    b[i].id = i;
+  }
+  sort(b + l, b + r, [] (auto a, auto b) { return a.b < b.b || a.b == b.b && a.a > b.a; });
+  for (int i = l; i < r; ++i) {
+    if (b[i].a) {
+      ins(b[i].c, 1);
+    } else {
+      f[b[i].id] += get(b[i].c);
+    }
+  }
+  for (int i = l; i < r; ++i)
+    if (b[i].a)
+      ins(b[i].c, -1);
+  solve(mid, r);
+}
 
 void solve() {
-  
+  n = IO::read(), k = IO::read();
+  for (int i = 0; i < n; ++i) {
+    a[i].in();
+  }
+  sort(a, a + n, [] (auto a, auto b) { return a.a < b.a; });
+  solve(0, n);
+  for (int i = 0; i < n; ++i) {
+    ans[a[i].id] = f[i];
+  }
+  for (int i = 0; i < n; ++i) {
+    cout << ans[i] << '\n';
+  }
 }
 
 int main() {
@@ -113,3 +174,4 @@ int main() {
 #endif
   return 0;
 }
+

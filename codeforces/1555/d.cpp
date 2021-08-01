@@ -93,23 +93,54 @@ template <typename T> void chkmax(T &a, const T &b) { a = max(a, b); }
 template <typename T> void chkmin(T &a, const T &b) { a = min(a, b); }
 
 /*********************************** solution *********************************/
-using IO::read = rd;
-#define MX
+#define MX 200005
+
+int cnt[3][3][MX];
+char s[MX];
+int c[3][3];
 
 void solve() {
-  
+  int n, m;
+  cin >> n >> m;
+  cin >> s;
+  for (int i = 0; i < n; ++i) {
+    cnt[s[i] - 'a'][i % 3][i] = 1;
+  }
+  for (int i = 0; i < 3; ++i) {
+    for (int j = 0; j < 3; ++j) {
+      for (int k = 1; k < n; ++k)
+    cnt[i][j][k] += cnt[i][j][k - 1];
+    }
+  }
+  while (m--) {
+    int l, r;
+    cin >> l >> r;
+    --l, --r;
+    for (int i = 0; i < 3; ++i) {
+      for (int j = 0; j < 3; ++j) {
+        c[i][j] = cnt[i][j][r] - cnt[i][j][l - 1];
+      }
+    }
+    int d[3] = {0, 1, 2};
+    int ans = 1e6;
+    do {
+      chkmin(ans, r - l + 1 - c[d[0]][0] - c[d[1]][1] - c[d[2]][2]);
+    } while (next_permutation(d, d + 3));
+    cout << ans << '\n';
+  }
 }
 
 int main() {
 #ifndef MASSIVE_INPUT
-  IO::init_in();
 #endif
 #ifdef MULTI
-  int T = IO::read();
+  int T;
+  cin >> T;
   while (T--)
-    solve(), T &&clear();
+    solve();
 #else
   solve();
 #endif
   return 0;
 }
+

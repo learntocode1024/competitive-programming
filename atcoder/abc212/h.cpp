@@ -4,9 +4,9 @@
  * URL: https://github.com/misaka18931/competitive-programming
  *
  * Original Author: misaka18931
- * Date:
- * Algorithm:
- * Difficulty:
+ * Date: Aug  1, 2021
+ * Algorithm: FMT(xor-convolution)
+ * Difficulty: template
  *
  *********************************************************************/
 
@@ -93,11 +93,63 @@ template <typename T> void chkmax(T &a, const T &b) { a = max(a, b); }
 template <typename T> void chkmin(T &a, const T &b) { a = min(a, b); }
 
 /*********************************** solution *********************************/
-using IO::read = rd;
-#define MX
+using IO::read;
+const int N = 65536;
+const i64 MOD = 998244353;
+const i64 inv2 = 499122177;
+
+void fwt(i64 *a) {
+  for (int len = 1; len < N; len <<= 1) {
+    for (int i = 0; i < N; i += len << 1) {
+      for (int j = i; j < i + len; ++j) {
+        i64 x = a[j], y = a[j + len];
+        a[j] = (x + y) % MOD;
+        a[j + len] = (x - y + MOD) % MOD;
+      }
+    }
+  }
+}
+
+void ifwt(i64 *a) {
+  for (int len = 1; len < N; len <<= 1) {
+    for (int i = 0; i < N; i += len << 1) {
+      for (int j = i; j < i + len; ++j) {
+        i64 x = a[j], y = a[j + len];
+        a[j] = (x + y) * inv2 % MOD;
+        a[j + len] = (x - y + MOD) * inv2 % MOD;
+      }
+    }
+  }
+}
+
+i64 a[N];
+
+i64 Q_pow(i64 a, int x) {
+  a %= MOD;
+  i64 ret = 1;
+  while (x) {
+    if (x & 1) ret = ret * a % MOD;
+    a = a * a % MOD;
+    x >>= 1;
+  }
+  return ret;
+}
 
 void solve() {
-  
+  int n = read(), k = read();
+  for (int i = 0; i < k; ++i) {
+    int t = read();
+    ++a[t];
+  }
+  fwt(a);
+  for (int i = 0; i < N; ++i) {
+    if (a[i] == 1) a[i] = n;
+    else a[i] = ((Q_pow(a[i], n + 1) + MOD - 1) * Q_pow(a[i] - 1 + MOD, MOD - 2) + MOD - 1) % MOD;
+  }
+  ifwt(a);
+  i64 ans = 0;
+  for (int i = 1; i < N; ++i) ans += a[i];
+  cout << ans % MOD << '\n';
 }
 
 int main() {
@@ -113,3 +165,4 @@ int main() {
 #endif
   return 0;
 }
+

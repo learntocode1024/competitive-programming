@@ -93,11 +93,30 @@ template <typename T> void chkmax(T &a, const T &b) { a = max(a, b); }
 template <typename T> void chkmin(T &a, const T &b) { a = min(a, b); }
 
 /*********************************** solution *********************************/
-using IO::read = rd;
-#define MX
+#define MX 100005
+#define MULTI
+
+i64 a[2][MX];
+i64 b[MX], c[MX];
 
 void solve() {
-  
+  int m = IO::read();
+  for (int i = 0; i < 2; ++i) {
+    for (int j = 1; j <= m; ++j)
+      a[i][j] = IO::read();
+  }
+  for (int i = 1; i <= m; ++i) {
+    b[i] = b[i - 1] + a[1][i];
+  }
+  c[m + 1] = 0;
+  for (int i = m; i; --i) {
+    c[i] = c[i + 1] + a[0][i];
+  }
+  i64 ans = 1e10;
+  for (int i = 1; i <= m; ++i) {
+    chkmin(ans, max(b[i - 1], c[i + 1]));
+  }
+  cout << ans << '\n';
 }
 
 int main() {
@@ -107,9 +126,10 @@ int main() {
 #ifdef MULTI
   int T = IO::read();
   while (T--)
-    solve(), T &&clear();
+    solve();
 #else
   solve();
 #endif
   return 0;
 }
+

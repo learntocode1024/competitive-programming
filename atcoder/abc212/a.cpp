@@ -93,11 +93,18 @@ template <typename T> void chkmax(T &a, const T &b) { a = max(a, b); }
 template <typename T> void chkmin(T &a, const T &b) { a = min(a, b); }
 
 /*********************************** solution *********************************/
-using IO::read = rd;
+using IO::read;
 #define MX
 
 void solve() {
-  
+  int a = read(), b = read();
+  if (!b) {
+      cout << "Gold\n";
+    } else if (!a) {
+    cout << "Silver\n";
+    } else {
+    cout << "Alloy\n";
+    }
 }
 
 int main() {
@@ -113,3 +120,4 @@ int main() {
 #endif
   return 0;
 }
+
