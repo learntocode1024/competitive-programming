@@ -4,9 +4,9 @@
  * URL: https://github.com/misaka18931/competitive-programming
  *
  * Original Author: misaka18931
- * Date: Jul 31, 2021
- * Algorithm: Euler_tour_trick, BIT, st_table
- * Difficulty: mid
+ * Date:
+ * Algorithm:
+ * Difficulty:
  *
  *********************************************************************/
 
@@ -90,136 +90,44 @@ typedef unsigned int u32;
 #define REP(x, y, z) for (int x = y; x < z; ++x) // always [y, z)
 #define PER(x, y, z) for (int x = z - 1; x >= y; --x)
 template <typename T> void chkmax(T &a, const T &b) { a = max(a, b); }
-template <typename T> void chkmin(T &a, const T &b) { b = min(a, b); }
+template <typename T> void chkmin(T &a, const T &b) { a = min(a, b); }
 
 /*********************************** solution *********************************/
 using IO::read;
-const int N = 300005, MX = 500005;
-int n, q;
-vector<pair<int, int> > G[N];
-
-int a[MX], b[MX], c[MX], dep[MX], it[MX], ot[MX], f[20][MX], tot;
-bool ans[MX];
-bool w[20][MX];
-
-namespace dsu {
-int fa[N];
-void init() {
-  for (int i = 1; i <= n; ++i) {
-    fa[i] = i;
-  }
+#define MULTI
+#define MX 200005
+int n, m;
+inline i64 gcd(i64 a, i64 b) {
+  if (b) while ((a %= b) && (b %= a));
+  return a | b;
 }
-int get(int x) {
-  if (fa[x] == x) return x;
-  fa[x] = get(fa[x]);
-  return fa[x];
-}
-bool tadd(int i) {
-  if (get(a[i]) == get(b[i]))
-    return 0;
-  fa[get(a[i])] = get(b[i]);
-  G[a[i]].emplace_back(b[i], c[i]);
-  G[b[i]].emplace_back(a[i], c[i]);
-  return 1;
-}
-}
-
-void dfs(int u, int fa) {
-  it[u] = ++tot;
-  f[0][u] = fa;
-  dep[u] = dep[fa] + 1;
-  for (auto v : G[u]) {
-    if (v.fi != fa) w[0][v.fi] = v.se, dfs(v.fi, u);
-  }
-  ot[u] = ++tot;
-}
-
-bool xs;
-int lca(int u, int v) {
-  xs = 0;
-  if (dep[u] < dep[v]) swap(u, v);
-  int x = dep[u] - dep[v];
-  if (x) {
-    for (int i = 19; i >= 0; --i) {
-      if (x & (1 << i)) {
-        xs ^= w[i][u];
-        u = f[i][u];
-      }
-    }
-  }
-  if (u == v) return u;
-  for (int i = 19; i >= 0; --i) {
-    if (f[i][u] != f[i][v]) {
-      xs ^= w[i][u] ^ w[i][v];
-      u = f[i][u];
-      v = f[i][v];
-    }
-  }
-  xs ^= w[0][u] ^ w[0][v];
-  return f[0][u];
-}
-
-int bit[MX];
-void mod(int x, int v) {
-  while (x <= n * 3) {
-    bit[x] += v;
-    x += x & -x;
-  }
-}
-
-int get(int x) {
-  int ret = 0;
-  while (x) {
-    ret += bit[x];
-    x -= x & -x;
-  }
-  return ret;
-}
-
-bool tadd(int i) {
-  int u = a[i], v = b[i];
-  int x = lca(u, v);
-  if (!xs ^ c[i]) return 0;
-  if (get(it[u]) + get(it[v]) - 2 * get(it[x])) return 0;
-  for (int i = u; i != x; i = f[0][i]) {
-    mod(it[i], 1);
-    mod(ot[i], -1);
-  }
-  for (int i = v; i != x; i = f[0][i]) {
-    mod(it[i], 1);
-    mod(ot[i], -1);
-  }
-  return 1;
+i64 g[20][MX];
+i64 a[MX], d[MX];
+void clear() {
+  for (int i = 0; i < 20; ++i)
+    for (int j = 0; j < n; ++j)
+      g[i][j] = 1;
 }
 
 void solve() {
   n = read();
-  q = read();
-  dsu::init();
-  for (int i = 0; i < q; ++i) {
-    a[i] = read();
-    b[i] = read();
-    c[i] = read();
-    ans[i] = dsu::tadd(i);
-  }
-  for (int i = 1; i <= n; ++i) {
-    if (!f[0][i]) dfs(i, 0);
-  }
-  for (int i = 1; i < 20; ++i) {
-    for (int j = i; j <= n; ++j) {
-      f[i][j] = f[i - 1][f[i - 1][j]];
-      w[i][j] = w[i - 1][j] ^ w[i - 1][f[i - 1][j]];
+  clear();
+  REP(i, 0, n) a[i] = read();
+  REP(i, 0, n - 1) g[0][i] = abs(a[i + 1] - a[i]);
+  REP(i, 1, 20) {
+    REP(j, 0, n - 1) {
+      g[i][j] = gcd(g[i - 1][j], g[i - 1][j + (1 << (i - 1))]);
     }
   }
-  for (int i = 0; i < q; ++i) {
-    if (!ans[i]) {
-      ans[i] = tadd(i);
+  int ans = 1;
+  REP(i, 0, n - 1) {
+    int k = i, gg = 0;
+    PER(j, 0, 20) {
+      if (gcd(gg, g[j][k]) > 1) gg = gcd(gg, g[j][k]), k += 1 << j;
     }
+    chkmax(ans, k - i + 1);
   }
-  for (int i = 0; i < q; ++i) {
-    if (ans[i]) cout << "Yes\n";
-    else cout << "No\n";
-  }
+  cout << ans << endl;
 }
 
 int main() {
@@ -229,9 +137,10 @@ int main() {
 #ifdef MULTI
   int T = IO::read();
   while (T--)
-    solve(), T &&clear();
+    solve();
 #else
   solve();
 #endif
   return 0;
 }
+
