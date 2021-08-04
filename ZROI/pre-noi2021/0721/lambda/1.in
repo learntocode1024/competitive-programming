@@ -1,0 +1,2 @@
+false = (\x . (\y . y))
+true = (\x . (\y . x))
