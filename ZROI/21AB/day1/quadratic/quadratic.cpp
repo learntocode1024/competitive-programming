@@ -60,6 +60,7 @@ char *rdstr(char *s) {
 typedef long long i64;
 typedef unsigned long long u64;
 typedef unsigned int u32;
+typedef long double f80;
 #define pb(x) push_back(x)
 #define fi first
 #define se second
@@ -70,14 +71,69 @@ template <typename T> void chkmin(T &a, const T &b) { a = min(a, b); }
 
 /*********************************** solution *********************************/
 using IO::rd;
-#define MX
+#define MX 100005
+int q, n;
 
-void solve() {
+template<typename T, unsigned size>
+struct BIT {
+  T a[size];
+  void ins(int pos, T val) {
+    while (pos < size) {
+      a[pos] += val;
+      pos += pos & -pos;
+    }
+  }
+  T get(int pos) const {
+    T ret = 0;
+    while (pos) {
+      ret += a[pos];
+      pos -= pos & -pos;
+    }
+    return pos;
+  }
+  const T &operator[](unsigned i) {
+    return a[i];
+  }
+};
+
+BIT<f80, MX << 1> x1, x0, y1, y2;
+
+struct qry {
+  int id, op;
+  f80 a, b, c;
+  inline void init(int i) {
+    id = i;
+    cin >> op;
+    switch (op) {
+      case 1:
+        cin >> a >> b >> c;
+      case 2:
+
+      default:
+    }
+  }
+  inline void run() {
+    
+  }
+} Q[MX];
+
+void work() {
   
 }
 
+void solve() {
+  cin >> q;
+  REP(i, 0, q)
+    Q[i].init();
+  work();
+  REP(i, 0, q)
+    Q[i].run();
+}
+
 int main() {
-  IO::init_in();
+  ios::sync_with_stdio(0);
+  cin.tie(0);
+  // IO::init_in();
 #ifdef MULTI
   int T = IO::rd();
   while (T--)
