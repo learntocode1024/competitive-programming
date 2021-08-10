@@ -4,9 +4,9 @@
       "name": "linux-gcc-x64",
       "includePath": [
         "${workspaceFolder}/**",
-        "/home/chtholly/.local/lib/ac-library"
+        "/home/solitary/.local/lib/ac-library"
       ],
-      "compilerPath": "gcc",
+      "compilerPath": "/usr/bin/gcc",
       "cStandard": "${default}",
       "cppStandard": "${default}",
       "intelliSenseMode": "linux-gcc-x64",

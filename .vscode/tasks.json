@@ -7,8 +7,7 @@
       "args": [
         "-g",
         "${file}",
-        "-I",
-        "/home/chtholly/.local/lib/ac-library",
+        "-I/home/solitary/.local/lib/ac-library",
         "-o",
         "${fileDirname}/${fileBasenameNoExtension}.exec"
       ],

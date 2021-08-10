@@ -1,10 +1,12 @@
 {
   "files.associations": {
-    "iostream": "cpp"
+    "iostream": "cpp",
+    "ostream": "cpp"
   },
   "icie.dir.projectDirectory": "~/contests/problem",
   "icie.compile.cppStandard": "C++14",
   "icie.template.solution": "~/contests/template/current.cpp",
   "icie.paste.library.path": "~/contests/lib",
-  "ccls.codeLens.enabled": false
+  "ccls.codeLens.enabled": false,
+  "C_Cpp.errorSquiggles": "Disabled"
 }
