@@ -1,7 +1,14 @@
 {
   "files.associations": {
     "iostream": "cpp",
-    "ostream": "cpp"
+    "ostream": "cpp",
+    "cstdio": "cpp",
+    "array": "cpp",
+    "bitset": "cpp",
+    "string_view": "cpp",
+    "initializer_list": "cpp",
+    "utility": "cpp",
+    "valarray": "cpp"
   },
   "icie.dir.projectDirectory": "~/contests/problem",
   "icie.compile.cppStandard": "C++14",

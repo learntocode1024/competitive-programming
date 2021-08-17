@@ -8,6 +8,7 @@
         "-g",
         "${file}",
         "-I/home/solitary/.local/lib/ac-library",
+        "-I/home/solitary/misaka-cp/lib",
         "-o",
         "${fileDirname}/${fileBasenameNoExtension}.exec"
       ],

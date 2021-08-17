@@ -4,8 +4,8 @@
  * URL: https://github.com/misaka18931/competitive-programming
  *
  * Original Author: misaka18931
- * Date:
- * Algorithm:
+ * Date: Aug 15, 2021
+ * Algorithm: cdq-FFT
  * Difficulty:
  *
  *********************************************************************/
@@ -19,22 +19,143 @@
 #include <string>
 #include <vector>
 using namespace std;
-typedef long long LL;
+typedef long long i64;
+typedef unsigned u32;
 typedef unsigned long long ULL;
+
+namespace IO {
+char in[1 << 24];  // sizeof in varied in problem
+char const *o;
+void init_in() {
+  o = in;
+  in[fread(in, 1, sizeof(in) - 4, stdin)] = 0;  // set 0 at the end of buffer.
+}
+int rd() {
+  unsigned u = 0, s = 0;
+  while (*o && *o <= 32) ++o;  // skip whitespaces...
+  if (*o == '-')
+    s = ~s, ++o;
+  else if (*o == '+')
+    ++o;  // skip sign
+  while (*o >= '0' && *o <= '9')
+    u = (u << 3) + (u << 1) + (*o++ - '0');  // u * 10 = u * 8 + u * 2 :)
+  return static_cast<int>((u ^ s) + !!s);
+}
+char *rdstr(char *s) {
+  while (*o && *o <= 32) ++o;
+  while (*o > 32) *s++ = *o++;
+  return s;
+}
+}  // namespace IO
 
 #define pb(x) push_back(x)
 #define pf(x) push_front(x)
-#define MX
+const int N = 15, T = 40005;
+const i64 mod = 998244353;
+#define FOR(x, y, z) for (int x = y; x < z; ++x)
 
-// clang-format off
-const long long mod = 998244353;
-// clang-format on
+constexpr u32 wrap(u32 x) {
+  return 1u << (32 - __builtin_clz(x));
+}
 
-void solve() {}
+const u32 T2 = wrap(T);
+int n, m, t;
+i64 f[N][T];
+i64 A[T2], B[T2], pp[T2];
+i64 a[N], b[N];
+i64 p[N][T];
+u32 bit[T2];
+
+i64 Q_pow(i64 a, int x) {
+  i64 ret = 1;
+  while (x) {
+    if (x & 1) ret = ret * a % mod;
+    a = a * a % mod;
+    x >>= 1;
+  }
+  return ret;
+}
+
+void ntt(i64 *a, int len, int opt = 1) {
+  for (int i = 1; i < len; ++i) {
+    bit[i] = bit[i >> 1] >> 1;
+    if (i & 1) bit[i] |= len >> 1;
+    if (bit[i] > i) swap(a[i], a[bit[i]]);
+  }
+  for (int i = 1; i < len; i <<= 1) {
+    i64 gn = pp[T2 / i / 2];
+    for (int j = 0; j < len; j += i << 1) {
+      i64 g = 1;
+      for (int k = j; k < j + i; ++k) {
+        i64 x = a[k], y = a[k + i] * g % mod;
+        a[k] = (x + y) % mod;
+        a[k + i] = (x - y + mod) % mod;
+        g = g * gn % mod;
+      }
+    }
+  }
+  if (opt == -1) {
+    i64 r = Q_pow(len, mod - 2);
+    for (int i = 0; i < len; ++i) a[i] = a[i] * r % mod;
+    reverse(a + 1, a + len);
+  }
+}
+
+void cdq(int l, int r) {
+  if (r - l == 1) return;
+  int mid = l + (r - l) / 2;
+  cdq(l, mid);
+  int lim = wrap(r + mid - 2 * l);
+  for (int i = 0; i < m; ++i) { // u <- v
+    int u = a[i], v = b[i];
+    auto& P = p[i];
+    for (int j = l; j < mid; ++j) {
+      A[j - l] = f[v][j];
+    }
+    for (int j = 0; j < r - l; ++j) {
+      B[j] = P[j];
+    }
+    ntt(A, lim);
+    ntt(B, lim);
+    for (int j = 0; j < lim; ++j) A[j] = A[j] * B[j] % mod;
+    ntt(A, lim, -1);
+    for (int j = mid; j < r; ++j) {
+      f[u][j] = (f[u][j] + A[j - l]) % mod;
+    }
+    for (int j = 0; j < lim; ++j) A[j] = 0; // v <- u
+    for (int j = l; j < mid; ++j) {
+      A[j - l] = f[u][j];
+    }
+    ntt(A, lim);
+    for (int j = 0; j < lim; ++j) A[j] = A[j] * B[j] % mod;
+    ntt(A, lim, -1);
+    for (int j = mid; j < r; ++j) {
+      f[v][j] = (f[v][j] + A[j - l]) % mod;
+    }
+    for (int j = 0; j < lim; ++j) A[j] = B[j] = 0;
+  }
+  cdq(mid, r);
+}
+using IO::rd;
+void solve() {
+  pp[0] = 1;
+  i64 g = Q_pow(3, (mod - 1) / T2);
+  for (int i = 1; i < T2; ++i) {
+    pp[i] = pp[i - 1] * g % mod;
+  }
+  n = rd(), m = rd(), t = rd(); 
+  FOR(i, 0, m) {
+    a[i] = rd(), b[i] = rd();
+    FOR(j, 1, t + 1) p[i][j] = rd();
+  }
+  f[1][0] = 1;
+  cdq(0, t + 1);
+  cout << f[1][t];
+}
 
 int main() {
+  IO::init_in();
   int T = 1;
-  cin >> T;
   while (T--)
     solve();
   return 0;

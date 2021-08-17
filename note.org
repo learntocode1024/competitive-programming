@@ -1,4 +1,0 @@
-#+TITLE: combinatorics-tactics
-
-- cf722f
-- ccpc ginal 2020H
