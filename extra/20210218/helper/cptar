@@ -1,0 +1,30 @@
+#!/bin/sh
+dir=`pwd`
+[ -f $dir/identifier ] || exit 2
+while read a b; do
+    oj=$a
+    id=$b
+done < identifier
+DEST=
+case $oj in
+    lg)
+        DEST=../luogu/$id.cpp
+        ;;
+    cf)
+        DEST=../codeforces/$id.cpp
+        ;;
+    loj)
+        DEST=../loj/$id.cpp
+        ;;
+    at)
+        DEST=../atcoder/$id.cpp
+        ;;
+    zr)
+        DEST=../ZROI/$id.cpp
+        ;;
+    *)
+        DEST=../extra/$oj-$id.cpp
+        ;;
+esac
+mv $dir/main.cpp $dir/$DEST
+rm $dir/identifier

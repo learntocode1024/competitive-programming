@@ -8,10 +8,11 @@
 #include "utils"
 #include "io"
 
-const int N = ;
-
+const int N = 1;
+char str[100];
 void solve() {
-  
+  rdstr(str);
+  cout << str << '\n';
 }
 
 int main() {

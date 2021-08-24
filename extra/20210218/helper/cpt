@@ -1,0 +1,18 @@
+#!/bin/sh
+dir=`pwd`
+if [ -f $dir/identifier ] ;then
+        g++ -I../lib -I$HOME/.local/lib/ac-library -O2 -pipe $dir/main.cpp -o $dir/main
+        xclip -selection c -o | ./main
+        rm main
+else
+    if pwd | grep -q -E '*atcoder*'; then
+        g++ -I$HOME/.local/lib/ac-library -O2 -pipe main.cpp -o main
+        atcoder-tools test
+    else if pwd | grep -q -E '*codeforces*'; then
+        cf test
+    else
+        return 1
+    fi
+    fi
+fi
+

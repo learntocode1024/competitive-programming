@@ -9,7 +9,14 @@
     "initializer_list": "cpp",
     "utility": "cpp",
     "valarray": "cpp",
-    "type_traits": "cpp"
+    "type_traits": "cpp",
+    "*.tcc": "cpp",
+    "deque": "cpp",
+    "list": "cpp",
+    "string": "cpp",
+    "unordered_map": "cpp",
+    "unordered_set": "cpp",
+    "vector": "cpp"
   },
   "icie.dir.projectDirectory": "~/contests/problem",
   "icie.compile.cppStandard": "C++14",

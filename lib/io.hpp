@@ -35,6 +35,7 @@ i64 rdll() {
 char *rdstr(char *s) {
   while (*o && *o <= 32) ++o;
   while (*o > 32) *s++ = *o++;
+  *s = '\0';
   return s;
 }
 }  // namespace IO
