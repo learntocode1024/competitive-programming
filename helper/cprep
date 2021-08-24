@@ -1,0 +1,13 @@
+#!/bin/sh
+pwd | grep -q -E 'work' || return 2
+[ "$#" -gt 0 ] || return 1
+[ -f ./identifier ] && return 3
+dir=`pwd`
+oj=$1
+id=$2
+echo "$oj $id" > identifier
+if [ -f "$dir/../template/$oj.cpp" ] ;then
+    cp "$dir/../template/$oj.cpp" $dir/main.cpp
+else
+    cp "$dir/../template/cpp.cpp" $dir/main.cpp
+fi

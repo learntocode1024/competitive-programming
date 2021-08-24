@@ -1,0 +1,17 @@
+#!/bin/sh
+dir=`pwd`
+if [ -f $dir/identifier ] ;then
+    oj-bundle -I"$dir/../lib" "$dir/main.cpp" | xclip -selection c
+else
+    if pwd | grep -q -E '*atcoder*'; then
+        atcoder-tools submit -u "$@"
+    else if pwd | grep -q -E '*codeforces*'; then
+        w1=$(basename $(realpath -m `pwd`))
+        w2=$(basename $(realpath -m `pwd`/..))
+        cf submit $w1 $w2 "$@"
+    else
+        return 1
+    fi
+    fi
+fi
+
