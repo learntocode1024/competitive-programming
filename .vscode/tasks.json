@@ -3,9 +3,10 @@
   "tasks": [
     {
       "label": "C/C++: g++ build active file",
-      "command": "/usr/bin/g++",
+      "command": "/usr/bin/g++-9",
       "args": [
         "-g",
+        "-Og",
         "${file}",
         "-I/home/solitary/.local/lib/ac-library",
         "-I/home/solitary/misaka-cp/lib",

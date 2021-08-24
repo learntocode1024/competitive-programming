@@ -38,6 +38,10 @@ char *rdstr(char *s) {
   *s = '\0';
   return s;
 }
+char rdch() {
+  while (*o && *o <= 32) ++o;
+  return *o++;
+}
 }  // namespace IO
 using IO::rd;
 using IO::rdstr;

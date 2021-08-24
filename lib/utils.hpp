@@ -6,7 +6,8 @@ typedef long long i64;
 typedef unsigned long long u64;
 typedef unsigned int u32;
 typedef pair<int, int> pii;
-#define pb(x) push_back(x)
+#define pb push_back
+#define eb emplace_back
 #define mkp(x, y) make_pair(x, y)
 #define fi first
 #define se second
