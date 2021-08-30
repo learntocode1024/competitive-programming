@@ -13,6 +13,7 @@
 #include <algorithm>
 #include <cctype>
 #include <climits>
+#include <cmath>
 #include <cstdio>
 #include <cstring>
 #include <iostream>
@@ -71,10 +72,59 @@ pii operator+(const pii &a, const pii &b) {
 
 /*********************************** solution *********************************/
 using IO::rd;
-#define MX
+const int N = 100005;
+int blk[N];
+
+int ans[N];
+struct qry {
+  int l, r, id;
+  bool operator< (const qry& b) const {
+    return blk[l] < blk[b.l] || (blk[l] == blk[b.l] && r < b.r);
+  }
+} q[N];
+
+int a[N], dis[N];
+
+int cnt, buc[N];
+
+inline void ch(int x, int t) {
+  buc[a[x]] += t;
+  if (buc[a[x]] & 1) ++cnt;
+  else --cnt;
+}
 
 void solve() {
-  
+  int n = rd();
+  int B = sqrt(n) + 1;
+  for (int i = 1; i <= n; ++i) {
+    blk[i] = blk[i - 1];
+    if (i % B == 1) ++blk[i];
+  }
+  for (int i = 0; i < n; ++i) {
+    a[i + 1] = dis[i] = rd();
+  }
+  sort(dis, dis + n);
+  int tot = unique(dis, dis + n) - dis;
+  for (int i = 1; i <= n; ++i) {
+    a[i] = lower_bound(dis, dis + tot, a[i]) - dis;
+  } // discrete
+  int m = rd();
+  for (int i = 0; i < m; ++i) {
+    q[i].l = rd(), q[i].r = rd();
+    q[i].id = i;
+  }
+  sort(q, q + m);
+  int l = 1, r = 1;
+  for (int i = 0; i < m; ++i) {
+    while (l > q[i].l) ch(--l, 1);
+    while (r <= q[i].r) ch(r++, 1);
+    while (l < q[i].l) ch(l++, -1);
+    while (r > q[i].r + 1) ch(--r, -1);
+    ans[q[i].id] = cnt;
+  }
+  for (int i = 0; i < m; ++i) {
+    cout << ans[i] << '\n';
+  }
 }
 
 int main() {
@@ -87,14 +137,3 @@ int main() {
 #endif
   return 0;
 }
-/*
- * checklist:
- * - IO buffer size
- * - potential out-of-bound Errors
- * - inappropriate variable type
- * - potential Arithmetic Error
- * - potential Arithmetic Overflow
- * - typo / logical flaws
- * - clean-up on multiple test cases
- * - sufficient stress tests / random data tests
-*/

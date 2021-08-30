@@ -1,0 +1,11 @@
+id=0
+while true;
+do
+id=$(($id + 1))
+./gen_b > b.in
+./b < b.in > 1
+./bf_b < b.in > 2 
+result="$(diff -y 1 2)" &&
+   echo $id AC ||
+   { echo WA; echo $result; break; }
+done

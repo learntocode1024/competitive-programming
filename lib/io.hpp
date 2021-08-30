@@ -32,6 +32,17 @@ i64 rdll() {
     u = (u << 3) + (u << 1) + (*o++ - '0');  // u * 10 = u * 8 + u * 2 :)
   return static_cast<i64>((u ^ s) + !!s);
 }
+u64 rdull() {
+  u64 u = 0;
+  while (*o && *o <= 32) ++o;  // skip whitespaces...
+  if (*o == '-')
+    throw "shit";
+  else if (*o == '+')
+    ++o;  // skip sign
+  while (*o >= '0' && *o <= '9')
+    u = (u << 3) + (u << 1) + (*o++ - '0');  // u * 10 = u * 8 + u * 2 :)
+  return u;
+}
 char *rdstr(char *s) {
   while (*o && *o <= 32) ++o;
   while (*o > 32) *s++ = *o++;
@@ -46,3 +57,4 @@ char rdch() {
 using IO::rd;
 using IO::rdstr;
 using IO::rdll;
+using IO::rdull;

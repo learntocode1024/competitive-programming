@@ -13,11 +13,13 @@
 #include <algorithm>
 #include <cctype>
 #include <climits>
+#include <cmath>
 #include <cstdio>
 #include <cstring>
 #include <iostream>
 #include <string>
 #include <vector>
+#include <map>
 using namespace std;
 
 /********************************** buffer IO *********************************/
@@ -71,10 +73,47 @@ pii operator+(const pii &a, const pii &b) {
 
 /*********************************** solution *********************************/
 using IO::rd;
-#define MX
+const int N = 100005;
+int blk[N];
+
+int ans[N];
+struct qry {
+  int l, r, id;
+  bool operator< (const qry& b) const {
+    return blk[l] < blk[b.l] || (blk[l] == blk[b.l] && r < b.r);
+  }
+} q[N];
+
+int a[N], dis[N];
+
+int cnt, buc[N];
+
+inline void ch(int x, int t) {
+  buc[a[x]] += t;
+  if (buc[a[x]] & 1) ++cnt;
+  else --cnt;
+}
 
 void solve() {
-  
+  int n = rd();
+  for (int i = 0; i < n; ++i) {
+    a[i + 1] = rd();
+  }
+  int m = rd();
+  for (int i = 0; i < m; ++i) {
+    int l = rd(), r = rd();
+    map<int, bool> p;
+    int ans = 0;
+    for (int i = l; i <= r; ++i) {
+      if (!p[a[i]]) {
+        ans ++;
+      } else {
+        ans --;
+      }
+      p[a[i]] ^= 1;
+    }
+    cout << ans << '\n';
+  }
 }
 
 int main() {
@@ -87,14 +126,3 @@ int main() {
 #endif
   return 0;
 }
-/*
- * checklist:
- * - IO buffer size
- * - potential out-of-bound Errors
- * - inappropriate variable type
- * - potential Arithmetic Error
- * - potential Arithmetic Overflow
- * - typo / logical flaws
- * - clean-up on multiple test cases
- * - sufficient stress tests / random data tests
-*/

@@ -71,10 +71,47 @@ pii operator+(const pii &a, const pii &b) {
 
 /*********************************** solution *********************************/
 using IO::rd;
-#define MX
+#define MULTI
+
+int a[100005];
 
 void solve() {
-  
+  int n = rd();
+  for (int i = 1; i <= n; ++i) a[i] = rd() & 1;
+  int c1 = 0, c2 = 0;
+  vector<int> a1, a2;
+  FOR(i, 1, n + 1) if (a[i] == 0) a1.pb(i), c1 += a[i] == 0;
+  FOR(i, 1, n + 1) if (a[i] == 1) a2.pb(i), c2 += a[i] == 1;
+  i64 ans = 0;
+  if (n & 1) {
+    if (abs(c1 - c2) != 1) {
+      cout << "-1\n";
+      return;
+    }
+    if (c1 > c2) {
+      for (int i = 1; i <= n; i += 2) {
+        ans += abs(i - a1[i / 2]);
+      }
+    } else {
+      for (int i = 1; i <= n; i += 2) {
+        ans += abs(i - a2[i / 2]);
+      }
+    }
+  } else {
+    if (c1 != c2) {
+      cout << "-1\n";
+      return;
+    }
+    i64 ans1 = 0;
+    for (int i = 1; i <= n; i += 2) {
+      ans1 += abs(i - a1[i / 2]);
+    }
+    for (int i = 1; i <= n; i += 2) {
+      ans += abs(i - a2[i / 2]);
+    }
+    chkmin(ans, ans1);
+  }
+  cout << ans << '\n';
 }
 
 int main() {

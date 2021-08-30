@@ -71,10 +71,29 @@ pii operator+(const pii &a, const pii &b) {
 
 /*********************************** solution *********************************/
 using IO::rd;
-#define MX
+const i64 mod = 2148473647ull;
+
+i64 Q_pow(i64 x, i64 y) {
+  i64 ret = 1;
+  while (y) {
+    if (y & 1) ret = ret * x % mod;
+    x = x * x % mod;
+    y >>= 1;
+  }
+  return ret;
+}
+
+inline i64 inv(i64 x) {
+  return Q_pow(x % mod, mod - 2);
+}
 
 void solve() {
-  
+  int n = rd();
+  if (n == 1) {
+    puts("1");
+    return;
+  }
+  cout << n * (n + 1) % mod * inv((n << 2) - 2) % mod << '\n';
 }
 
 int main() {
@@ -87,14 +106,3 @@ int main() {
 #endif
   return 0;
 }
-/*
- * checklist:
- * - IO buffer size
- * - potential out-of-bound Errors
- * - inappropriate variable type
- * - potential Arithmetic Error
- * - potential Arithmetic Overflow
- * - typo / logical flaws
- * - clean-up on multiple test cases
- * - sufficient stress tests / random data tests
-*/

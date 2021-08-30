@@ -45,6 +45,7 @@ char *rdstr(char *s) {
   return s;
 }
 }  // namespace IO
+ 
 
 /********************************* utility ************************************/
 typedef long long i64;
@@ -71,10 +72,12 @@ pii operator+(const pii &a, const pii &b) {
 
 /*********************************** solution *********************************/
 using IO::rd;
-#define MX
+const int N = 105;
+
+i64 dp[N * N][N][N];
 
 void solve() {
-  
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
 }
 
 int main() {

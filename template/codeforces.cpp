@@ -87,3 +87,14 @@ int main() {
 #endif
   return 0;
 }
+/*
+ * checklist:
+ * - IO buffer size
+ * - potential out-of-bound Errors
+ * - inappropriate variable type
+ * - potential Arithmetic Error
+ * - potential Arithmetic Overflow
+ * - typo / logical flaws
+ * - clean-up on multiple test cases
+ * - sufficient stress tests / random data tests
+*/

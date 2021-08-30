@@ -71,10 +71,16 @@ pii operator+(const pii &a, const pii &b) {
 
 /*********************************** solution *********************************/
 using IO::rd;
-#define MX
+#define MULTI
 
 void solve() {
-  
+  int a = rd(), b = rd();
+  if (!a && !b) {
+    cout << "0\n";
+    return;
+  }
+  int d = abs(a - b);
+  cout << ((d & 1) ? -1 : ((a == b) ? 1 : 2)) << '\n';
 }
 
 int main() {

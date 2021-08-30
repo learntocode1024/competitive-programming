@@ -71,30 +71,62 @@ pii operator+(const pii &a, const pii &b) {
 
 /*********************************** solution *********************************/
 using IO::rd;
-#define MX
+const int N = 10000005;
+i64 a[N], b[N];
+i64 c[N];
+int n;
+
+void build() {
+  for (int i = 1; i <= n; ++i) c[i] = a[i];
+  for (int i = 1; i <= n; ++i) {
+    int to = i + (i & -i);
+    if (to <= n) c[to] += c[i];
+  }
+}
+
+void change(int x, i64 v) {
+  while (x <= n) {
+    c[x] += v;
+    x += x & -x;
+  }
+}
+
+int get(int x) {
+  i64 ret = 0;
+  while (x) {
+    ret += c[x];
+    x -= x & -x;
+  }
+  return ret;
+}
+
+void query() {
+  int l = 1, r = n + 1;
+  while (l < r) {
+    int mid = (l + r) >> 1;
+    if (get(mid) >= 0) r = mid;
+    else l = mid + 1;
+  }
+  cout << ((l > n || get(l) == b[l]) ? "YES" : "NO") << get(l) << l << '\n';
+}
 
 void solve() {
-  
+  srand(time(0));
+  n = 1000000;
+  for (int i = 1; i <= n; ++i) {
+    a[i] = rand();
+    if (rand() & 1) a[i] = -a[i];
+    b[i] = a[i];
+  }
+  sort(a, a + n);
+  n = unique(a, a + n) - a;
+  for (int i = 1; i <= n; ++i) b[i] = a[i];
+  for (int i = n; i > 1; --i) a[i] -= a[i - 1];
+  build();
+  query();
 }
 
 int main() {
-  IO::init_in();
-#ifdef MULTI
-  int T = IO::rd();
-  while (T--) solve();
-#else
   solve();
-#endif
   return 0;
 }
-/*
- * checklist:
- * - IO buffer size
- * - potential out-of-bound Errors
- * - inappropriate variable type
- * - potential Arithmetic Error
- * - potential Arithmetic Overflow
- * - typo / logical flaws
- * - clean-up on multiple test cases
- * - sufficient stress tests / random data tests
-*/

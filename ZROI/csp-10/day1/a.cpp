@@ -1,16 +1,3 @@
-/**********************************************************************
- * This file is the c++ solution to a particular CP problem written by
- * misaka18931 and was hosted on GitHub Repository below:
- * URL: https://github.com/misaka18931/competitive-programming
- *
- * Original Author: misaka18931
- * Date:
- * Algorithm:
- * Difficulty:
- *
- *********************************************************************/
-
-#include <algorithm>
 #include <cctype>
 #include <climits>
 #include <cstdio>
@@ -73,8 +60,22 @@ pii operator+(const pii &a, const pii &b) {
 using IO::rd;
 #define MX
 
+string ans[26];
+
 void solve() {
-  
+  ans[1] = "1";
+  for (int i = 2; i < 26; ++i) {
+    int j = 0;
+    do {
+      char cur = ans[i - 1][j];
+      int cnt = 1;
+      while (j < ans[i - 1].size() && ans[i - 1][j + 1] == cur) ++j, ++cnt;
+      ans[i] += to_string(cnt);
+      ans[i].pb(cur);
+      ++j;
+    } while (j < ans[i - 1].size());
+  }
+  cout << ans[rd()] << '\n';
 }
 
 int main() {
@@ -87,14 +88,3 @@ int main() {
 #endif
   return 0;
 }
-/*
- * checklist:
- * - IO buffer size
- * - potential out-of-bound Errors
- * - inappropriate variable type
- * - potential Arithmetic Error
- * - potential Arithmetic Overflow
- * - typo / logical flaws
- * - clean-up on multiple test cases
- * - sufficient stress tests / random data tests
-*/

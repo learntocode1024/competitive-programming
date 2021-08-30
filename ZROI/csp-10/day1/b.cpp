@@ -71,10 +71,58 @@ pii operator+(const pii &a, const pii &b) {
 
 /*********************************** solution *********************************/
 using IO::rd;
-#define MX
+const int N = 10000005;
+i64 a[N];
+i64 c[N];
+int n;
+
+void build() {
+  for (int i = 1; i <= n; ++i) c[i] = a[i];
+  for (int i = 1; i <= n; ++i) {
+    int to = i + (i & -i);
+    if (to <= n) c[to] += c[i];
+  }
+}
+
+void change(int x, i64 v) {
+  while (x <= n) {
+    c[x] += v;
+    x += x & -x;
+  }
+}
+
+int get(int x) {
+  i64 ret = 0;
+  while (x) {
+    ret += c[x];
+    x -= x & -x;
+  }
+  return ret;
+}
+
+void query() {
+  int l = 1, r = n + 1;
+  while (l < r) {
+    int mid = (l + r) >> 1;
+    if (get(mid) >= 0) r = mid;
+    else l = mid + 1;
+  }
+  cout << ((l <= n && get(l) == 0) ? "YES" : "NO") << '\n';
+}
 
 void solve() {
-  
+  int k = rd() - 1;
+  n = rd();
+  for (int i = 1; i <= n; ++i) a[i] = rd() - i;
+  for (int i = n; i > 1; --i) a[i] -= a[i - 1];
+  build();
+  query();
+  while (k--) {
+    int l = rd(), r = rd(), c = rd();
+    change(l, c);
+    change(r + 1, -c);
+    query();
+  }
 }
 
 int main() {
@@ -87,14 +135,3 @@ int main() {
 #endif
   return 0;
 }
-/*
- * checklist:
- * - IO buffer size
- * - potential out-of-bound Errors
- * - inappropriate variable type
- * - potential Arithmetic Error
- * - potential Arithmetic Overflow
- * - typo / logical flaws
- * - clean-up on multiple test cases
- * - sufficient stress tests / random data tests
-*/

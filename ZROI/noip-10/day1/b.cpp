@@ -71,10 +71,30 @@ pii operator+(const pii &a, const pii &b) {
 
 /*********************************** solution *********************************/
 using IO::rd;
-#define MX
+const int N = 1000005;
+i64 dp[N], ord[N];
+bool vis[N];
+const i64 mod = 1000000007;
 
 void solve() {
-  
+  int n = rd(), s = rd();
+  for (int i = 0; i < s; ++i) {
+    vis[rd()] = 1;
+  }
+  if (n > 1 && vis[n]) {
+    puts("0");
+    return;
+  }
+  ord[n] = 2;
+  dp[n] = 1;
+  for (int i = n - 1; i; --i) {
+    if (vis[i]) ord[i] = ord[i + 1] - 1;
+    else ord[i] = ord[i + 1] + 1;
+  }
+  for (int i = n - 1; i; --i) {
+    dp[i] = dp[i + 1] * ord[i + 1] % mod;
+  }
+  cout << dp[1] << '\n';
 }
 
 int main() {

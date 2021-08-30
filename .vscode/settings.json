@@ -16,7 +16,8 @@
     "string": "cpp",
     "unordered_map": "cpp",
     "unordered_set": "cpp",
-    "vector": "cpp"
+    "vector": "cpp",
+    "tuple": "cpp"
   },
   "icie.dir.projectDirectory": "~/contests/problem",
   "icie.compile.cppStandard": "C++14",

@@ -29,7 +29,7 @@ void init_in() {
   in[fread(in, 1, sizeof(in) - 4, stdin)] = 0;  // set 0 at the end of buffer.
 }
 int rd() {
-  unsigned u = 0, s = 0;
+  unsigned long long u = 0, s = 0;
   while (*o && *o <= 32) ++o;  // skip whitespaces...
   if (*o == '-')
     s = ~s, ++o;
@@ -71,10 +71,40 @@ pii operator+(const pii &a, const pii &b) {
 
 /*********************************** solution *********************************/
 using IO::rd;
-#define MX
+const int N = 100005;
+int a[N], s[N];
+int n;
+#define MULTI
+bool dp[2][1005][1005];
 
 void solve() {
-  
+  n = rd();
+  for (int i = 0; i < n; ++i) a[i] = rd();
+  int xsum = 0;
+  for (int i = 0; i < n; ++i) xsum ^= a[i];
+  if (!xsum) {
+    cout << "Draw\n";
+    return;
+  }
+  int t = 31 - __builtin_clz(xsum);
+  for (int i = 0; i < n; ++i) a[i] = (a[i] >> t) & 1;
+  s[0] = a[0];
+  for (int i = 1; i < n; ++i) s[i] = s[i - 1] ^ a[i];
+  for (int i = 0; i < n; ++i) for (int j = i; j < n; ++j) dp[0][i][j] = dp[1][i][j] = 0;
+  for (int i = 0; i < n; ++i) dp[a[i]][i][i] = 1;
+  for (int len = 2; len <= n; ++len) {
+    for (int l = 0; l + len <= n; ++l) {
+      int r = l + len - 1;
+      int S = s[r];
+      if (l) S ^= s[l - 1];
+      dp[1][l][r] |= !dp[S][l][r - 1];
+      dp[1][l][r] |= !dp[S][l + 1][r];
+      dp[0][l][r] |= !dp[S ^ 1][l][r - 1];
+      dp[0][l][r] |= !dp[S ^ 1][l + 1][r];
+    }
+  }
+  if (dp[1][0][n - 1]) cout << "Alice\n";
+  else cout << "Bob\n";
 }
 
 int main() {

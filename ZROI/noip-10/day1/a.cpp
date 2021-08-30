@@ -71,10 +71,65 @@ pii operator+(const pii &a, const pii &b) {
 
 /*********************************** solution *********************************/
 using IO::rd;
-#define MX
+const int N = 10000005;
+const i64 mod = 1000000007;
+
+i64 inv[N], pri[N], low[N], f[N], tot, Pow[N];
+i64 n, p;
+
+inline i64 reduce(i64 x) {
+  if (x >= mod) return x - mod;
+  return x;
+}
+
+i64 Q_Pow(i64 x, i64 y) {
+  i64 ret = 1ll;
+  while (y) {
+    if (y & 1) ret = ret * x % mod;
+    x = x * x % mod;
+    y >>= 1;
+  }
+  return ret;
+}
+
+void work() {
+  inv[1] = 1;
+  for (int i = 2; i <= n; ++i) {
+    inv[i] = inv[mod % i] * (mod - mod / i) % mod;
+  }
+  low[1] = 1;
+  for (int i = 2; i <= n; ++i) {
+    if (!low[i]) {
+      pri[tot++] = i;
+      low[i] = i;
+      f[i] = reduce(mod + 1 - inv[i]);
+      Pow[i] = Q_Pow(i, p + 1);
+    }
+    for (int j = 0; j < tot && 1ll * i * pri[j] <= n; ++j) {
+      i64 to = i * pri[j];
+      if (pri[j] == low[i]) {
+        low[to] = pri[j];
+        f[to] = f[i];
+        Pow[to] = Pow[i] * Pow[pri[j]] % mod;
+        break;
+      } else {
+        low[to] = pri[j];
+        f[to] = f[i] * f[pri[j]] % mod;
+        Pow[to] = Pow[i] * Pow[pri[j]] % mod;
+      }
+    }
+  }
+}
 
 void solve() {
-  
+  n = rd(), p = rd();
+  work();
+  i64 ans = p;
+  for (i64 i = 2; i <= n; ++i) {
+    i64 cur = reduce(Pow[i] + mod - i) * inv[i - 1] % mod * f[i] % mod;
+    ans = reduce(ans + cur);
+  }
+  cout << ans << '\n';
 }
 
 int main() {
