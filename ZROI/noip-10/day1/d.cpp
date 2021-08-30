@@ -22,7 +22,7 @@ using namespace std;
 
 /********************************** buffer IO *********************************/
 namespace IO {
-char in[1 << 24];  // sizeof in varied in problem
+char in[1 << 26];  // sizeof in varied in problem
 char const *o;
 void init_in() {
   o = in;
@@ -76,6 +76,7 @@ int a[N], s[N];
 int n;
 #define MULTI
 bool dp[2][1005][1005];
+void segai();
 
 void solve() {
   n = rd();
@@ -88,6 +89,8 @@ void solve() {
   }
   int t = 31 - __builtin_clz(xsum);
   for (int i = 0; i < n; ++i) a[i] = (a[i] >> t) & 1;
+  segai();
+  return;
   s[0] = a[0];
   for (int i = 1; i < n; ++i) s[i] = s[i - 1] ^ a[i];
   for (int i = 0; i < n; ++i) for (int j = i; j < n; ++j) dp[0][i][j] = dp[1][i][j] = 0;
@@ -105,6 +108,32 @@ void solve() {
   }
   if (dp[1][0][n - 1]) cout << "Alice\n";
   else cout << "Bob\n";
+}
+
+bool chk(int *a) {
+  if (!n) return 1;
+  int l = 0, r = n - 1;
+  while (a[l] == a[r] && l < r) ++l, --r;
+  for (int i = l; i <= r; i += 2) {
+    if (a[i] != a[i + 1]) return 0;
+  }
+  return 1;
+}
+
+void segai() {
+  bool win = 0;
+  if (~n & 1) {
+    win = 1;
+  } else {
+    int cnt = -1;
+    for (int i = 0; i < n; ++i) cnt += a[i];
+    if (cnt % 4 == 0 && (a[0] || a[n - 1])) {
+      --n;
+      if (a[n]) win |= chk(a);
+      if (a[0]) win |= chk(a + 1);
+    }
+  }
+  cout << (win ? "Alice\n" : "Bob\n");
 }
 
 int main() {

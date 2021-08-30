@@ -73,11 +73,19 @@ pii operator+(const pii &a, const pii &b) {
 /*********************************** solution *********************************/
 using IO::rd;
 const int N = 105;
+#define MULTI
+i64 mod;
 
-i64 dp[N * N][N][N];
+i64 dp[2][N][N];
 
 void solve() {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+  int n = rd();
+  mod = rd();
+  dp[0][n][0] = 1;
+  for (int i = 0; i < n * (n - 1); ++i) {
+    decltype(dp[0]) f = dp[i & 1], g = dp[~i & 1];
+    
+  }
 }
 
 int main() {

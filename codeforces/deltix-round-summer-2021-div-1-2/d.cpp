@@ -71,14 +71,36 @@ pii operator+(const pii &a, const pii &b) {
 
 /*********************************** solution *********************************/
 using IO::rd;
-#define MX
+const int N = 10005;
+int OR[N], AND[N], XOR[N], a[N];
+int n, k;
 
 void solve() {
-  
+  cin >> n >> k;
+  for (int i = 1; i < n; ++i) {
+    cout << "and " << i << ' ' << (i + 1) << endl;
+    cin >> AND[i];
+  }
+  cout << "and " << 1 << ' ' << n << endl;
+  cin >> AND[n];
+  for (int i = 1; i < n; ++i) {
+    cout << "or " << i << ' ' << (i + 1) << endl;
+    cin >> OR[i];
+  }
+  cout << "or " << 1 << ' ' << n << endl;
+  cin >> OR[n];
+  for (int i = 1; i <= n; ++i) {
+    XOR[i] = OR[i] ^ AND[i];
+  }
+  for (int i = 0; i < 31; ++i) {
+    int orig = 0;
+    while (orig <= n && )
+  }
+  sort(a + 1, a + n + 1);
+  cout << "finish " << a[k] << endl;
 }
 
 int main() {
-  IO::init_in();
 #ifdef MULTI
   int T = IO::rd();
   while (T--) solve();

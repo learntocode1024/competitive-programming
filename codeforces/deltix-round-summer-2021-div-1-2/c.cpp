@@ -71,57 +71,10 @@ pii operator+(const pii &a, const pii &b) {
 
 /*********************************** solution *********************************/
 using IO::rd;
-const int N = 100005;
-i64 c[N], ac[N], sc[N];
-int blk[N];
-
-struct DS {
-  i64 a[N];
-  i64 mx[N];
-  int pf[N], sf[N];
-  void init() {
-    for (int i = 1; i <= n; ++i) {
-      if (a[i] && !a[i - 1]) pf[i] = i;
-      pf[i] = pf[i - 1];
-    }
-    for (int i = n; i; --i) {
-      if (a[i] && !a[i + 1]) sf[i] = i;
-      sf[i] = sf[i + 1];
-    }
-    int i = 1;
-    i64 sum = 0;
-    while (i <= n) {
-      if (blk[i] != blk[i - 1]) sum = 0;
-      
-    }
-  }
-} T1, T2;
+#define MX
 
 void solve() {
-  int n = rd(), q = rd();
-  int B = sqrt(n) + 1;
-  for (int i = 1; i <= n; ++i) {
-    blk[i] = blk[i - 1];
-    if (i % B == 1) ++blk[i];
-  }
-  FOR(i, 1, n + 1) c[i] = rd();
-  FOR(i, 1, n + 1) c[i] -= rd();
-  FOR(i, 1, n + 1) {
-    ac[i] = abs(c[i]);
-    if (c[i] > 0) T1.a[i] = c[i];
-    else T2.a[i] = -c[i];
-    sc[i] = sc[i - 1] + c[i];
-  }
-  T1.init();
-  T2.init();
-  while (q--) {
-    int l = rd(), r = rd();
-    if (sc[r] != sc[l - 1]) {
-      puts("-1");
-    } else {
-      cout << max(T1.get(l, r), T2.get(l, r)) << '\n';
-    }
-  }
+  
 }
 
 int main() {
