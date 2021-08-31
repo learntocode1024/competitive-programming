@@ -76,16 +76,47 @@ const int N = 105;
 #define MULTI
 i64 mod;
 
+inline void reduce(i64 &x) {
+  if (x >= mod) x -= mod;
+}
+
 i64 dp[2][N][N];
+/* DP variables:
+ * - current edge to be added O(n^2)
+ * - times when SCCs were merged
+ * - size of the only greatest SCC
+ */
 
 void solve() {
   int n = rd();
   mod = rd();
-  dp[0][n][0] = 1;
-  for (int i = 0; i < n * (n - 1); ++i) {
-    decltype(dp[0]) f = dp[i & 1], g = dp[~i & 1];
-    
+  memset(dp[0], 0, sizeof(dp[0]));
+  dp[0][0][1] = 1;
+  for (int i = 1; i <= n * (n - 1); ++i) {
+    decltype(dp[0]) f = dp[~i & 1], g = dp[i & 1];
+    memset(g, 0, sizeof(g));
+    i64 ans = 0;
+    for (int j = 0; j < n; ++j) {
+      for (int k = 1; k <= n; ++k) {
+        reduce(g[j][k + 1] += g[j][k]);
+        if (f[j][k]) {
+          if (n * (n - 1) / 2 + k * (k - 1) / 2 >= i) reduce(g[j][k] += f[j][k]); // fails form new SCC
+          int lim = i - j - (!j) + (k == 1);
+          // the state g[j][k] will need at least (k + j - 1) edges.
+          // except for k == 1, (j - 1) edges.
+          //        for j == 0, an extra edge.
+          chkmin(lim, n);
+          if (lim >= k + 1) { // form new SCC
+            reduce(g[j + 1][k + 1] += f[j][k]);
+            reduce(g[j + 1][lim + 1] += mod - f[j][k]);
+          }
+        }
+        ans += g[j][k];
+      }
+    }
+    cout << ans % mod << ' ';
   }
+  cout << '\n';
 }
 
 int main() {
