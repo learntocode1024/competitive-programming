@@ -17,7 +17,9 @@ vector<mint> reduce(int l, int r, vector<mint> dn) {
   for (int i = 0; i < mid - l; ++i)
     ldn.push_back(dn[i]);
   auto lt = reduce(l, mid, ldn);
-  for (int i )
+  for () {
+    
+  }
 }
 
 void solve() {
