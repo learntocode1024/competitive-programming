@@ -16,6 +16,7 @@
 #include <cstdio>
 #include <cstring>
 #include <iostream>
+#include <queue>
 #include <string>
 #include <vector>
 using namespace std;
@@ -105,13 +106,70 @@ void solve() {
 }
 }
 
+const int N = 1000005;
+vector<int> G[N];
+int dis[N];
+
+queue<int> q;
+void dist() {
+  q.push(0);
+  for (int i = 1; i < a; ++i) dis[i] = 1e8;
+  while (!q.empty()) {
+    int u = q.front();
+    q.pop();
+    for (auto v : G[u]) {
+      if (dis[v] > dis[u] + 1) {
+        dis[v] = dis[u] + 1;
+        q.push(v);
+      }
+    }
+  }
+}
+
 int vis[10];
 void solve() {
   a = rd(), k = rd();
   FOR(i, 0, k) vis[rd()] = 1;
   FOR(i, 0, 10) if (!vis[i]) d.pb(i);
   if (d.empty()) puts("-1");
-  else sub5::solve();
+  if (a == 1) {
+    for (int i = 1; i < 10; ++i) {
+      if (!vis[i]) {
+        cout << i << '\n';
+        return;
+      }
+    }
+    puts("-1");
+    return;
+  }
+  // else sub5::solve();
+  for (int i = 1; i < a; ++i) {
+    for (int c : d) {
+      int to = (10 * i + c) % a;
+      G[to].pb(i);
+    }
+  }
+  dist();
+  int mn = 1e8, c = -1;
+  for (auto u : d) {
+    if (u && dis[u] < mn) mn = dis[u % a], c = u;
+  }
+  if (mn == 1e8) {
+    puts("-1");
+    return;
+  }
+  cout << c;
+  while (c != 0) {
+    for (int v : d) {
+      int to = (c * 10 + v) % a;
+      if (dis[to] == dis[c % a] - 1) {
+        cout << v;
+        c = to;
+        break;
+      }
+    }
+  }
+  cout << '\n';
 }
 
 int main() {

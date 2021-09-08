@@ -4,7 +4,7 @@
       "name": "linux-gcc-x64",
       "includePath": [
         "${workspaceFolder}/**",
-        "/home/solitary/.local/lib/ac-library"
+        "$HOME/.local/lib/ac-library"
       ],
       "compilerPath": "/usr/bin/gcc",
       "cStandard": "${default}",
