@@ -7,7 +7,6 @@
 *.e
 main
 .vscode
-!/.vscode
 template/current.cpp
 bin
 a.out
