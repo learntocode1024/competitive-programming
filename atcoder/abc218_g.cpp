@@ -18,7 +18,10 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
 using namespace std;
+using namespace __gnu_pbds;
 
 /********************************** buffer IO *********************************/
 namespace IO {
@@ -42,7 +45,6 @@ int rd() {
 char *rdstr(char *s) {
   while (*o && *o <= 32) ++o;
   while (*o > 32) *s++ = *o++;
-  *s = '\0';
   return s;
 }
 }  // namespace IO
@@ -72,11 +74,49 @@ pii operator+(const pii &a, const pii &b) {
 
 /*********************************** solution *********************************/
 using IO::rd;
-// #define MULTI
-const int N = 0;
+const int N = 100005;
+vector<int> G[N];
+using mset = tree<int, null_type, less_equal<int>, rb_tree_tag, tree_order_statistics_node_update>;
+mset S;
+int a[N];
+int ans[N], dep[N];
+
+void dfs(int u, int fa) {
+  dep[u] = dep[fa] + 1;
+  S.insert(a[u]);
+  if (G[u].size() == 1 && u != 1) {
+    int t = S.size();
+    int f = t / 2;
+    ans[u] = *S.find_by_order(f);
+    if ((t & 1) == 0) {
+      ans[u] = (ans[u] + *S.find_by_order(f - 1)) >> 1;
+    }
+    S.erase(a[u]);
+    return;
+  }
+  int cur;
+  if (dep[u] & 1) cur = -1000;
+  else cur = 1.5e9;
+  for (auto v : G[u]) {
+    if (v == fa) continue;
+    dfs(v, u);
+    if (dep[u] & 1) chkmax(cur, ans[v]);
+    else chkmin(cur, ans[v]);
+  }
+  ans[u] = cur;
+  S.erase(a[u]);
+}
 
 void solve() {
-  
+  int n = rd();
+  FOR(i, 1, n + 1) a[i] = rd();
+  FOR(i, 1, n) {
+    int u = rd(), v = rd();
+    G[u].pb(v);
+    G[v].pb(u);
+  }
+  dfs(1, 0);
+  cout << ans[1] << '\n';
 }
 
 int main() {
