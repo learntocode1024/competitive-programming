@@ -55,7 +55,7 @@ const int N = 15;
 typedef vector<i64> vi;
 int c[N];
 vi a[N];
-set<u64> st, st1, st01, st11;
+set<u64> st, st1;
 int n;
 u64 B, C, D, E;
 
@@ -70,16 +70,8 @@ inline u64 val(int *cur) {
   }
   return ret;
 }
-inline u64 val1(int *cur) {
-  u64 ret = 0;
-  FOR(i, 0, n) {
-    ret = (ret * D + (cur[i] + 1) * E) % 998244353;
-  }
-  return ret;
-}
 int xx;
-priority_queue<pair<i64, int> > pq;
-int inp[N];
+int x[N], s;
 
 void solve() {
   cin >> n;
@@ -93,40 +85,33 @@ void solve() {
   int m;
   cin >> m;
   FOR(i, 0, m) {
-    FOR(j, 0, n)cin >> xx,  inp[j] = xx-1;
-    st.insert(val(inp));
-    st01.insert(val1(inp));
+    FOR(j, 0, n)cin >> xx,  f[i][j] = xx-1;
+    st.insert(val(f[i]));
   }
-  i64 s = 0;
-  FOR(i, 0, n) s += a[i].back(), f[1][i] = c[i] - 1;
-  pq.push(mkp(s, 1));
-  while (!pq.empty()) {
-    auto u = pq.top();
-    st1.insert(val(f[u.se]));
-    st11.insert(val1(f[u.se]));
-    pq.pop();
-    if (st.find(val(f[u.se])) == st.end() && st01.find(val1(f[u.se])) == st01.end()) {
-      FOR(i, 0, n) cout << f[u.se][i] + 1 << ' ';
-      cout << '\n';
-      return;
-    } else {
-      i64 s = u.fi;
-      FOR(i, 0, n) {
-        if (f[u.se][i] > 0) {
-          --f[u.se][i];
-          if (st1.find(val(f[u.se])) != st1.end() && st11.find(val1(f[u.se])) != st11.end()) continue;
-          int v;
-          if (tt == 0) v = ++tot;
-          else v = stk[tt--];
-          FOR(j, 0, n) f[v][j] = f[u.se][j];
-          int cc = f[v][i];
-          pq.push(mkp(s - a[i][cc+1] + a[i][cc], v));
-          ++f[u.se][i];
+  FOR(i, 0, n) --c[i];
+  if (st.find(val(c)) == st.end()) {
+    FOR(i, 0, n) cout << c[i] + 1 << ' ';
+    return;
+  }
+  FOR(i, 0, m) {
+    i64 ss = 0, cur = 0;
+    FOR(j, 0, n) {
+      ss += a[j][f[i][j]];
+    }
+    FOR(j, 0, n) {
+      if (f[i][j]) {
+        --f[i][j];
+        cur = ss - a[j][f[i][j]+1] + a[j][f[i][j]];
+        if (cur > s && st.find(val(f[i])) == st.end()) {
+          s = cur;
+          FOR(k, 0, n) x[k] = f[i][k];
         }
+        ++f[i][j];
       }
     }
-    stk[++tt] = u.se;
   }
+  FOR(i, 0, n) cout << x[i] + 1 << ' ';
+  cout << '\n';
 }
 
 int main() {

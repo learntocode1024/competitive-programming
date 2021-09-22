@@ -16,6 +16,7 @@
 #include <cstdio>
 #include <cstring>
 #include <iostream>
+#include <set>
 #include <string>
 #include <vector>
 using namespace std;
@@ -75,53 +76,106 @@ using IO::rd;
 // #define MULTI
 const int N = 200005;
 const int mod = 998244353;
-int a[N];
+int a[N], pos[N];
 int n;
 inline void red(int &x) {
   if (x >= mod) x -= mod;
 }
 
-namespace pt30 {
-int dp[N];
-bool ismx[N];
-int b[N];
-vector<int> g[N];
-void work() {
-  dp[0] = 1;
-  for (int i = 1; i <= n; ++i) {
-    for (int j = i + 1; j <= n; ++j) {
-      for (int k = i; k <= j; ++k) {
-        b[k] = a[k];
-      }
-      sort(b + i, b + j + 1);
-      bool yes = 1;
-      int mx = a[i];
-      for (int k = i; k < j; ++k) {
-        chkmax(mx, a[k]);
-        if (mx == b[k]) {
-          yes = 0;
-          break;
-        }
-      }
-      if (yes) {
-        g[j].pb(i);
-      }
-    }
+vector<pii> q[N];
+set<pii> si;
+
+struct DS {
+  struct node {
+    int s, f;
+    int t = 0;
+  } a[N << 2];
+  inline int sum() {
+    return a[1].f;
   }
-  for (int i = 1; i <= n; ++i) {
-    dp[i] += dp[i-1];
-    for (auto j : g[i]) {
-      red(dp[i] += dp[j - 1]);
-    }
+  void up(int p) {
+    red(a[p].s = a[p<<1].s + a[p<<1|1].s);
+    if (a[p].t == 0) {
+      red(a[p].f = a[p<<1].f + a[p<<1|1].f);
+    } else a[p].f = 0;
   }
-  cout << dp[n] << '\n';
-}
-}
+  void ins(int p, int l, int r, int s, int v) {
+    if (r - l == 1) {
+      a[p].s = v;
+      if (a[p].t == 0) a[p].f = v;
+      else a[p].f = 0;
+      return;
+    }
+    int mid = (l + r) >> 1;
+    if (s < mid) ins(p<<1, l, mid, s, v);
+    else ins(p<<1|1, mid, r, s, v);
+    up(p);
+  }
+  void toggle(int p, int l, int r, int s, int t, int v) {
+    if (r == t && s == l) {
+      a[p].t += v;
+      if (a[p].t == 0) {if (r - l > 1) red(a[p].f = a[p<<1].f + a[p<<1|1].f); else a[p].f = a[p].s;}
+      else a[p].f = 0;
+      return;
+    }
+    int mid = (l + r) >> 1;
+    if (s < mid) toggle(p<<1, l, mid, s, min(mid, t), v);
+    if (t > mid) toggle(p<<1|1, mid, r, max(mid, s), t, v);
+    up(p);
+  }
+} D;
 
 void solve() {
   n = rd();
   FOR(i, 0, n) a[i + 1] = rd();
-  if (n <= 3000) pt30::work();
+  FOR(i, 1, n + 1) {
+    pos[a[i]] = i;
+  }
+  si.insert(mkp(1, n));
+  FOR(i, 1, n + 1) {
+    int u = pos[i];
+    auto it = si.upper_bound(mkp(u, n + 1));
+    auto cur = it;
+    --cur;
+    int l = u, m = u, rl = -1, rr = -1;
+    if ((*cur).fi == u) {
+      if (cur == si.begin()) l = 1;
+      else {
+        --cur;
+        l = (*cur).se + 1;
+        ++cur;
+      }
+    }
+    if (u == (*cur).se && it != si.end()) {
+      rl = (*it).fi;
+      rr = (*it).se;
+    }
+    if (u < (*cur).se) {
+      rl = u + 1;
+      rr = (*cur).se;
+    }
+    if (rl != -1) {
+      q[rl].emplace_back(l, m);
+      q[rr + 1].emplace_back(-l, m);
+    }
+    if (u - 1 >= (*cur).fi) si.insert(mkp((*cur).fi, u-1));
+    if (u + 1 <= (*cur).se) si.insert(mkp(u+1, (*cur).se));
+    si.erase(cur);
+  }
+  D.ins(1, 0, n + 1, 0, 1);
+  int ans = 0;
+  FOR(i, 1, n + 1) {
+    for (auto p : q[i]) {
+      if (p.fi < 0) {
+        D.toggle(1, 0, n + 1, -p.fi - 1, p.se, -1); // recover
+      } else {
+        D.toggle(1, 0, n + 1, p.fi - 1, p.se, 1); // ban
+      }
+    }
+    ans = D.sum();
+    D.ins(1, 0, n + 1, i, ans);
+  }
+  cout << ans << '\n';
 }
 
 int main() {

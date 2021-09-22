@@ -16,7 +16,7 @@
 #include <cstdio>
 #include <cstring>
 #include <iostream>
-#include <set>
+#include <map>
 #include <string>
 #include <vector>
 using namespace std;
@@ -75,23 +75,56 @@ using IO::rd;
 #define MULTI
 const int N = 200005;
 int n, m;
-int a[N];
-pii L[N];
+i64 a[N];
+i64 dp[2][N];
+vector<pii> q[N];
+map<int, int> ss;
 
-set<int> ss;
 void solve() {
+  ss.clear();
   int n = rd(), m = rd();
-  FOR(i, 1, n + 1) a[i] = rd(), ss.insert(a[i]);
+  FOR(i, 0, n + 2) q[i].clear();
+  ss.insert(mkp(-1000000007, 0));
+  ss.insert(mkp(1000000007, 0));
+  FOR(i, 1, n + 1) a[i] = rd(), ss.insert(mkp(a[i], 0));
   int tot = 0;
+  for (auto i = ss.begin(); i != ss.end(); ++i) {
+    i->se = tot++;
+  }
   FOR(i, 0, m) {
     int l = rd(), r = rd();
     auto it = ss.lower_bound(l);
-    if (*it <= r) continue;
-    L[tot++] = mkp(l, r);
+    if ((*it).fi <= r) continue;
+    q[(*it).se].emplace_back(l, r);
   }
-  m = tot;
-  sort(L, L + m);
-  
+  sort(a + 1, a + n + 1);
+  a[0] = -1e14;
+  a[n+1] = 1e14;
+  dp[0][0] = 0;
+  dp[1][0] = 1e15;
+  FOR(i, 1, n + 2) {
+    dp[1][i] = dp[0][i] = 1e18;
+    i64 lc = 0, rc = 0;
+    sort(q[i].begin(), q[i].end());
+    i64 mn = a[i];
+    for (int j = q[i].size() - 1; j >= 0; --j) {
+      if (j + 1 == q[i].size() || q[i][j].fi <= q[i][j + 1].fi) {
+        lc = q[i][j].fi - a[i - 1];
+        rc = a[i] - mn;
+        chkmin(dp[0][i], min(dp[0][i - 1] + 2*lc+rc, dp[1][i - 1] + lc+rc));
+        chkmin(dp[1][i], min(dp[0][i - 1] + 2*lc+2*rc, dp[1][i - 1] + lc+2*rc));
+      }
+      chkmin(mn, 1ll * q[i][j].se);
+    }
+    if (q[i].empty()) {
+      dp[1][i] = min(dp[0][i - 1], dp[1][i - 1]);
+    } else {
+      rc = a[i] - mn;
+      chkmin(dp[0][i], min(dp[0][i - 1] + rc, dp[1][i - 1] + rc));
+      chkmin(dp[1][i], min(dp[0][i - 1] + 2*rc, dp[1][i - 1] + 2*rc));
+    }
+  }
+  cout << min(dp[0][n+1], dp[1][n+1]) << '\n';
 }
 
 int main() {

@@ -16,6 +16,8 @@
 #include <cstdio>
 #include <cstring>
 #include <iostream>
+#include <map>
+#include <queue>
 #include <string>
 #include <vector>
 using namespace std;
@@ -71,10 +73,156 @@ pii operator+(const pii &a, const pii &b) {
 
 /*********************************** solution *********************************/
 using IO::rd;
-#define MX
+const int N = 100005;
+int n, m, q;
+bool vis[N << 4];
+map<pii, int> mp;
+
+int tot;
+
+struct ed {
+  int u, v, w, id;
+  void init() {
+    u = rd(), v = rd(), w = rd();
+    if (v < u) swap(u, v);
+    id = ++tot;
+    mp[mkp(u, v)] = id;
+  }
+  bool operator< (const ed& rhs) const {
+    return w > rhs.w;
+  }
+  inline bool vis() const { return ::vis[id]; };
+};
+using pe = priority_queue<ed>;
+
+pe g, a[N];
+bool vis1[N << 4];
+int ver[N];
+int tot1;
+int gmin(int u);
+priority_queue<pii> mn;
+
+void ins() {
+  ed c;
+  c.init();
+  g.push(c);
+  a[c.u].push(c);
+  a[c.v].push(c);
+  mn.push(mkp(gmin(c.u), ++tot1));
+  ver[c.u] = tot1;
+  mn.push(mkp(gmin(c.v), ++tot1));
+  ver[c.v] = tot1;
+}
+void del() {
+  int u = rd(), v = rd();
+  if (u > v) swap(u, v);
+  vis[mp[mkp(u,v)]] = 1;
+  mp.erase(mkp(u, v));
+  vis1[ver[u]] = vis1[ver[v]] = 0;
+  mn.push(mkp(gmin(u), ++tot1));
+  ver[u] = tot1;
+  mn.push(mkp(gmin(v), ++tot1));
+  ver[v] = tot1;
+}
+
+pii tmp[10];
+ed ttmp[10];
+ed stk[N];
+int t, tott;
+int fnd(ed);
+int qry() {
+  tott = 0;
+  for (int i = 0; i < 6 && !g.empty(); ++i) {
+    while (g.top().vis()) g.pop();
+    tmp[tott++] = mkp(g.top().w, g.top().id);
+    stk[t++] = g.top();
+    g.pop();
+  }
+  FOR(i, 0, t) g.push(stk[i]);
+  t = 0;
+  int ret = 2e9;
+  ed mn = g.top();
+  ttmp[0] = mn;
+  int tt = 1, u = mn.u;
+  for (int i = 0; i < 3 && !a[u].empty(); ++i) {
+    while (a[u].top().vis()) a[u].pop();
+    if (i > 0) ttmp[tt++] = a[u].top();
+    stk[t++] = a[u].top();
+    a[u].pop();
+  }
+  FOR(i, 0, t) a[u].push(stk[i]);
+  t = 0;
+  u = mn.v;
+  for (int i = 0; i < 3 && !a[u].empty(); ++i) {
+    while (a[u].top().vis()) a[u].pop();
+    if (i > 0) ttmp[tt++] = a[u].top();
+    stk[t++] = a[u].top();
+    a[u].pop();
+  }
+  FOR(i, 0, t) a[u].push(stk[i]);
+  t = 0;
+  FOR(i, 0, tt) {
+    chkmin(ret, ttmp[i].w + fnd(ttmp[i]));
+  }
+  while (vis1[::mn.top().se]) ::mn.pop();
+  return min(ret, -::mn.top().fi);
+}
+
+int id[10];
+bool vv[N << 2];
+
+int fnd(ed c) {
+  int tt = 0, u = c.u;
+  for (int i = 0; i < 3 && !a[u].empty(); ++i) {
+    while (a[u].top().vis()) a[u].pop();
+    id[tt++] = a[u].top().id;
+    stk[t++] = a[u].top();
+    a[u].pop();
+  }
+  FOR(i, 0, t) a[u].push(stk[i]);
+  t = 0;
+  u = c.v;
+  for (int i = 0; i < 3 && !a[u].empty(); ++i) {
+    while (a[u].top().vis()) a[u].pop();
+    id[tt++] = a[u].top().id;
+    stk[t++] = a[u].top();
+    a[u].pop();
+  }
+  FOR(i, 0, t) a[u].push(stk[i]);
+  t = 0;
+  FOR(i, 0, tt) vv[id[i]] = 1;
+  int ret;
+  FOR(i, 0, tott) if (!vv[tmp[i].se]) ret = tmp[i].fi;
+  FOR(i, 0, tt) vv[id[i]] = 0;
+  return ret;
+}
+int gmin(int u) {
+  int ret = 0;
+  for (int i = 0; i < 3 && !a[u].empty(); ++i) {
+    while (a[u].top().vis()) a[u].pop();
+    ret += a[u].top().w;
+    stk[t++] = a[u].top();
+    a[u].pop();
+  }
+  FOR(i, 0, t) a[u].push(stk[i]);
+  if (t < 3) {
+    t = 0;
+    return -2e9;
+  }
+  t = 0;
+  return -ret;
+}
 
 void solve() {
-  
+  n = rd(), m = rd();
+  while (m--) {
+    ins();
+  }
+  q = rd();
+  while ((cout << qry() << '\n') && q--) {
+    if (rd() == 0) del();
+    else ins();
+  }
 }
 
 int main() {

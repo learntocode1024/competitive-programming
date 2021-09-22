@@ -22,7 +22,7 @@ using namespace std;
 
 /********************************** buffer IO *********************************/
 namespace IO {
-char in[1 << 26];  // sizeof in varied in problem
+char in[1 << 24];  // sizeof in varied in problem
 char const *o;
 void init_in() {
   o = in;
@@ -73,76 +73,55 @@ pii operator+(const pii &a, const pii &b) {
 /*********************************** solution *********************************/
 using IO::rd;
 // #define MULTI
-const int N = 300005;
-int vis[N], vvis[N], dfn[N], t[N], in[N], cnt[N], low, tot;
-vector<int> G[N];
-int n, m, k;
+const int N = 200005;
+const int mod = 998244353;
+int a[N];
+int n;
+inline void red(int &x) {
+  if (x >= mod) x -= mod;
+}
 
-bool dfs(int u) {
-  dfn[u] = ++tot;
-  if (G[u].empty() && in[u] < 2) return true;
-  int v = G[u][0];
-  if (dfn[v]) return false;
-  return dfs(v);
+namespace pt30 {
+int dp[N];
+bool ismx[N];
+int b[N];
+vector<int> g[N];
+void work() {
+  dp[0] = 1;
+  for (int i = 1; i <= n; ++i) {
+    for (int j = i + 1; j <= n; ++j) {
+      for (int k = i; k <= j; ++k) {
+        b[k] = a[k];
+      }
+      sort(b + i, b + j + 1);
+      bool yes = 1;
+      int mx = a[i];
+      for (int k = i; k < j; ++k) {
+        chkmax(mx, a[k]);
+        if (mx == b[k]) {
+          yes = 0;
+          break;
+        }
+      }
+      if (yes) {
+        g[j].pb(i);
+      }
+    }
+  }
+  for (int i = 1; i <= n; ++i) {
+    dp[i] += dp[i-1];
+    for (auto j : g[i]) {
+      red(dp[i] += dp[j - 1]);
+    }
+  cout << dp[i] << ' ';
+  }
+}
 }
 
 void solve() {
-  n = rd(), m = rd(), k = rd();
-  int sp = k;
-  FOR(i, 0, n) {
-    int c = rd();
-    bool valid = 1;
-    FOR(j, 0, c) {
-      t[j] = rd();
-      if (vis[t[j]] == i + 1) {
-        valid = 0;
-      }
-      vis[t[j]] = i + 1;
-    }
-    if (valid) {
-      FOR(j, 0, c) {
-        if (!vvis[t[j]]) --sp;
-        vvis[t[j]] = 1;
-        if (j) {
-          G[t[j - 1]].pb(t[j]);
-        }
-      }
-    } else {
-      FOR(j, 0, c) dfn[t[j]] = 1;
-    }
-  }
-  FOR(i, 1, k + 1) {
-    sort(begin(G[i]), end(G[i]));
-    G[i].erase(unique(G[i].begin(), G[i].end()), G[i].end());
-    for (auto v : G[i]) {
-      ++in[v];
-    }
-  }
-  FOR(i, 1, k + 1)
-    if (G[i].size() > 1 || in[i] > 1) dfn[i] = 1;
-  tot = 1;
-  vector<int> con;
-  FOR(i, 1, k + 1) {
-    if (!dfn[i] && in[i] == 0) {
-      low = tot;
-      if (dfs(i)) {
-        ++cnt[tot - low];
-        con.pb(tot - low);
-      }
-    }
-  }
-  sort(begin(con), end(con));
-  con.erase(unique(con.begin(), con.end()), con.end());
-  static int dp[N];
-  const int mod = 998244353;
-  dp[0] = 1;
-  FOR(i, 1, m + 1) {
-    for (auto l : con) {
-      if (l > i) break;
-      dp[i] = (dp[i] + 1ll * dp[i - l] * cnt[l]) % mod;
-    }
-  }
-  cout << dp[m] << '\n';
+  n = rd();
+  FOR(i, 0, n) a[i + 1] = rd();
+  if (n <= 3000) pt30::work();
 }
 
 int main() {
@@ -155,14 +134,3 @@ int main() {
 #endif
   return 0;
 }
-/*
- * checklist:
- * - IO buffer size
- * - potential out-of-bound Errors
- * - inappropriate variable type
- * - potential Arithmetic Error
- * - potential Arithmetic Overflow
- * - typo / logical flaws
- * - clean-up on multiple test cases
- * - sufficient stress tests / random data tests
- */
