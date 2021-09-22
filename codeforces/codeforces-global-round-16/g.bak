@@ -80,103 +80,71 @@ using IO::rd;
 const int N = 100005;
 int n, m;
 
-using edge = tuple<u32, int, int>;
+/* struct edge { */
+/*   int u, v, w; */
+/*   edge() = default; */
+/*   edge(int _u, int _v, int _w) { */
+/*     u = min(_u, _v); */
+/*     v = max(_u, _v); */
+/*     w = _w; */
+/*   } */
+/*   bool operator< (const edge &rhs) const { */
+/*     return w != rhget<0>(s) ? w < rhget<0>(s) : (u != rhs.u ? u < rhs.u : (v < rhs.v)); */
+/*   } */
+/* }; */
+using edge = tuple<int, int, int>;
 
-using mi = set<edge>;
-/* typedef tree<edge, null_type, less<edge>, rb_tree_tag, null_node_update> mi; */
-gp_hash_table<i64, int> gw;
+/* using mi = set<edge>; */
+typedef tree<edge, null_type, less<edge>, rb_tree_tag, null_node_update> mi;
+unordered_map<i64, int> gw;
 mi a, g[N];
 i64 s3[N];
-map<i64, int> ss3;
+multiset<i64> ss3;
 const int C = 7;
 
 inline void sum3(int);
 
-edge to_e;
-bool inss;
-int cnt_add;
 inline void ins() {
-  inss = 1;
-  cnt_add = 0;
   int u = rd(), v = rd(), w = rd();
   if (u > v) swap(u, v);
   edge e(w, u, v);
-  to_e = e;
+  a.insert(e);
   g[u].insert(e);
   g[v].insert(e);
-  gw[1ll * u * N + v] = w;
-  sum3(u);
-  sum3(v);
-  inss = 0;
-  if (cnt_add == 2) a.insert(e);
+  gw[1ll * u * n + v] = w;
+  sum3(u), sum3(v);
 }
 
-bool to_add;
 inline void del() {
-  to_add = 0;
   int u = rd(), v = rd();
   if (u > v) swap(u, v);
-  edge e(gw[1ll * u * N + v], u, v);
-  if (a.find(e) != a.end()) {
-    to_add = 1;
-    a.erase(e);
-  }
+  edge e(gw[1ll * u * n + v], u, v);
+  a.erase(e);
   g[u].erase(e);
   g[v].erase(e);
-  sum3(u);
-  sum3(v);
-  to_add = 0;
+  sum3(u), sum3(v);
 }
 
 void sum3(int u) {
-  if (s3[u] > 0) {
-    auto it = ss3.find(s3[u]);
-    if (it->se == 1) ss3.erase(it);
-    else --it->se;
-  }
-  if (g[u].size() < 3) {
-    if (inss) {
-      ++cnt_add;
-    }
-    return;
-  }
   i64 res = 0;
-  bool flag = 0;
-  auto it = g[u].begin();
-  for (int i = 0; i < 3; ++i) {
-    res += get<0>(*it);
-    if(i < 2) ++it;
-    if (inss && to_e == *it) {
-      ++cnt_add;
-      flag = 1;
+  if (g[u].size() < 3) res = 1e18;
+  else {
+    auto it = g[u].begin();
+    FOR(i, 0, 3) {
+      res += get<0>(*it);
+      ++it;
     }
   }
-  ++ss3[res];
-  s3[u] = res;
-  if (to_add) {
-    bool yes = 0;
-    int v = get<1>(*it);
-    if (v == u) v = get<2>(*it);
-    auto itt = g[v].begin();
-    FOR(i, 0, min(3, (int)g[v].size())) {
-      if (*itt == *it) {
-        yes = 1;
-        break;
-      }
-      ++itt;
-    }
-    if (yes) a.insert(*it);
+  if (s3[u]) {
+    ss3.erase(ss3.find(s3[u]));
   }
-  if (flag) {
-    ++it;
-    a.erase(*it);
-  }
+  if (res < 1e18) ss3.insert(res), s3[u] = res;
 }
 
 mi vis;
 edge comp[C];
 int cnt;
- 
+
 i64 cal(edge e) {
   int u = get<1>(e);
   auto it = g[u].begin();
@@ -190,28 +158,30 @@ i64 cal(edge e) {
     vis.insert(*it);
     ++it;
   }
-  it = a.begin();
-  i64 ret = 1e18;
-  while (it != a.end()) {
-    if (vis.find(*it) != vis.end()) {
-      ++it;
-    } else {
-      ret = get<0>(e) + get<0>(*it);
+  i64 ret = get<0>(e);
+  for (int i = 0; i < cnt; ++i) {
+    if (vis.find(comp[i]) == vis.end()) {
+      ret += get<0>(comp[i]);
       break;
     }
   }
   vis.clear();
   return ret;
 }
- 
-i64 sol() {
+
+int sol() {
+  auto it = a.begin();
+  for (int i = 0; it != a.end() && i < C; ++i) {
+    cnt = i + 1;
+    comp[i] = *it;
+  }
   i64 ret = 1e18;
-  if (ss3.size()) ret = ss3.begin()->fi;
+  if (ss3.size()) ret = *ss3.begin();
   edge mn = *a.begin();
   int u = get<1>(mn);
-  auto it = g[u].begin();
+  it = g[u].begin();
   FOR(i, 0, min(3, (int)g[u].size())) {
-    if (i) chkmin(ret, cal(*it));
+    chkmin(ret, cal(*it));
     ++it;
   }
   u = get<2>(mn);
@@ -222,6 +192,7 @@ i64 sol() {
   }
   return ret;
 }
+
 
 void solve() {
   n = rd(), m = rd();

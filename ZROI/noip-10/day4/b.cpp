@@ -49,7 +49,7 @@ const int N = 4005;
 int n;
 int a[N*N/4];
 
-namespace bf {
+namespace bf { 
 int c[N][N], b[N][N];
 void solve() {
   int tot = 0;
