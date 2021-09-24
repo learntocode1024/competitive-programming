@@ -79,6 +79,7 @@ const int B = 450, T = 200;
 int n, m, k;
 int a[N], disc[N];
 int pref_all[N];
+int maxa;
 
 struct qry {
   int l, r, id;
@@ -95,25 +96,83 @@ struct qry {
   }
 } q[N];
 vector<qry> g[N];
-
-namespace solve_divisor {
-void work() {
-
-}
-
-}
-
-namespace solve_multipliant {
-void work() {
-
-}
-}
-
 i64 ans[N];
+
+namespace solve_divisor { // (a, a) included
+int cnt[N];
+void work() {
+  for (int i = 1; i <= n; ++i) {
+    pref_all[i] += cnt[a[i]];
+    for (int k = 1; k * k <= a[i]; ++k) {
+      if (a[i] % k == 0) {
+        ++cnt[k];
+        if (a[i] != k * k) ++cnt[a[i]/k];
+      }
+    }
+    for (auto u : g[i]) {
+      int to = u.id;
+      if (u.l > 0) {
+        for (int j = u.l; j <= u.r; ++j) {
+          ans[to] += cnt[a[j]];
+        }
+      } else {
+        for (int j = -u.l; j <= u.r; ++j) {
+          ans[to] -= cnt[a[j]];
+        }
+      }
+    }
+  }
+}
+
+}
+
+namespace solve_multiple { // (a, a) included
+int cnt[N], vis[T+5];
+int f[T+5][N];
+void work() {
+  for (int k = 1; k <= T; ++k) {
+    for (int i = 1; i <= n; ++i) {
+      f[k][i] = f[k][i-1];
+      if (a[i] % k == 0) ++f[k][i];
+    }
+  } // part 2 (when a[i] <= T)
+  for (int i = 1; i <= n; ++i) {
+    pref_all[i] += cnt[a[i]];
+    for (int k = 1; k <= T; ++k) {
+      if (f[k][i] != f[k][i-1]) pref_all[i] += cnt[k];
+    }
+    if (a[i] > T) {
+      for (int k = a[i]; k <= maxa; k += a[i]) {
+        ++cnt[k];
+      }
+    } else {
+      ++vis[a[i]];
+    }
+    for (auto u : g[i]) {
+      int to = u.id;
+      if (u.l > 0) {
+        for (int j = u.l; j <= u.r; ++j) {
+          ans[to] += cnt[a[j]];
+        }
+        for (int k = 1; k <= T; ++k) {
+          ans[to] += 1ll * (f[k][u.r] - f[k][u.l-1]) * cnt[k];
+        }
+      } else {
+        for (int j = -u.l; j <= u.r; ++j) {
+          ans[to] -= cnt[a[j]];
+        }
+        for (int k = 1; k <= T; ++k) {
+          ans[to] -= 1ll * (f[k][u.r] - f[k][-u.l-1]) * cnt[k];
+        }
+      }
+    }
+  }
+}
+}
 
 void solve() {
   n = rd(), m = rd();
-  FOR(i, 1, n + 1) a[i] = rd();
+  FOR(i, 1, n + 1) a[i] = rd(), chkmax(maxa, a[i]);
   FOR(i, 0, m) q[i].init(i);
   sort(q, q + m);
   int l = 1, r = 0;
@@ -124,7 +183,7 @@ void solve() {
     if (r > q[i].r) g[l-1].eb(-q[i].r - 1, r, i), r = q[i].r;
   }
   solve_divisor::work();
-  solve_multipliant::work();
+  solve_multiple::work();
   l = 1, r = 0;
   FOR(i, 0, m) {
     while (l > q[i].l) --l, ans[i] -= pref_all[l];
@@ -136,7 +195,7 @@ void solve() {
     ans[i] += ans[i - 1];
   }
   FOR(i, 0, m) {
-    cout << ans[q[i].id] << '\n';
+    cout << ans[q[i].id] - q[i].r + q[i].l - 1 << '\n';
   }
 }
 
