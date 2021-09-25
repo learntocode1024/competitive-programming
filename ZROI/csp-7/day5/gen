@@ -1,0 +1,13 @@
+#!/usr/bin/env python
+
+from cyaron import * # 引入CYaRon的库
+
+test_data = IO(file_prefix="ex") # 生成 heat[1|2|3].in/out 三组测试数据
+
+n = 50000
+m = 200000
+test_data.input_writeln(n, m) 
+
+graph = Graph.DAG(n, m, repeated_edges=True)
+test_data.input_writeln(graph.to_str(output=Edge.unweighted_edge))
+
