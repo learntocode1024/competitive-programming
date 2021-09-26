@@ -16,7 +16,6 @@
 #include <cstdio>
 #include <cstring>
 #include <iostream>
-#include <list>
 #include <string>
 #include <vector>
 using namespace std;
@@ -55,8 +54,8 @@ typedef unsigned int u32;
 typedef pair<int, int> pii;
 #define pb(x) push_back(x)
 #define mkp(x, y) make_pair(x, y)
-#define x first
-#define y second
+#define fi first
+#define se second
 #define FOR(x, y, z) for (int x = y; x < z; ++x)  // always [y, z)
 #define ROF(x, y, z) for (int x = z - 1; x >= y; --x)
 template <typename T>
@@ -68,58 +67,60 @@ void chkmin(T &a, const T &b) {
   a = min(a, b);
 }
 pii operator+(const pii &a, const pii &b) {
-  return mkp(a.x + b.x, a.y + b.y);
+  return mkp(a.fi + b.fi, a.se + b.se);
 }
 
 /*********************************** solution *********************************/
 using IO::rd;
 // #define MULTI
-const int N = 1005;
+const int N = 100005;
+const int K = 105;
+const int mod = 1e9+7;
+int f[N][K][2][2];
+int sz[N];
+int n, k;
+int g[K][2][2];
+vector<int> G[N];
+inline void red(int &x) { if (x >= mod) x -= mod; };
 
-inline i64 ccw(i64 _x, i64 _y, i64 _z, i64 _w) {
-  return _x * _w - _y * _z;
-}
-
-struct seg {
-  pii a, b;
-  seg() = default;
-  seg(pii _a, pii _b) { a = _a, b = _b; };
-  bool cross(const seg &rhs) {
-    i64 m = ccw(b.x - a.x, b.y - a.y, rhs.a.x - a.x, rhs.a.y - a.y);
-    i64 n = ccw(b.x - a.x, b.y - a.y, rhs.b.x - b.x, rhs.b.y - b.y);
-    return (m > 0 && n < 0) || (m < 0 && n > 0);
+void dfs(int u, int fa) {
+  sz[u] = 1;
+  f[u][0][0][0] = 1;
+  f[u][1][0][1] = 1;
+  for (auto v : G[u]) {
+    if (v == fa) continue;
+    dfs(v, u);
+    for (int i = 0; i <= min(sz[u], k); ++i) {
+      for (int j = 0; j <= min(k, sz[v]) && i + j <= k; ++j) {
+        g[i+j][0][0] = (g[i+j][0][0] + 1ll * f[u][i][0][0] * f[v][j][1][0]) % mod;
+        g[i+j][0][1] = (g[i+j][0][1] + 1ll * f[u][i][0][1] * (f[v][j][1][0] + f[v][j][0][0])) % mod;
+        g[i+j][1][0] = (g[i+j][1][0] + 1ll * f[u][i][1][0] * (f[v][j][1][0] + f[v][j][1][1]) + 1ll * f[u][i][0][0] * f[v][j][1][1]) % mod;
+        g[i+j][1][1] = (g[i+j][1][1] + 1ll * f[u][i][1][1] * (1ll * f[v][j][0][0] + f[v][j][0][1] + f[v][j][1][0] + f[v][j][1][1]) + 1ll * f[u][i][0][1] * (f[v][j][1][1] + f[v][j][0][1])) % mod;
+      }
+    }
+    sz[u] += sz[v];
+    for (int i = 0; i <= min(sz[u], k); ++i) {
+      f[u][i][0][0] = g[i][0][0];
+      f[u][i][0][1] = g[i][0][1];
+      f[u][i][1][0] = g[i][1][0];
+      f[u][i][1][1] = g[i][1][1];
+      g[i][0][0] = 0;
+      g[i][0][1] = 0;
+      g[i][1][0] = 0;
+      g[i][1][1] = 0;
+    }
   }
-};
-
-seg a[N * N];
-pii p[N];
-
-inline bool cross(seg aa, seg bb) {
-  return aa.cross(bb) && bb.cross(aa);
 }
 
 void solve() {
-  int n = rd();
-  FOR(i, 0, n) {
-    int x = rd(), y = rd();
-    p[i] = mkp(x, y);
+  n = rd(), k = rd();
+  FOR(i, 1, n) {
+    int u = rd(), v = rd();
+    G[u].pb(v);
+    G[v].pb(u);
   }
-  int tot = 0;
-  FOR(i, 0, n) {
-    FOR(j, i + 1, n) {
-      a[tot++] = seg(p[i], p[j]);
-    }
-  }
-  int cnt = 0;
-  for (int i = 0; i < tot; ++i) {
-    bool yes = 1;
-    for (int j = 0; j < tot && yes; ++j) {
-      if (j == i) continue;
-      yes = yes && !cross(a[j], a[i]);
-    }
-    if (yes) ++cnt;
-  }
-  cout << cnt << '\n';
+  dfs(1, 0);
+  cout << (f[1][k][1][1] + f[1][k][1][0]) % mod << '\n';
 }
 
 int main() {

@@ -11,6 +11,7 @@
  *********************************************************************/
 
 #include <algorithm>
+#include <bitset>
 #include <cctype>
 #include <climits>
 #include <cstdio>
@@ -19,6 +20,33 @@
 #include <string>
 #include <vector>
 using namespace std;
+
+/********************************** buffer IO *********************************/
+namespace IO {
+char in[1 << 24];  // sizeof in varied in problem
+char const *o;
+void init_in() {
+  o = in;
+  in[fread(in, 1, sizeof(in) - 4, stdin)] = 0;  // set 0 at the end of buffer.
+}
+int rd() {
+  unsigned u = 0, s = 0;
+  while (*o && *o <= 32) ++o;  // skip whitespaces...
+  if (*o == '-')
+    s = ~s, ++o;
+  else if (*o == '+')
+    ++o;  // skip sign
+  while (*o >= '0' && *o <= '9')
+    u = (u << 3) + (u << 1) + (*o++ - '0');  // u * 10 = u * 8 + u * 2 :)
+  return static_cast<int>((u ^ s) + !!s);
+}
+char *rdstr(char *s) {
+  while (*o && *o <= 32) ++o;
+  while (*o > 32) *s++ = *o++;
+  *s = '\0';
+  return s;
+}
+}  // namespace IO
 
 /********************************* utility ************************************/
 typedef long long i64;
@@ -44,56 +72,32 @@ pii operator+(const pii &a, const pii &b) {
 }
 
 /*********************************** solution *********************************/
+using IO::rd;
 // #define MULTI
-const int N = 5005;
-vector<int> G[N];
-int k;
-int a[N][N/3];
-int maxd[N/3];
-inline i64 c2(i64 x) { return x * (x - 1) / 2; }
+const int N = 1000005;
 
-i64 ans = 0;
-int t2[N][N];
-void dfs1(int u, int fa) {
-  a[u][0] = 1;
-  for (auto v : G[u]) {
-    if (v == fa) continue;
-    dfs1(v, u);
-    chkmax(maxd[u], maxd[v] + 1);
-    for (int d = 1; d <= maxd[u]; ++d) {
-      ans += t2[u][d] * a[v][d - 1];
-      t2[u][d] += a[u][d] * a[v][d - 1];
-      a[u][d] += a[v][d - 1];
-    }
-  }
-}
-
-void dfs2(int u, int fa) {
-  if (u != 1) {
-    for (int d = 1; d <= maxd[u]; ++d) {
-      int tmp = a[fa][d - 1];
-      if (d > 1) tmp -= a[u][d - 2];
-      ans += tmp * t2[u][d];
-      a[u][d] += tmp;
-    }
-  }
-  for (auto v : G[u]) {
-    if (v == fa) continue;
-    dfs2(v, u);
-  }
-}
+typedef bitset<N> bit;
+char ans[N];
 
 void solve() {
+  ans[0] = '1';
   int n;
-  cin >> n;
-  FOR(i, 1, n) {
-    int u, v;
-    cin >> u >> v;
-    G[u].pb(v);
-    G[v].pb(u);
+  bit k;
+  cin >> n >> k;
+  int x = k._Find_first();
+  FOR(i, 0, x + 1) k.flip(i);
+  for (int l = 1; l <= n; ++l) {
+    if (!k.any()) break;
+    if (k[n - l]) {
+      ans[l] = '1';
+      k.flip(n - l);
+    } else {
+      x = k._Find_first();
+      FOR(i, 0, x + 1) k.flip(i);
+      ans[l] = '0';
+    };
+    // cerr << l << '\n';
   }
-  dfs1(1, 0);
-  dfs2(1, 0);
   cout << ans << '\n';
 }
 

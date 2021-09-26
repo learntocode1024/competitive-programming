@@ -20,6 +20,33 @@
 #include <vector>
 using namespace std;
 
+/********************************** buffer IO *********************************/
+namespace IO {
+char in[1 << 24];  // sizeof in varied in problem
+char const *o;
+void init_in() {
+  o = in;
+  in[fread(in, 1, sizeof(in) - 4, stdin)] = 0;  // set 0 at the end of buffer.
+}
+int rd() {
+  unsigned u = 0, s = 0;
+  while (*o && *o <= 32) ++o;  // skip whitespaces...
+  if (*o == '-')
+    s = ~s, ++o;
+  else if (*o == '+')
+    ++o;  // skip sign
+  while (*o >= '0' && *o <= '9')
+    u = (u << 3) + (u << 1) + (*o++ - '0');  // u * 10 = u * 8 + u * 2 :)
+  return static_cast<int>((u ^ s) + !!s);
+}
+char *rdstr(char *s) {
+  while (*o && *o <= 32) ++o;
+  while (*o > 32) *s++ = *o++;
+  *s = '\0';
+  return s;
+}
+}  // namespace IO
+
 /********************************* utility ************************************/
 typedef long long i64;
 typedef unsigned long long u64;
@@ -44,60 +71,38 @@ pii operator+(const pii &a, const pii &b) {
 }
 
 /*********************************** solution *********************************/
+using IO::rd;
 // #define MULTI
-const int N = 5005;
-vector<int> G[N];
-int k;
-int a[N][N/3];
-int maxd[N/3];
-inline i64 c2(i64 x) { return x * (x - 1) / 2; }
+const int N = 5e4+5, L = 20;
+int a[N][L];
 
-i64 ans = 0;
-int t2[N][N];
-void dfs1(int u, int fa) {
-  a[u][0] = 1;
-  for (auto v : G[u]) {
-    if (v == fa) continue;
-    dfs1(v, u);
-    chkmax(maxd[u], maxd[v] + 1);
-    for (int d = 1; d <= maxd[u]; ++d) {
-      ans += t2[u][d] * a[v][d - 1];
-      t2[u][d] += a[u][d] * a[v][d - 1];
-      a[u][d] += a[v][d - 1];
-    }
-  }
-}
-
-void dfs2(int u, int fa) {
-  if (u != 1) {
-    for (int d = 1; d <= maxd[u]; ++d) {
-      int tmp = a[fa][d - 1];
-      if (d > 1) tmp -= a[u][d - 2];
-      ans += tmp * t2[u][d];
-      a[u][d] += tmp;
-    }
-  }
-  for (auto v : G[u]) {
-    if (v == fa) continue;
-    dfs2(v, u);
-  }
-}
+char tab[3][4] = {"012", "120", "201"};
 
 void solve() {
-  int n;
-  cin >> n;
-  FOR(i, 1, n) {
-    int u, v;
-    cin >> u >> v;
-    G[u].pb(v);
-    G[v].pb(u);
+  int n = rd(), l = rd();
+  FOR(i, 0, n) a[i][0] = 2;
+  int _l = 0, pw = 1;
+  while (pw < n) pw *= 3, ++_l;
+  int s = l - _l;
+  for (int k = 0; k < n; ++k) {
+    int cur = k;
+    for (int i = l - 1; i >= s; --i) {
+      a[k][i] = cur % 3;
+      cur /= 3;
+    }
   }
-  dfs1(1, 0);
-  dfs2(1, 0);
-  cout << ans << '\n';
+  FOR(i, 0, 3) {
+    FOR(j, 0, n) {
+      FOR(k, 0, l) {
+        cout << tab[i][a[j][k]];
+      }
+      cout << '\n';
+    }
+  }
 }
 
 int main() {
+  IO::init_in();
 #ifdef MULTI
   int T = IO::rd();
   while (T--) solve();

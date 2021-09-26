@@ -1,5 +1,6 @@
 #pragma once
 #include <utility>
+#include <algorithm>
 
 using namespace std;
 typedef long long i64;

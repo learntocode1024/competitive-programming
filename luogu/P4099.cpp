@@ -44,13 +44,11 @@ pii operator+(const pii &a, const pii &b) {
 }
 
 /*********************************** solution *********************************/
-// #define MULTI
-const int N = 5005;
+#define MULTI
+const int N = 1005;
 vector<int> G[N];
-int k;
-int a[N][N/3];
-int maxd[N/3];
-inline i64 c2(i64 x) { return x * (x - 1) / 2; }
+
+int mod = 1000000007;
 
 i64 ans = 0;
 int t2[N][N];
@@ -68,32 +66,17 @@ void dfs1(int u, int fa) {
   }
 }
 
-void dfs2(int u, int fa) {
-  if (u != 1) {
-    for (int d = 1; d <= maxd[u]; ++d) {
-      int tmp = a[fa][d - 1];
-      if (d > 1) tmp -= a[u][d - 2];
-      ans += tmp * t2[u][d];
-      a[u][d] += tmp;
-    }
-  }
-  for (auto v : G[u]) {
-    if (v == fa) continue;
-    dfs2(v, u);
-  }
-}
-
 void solve() {
   int n;
   cin >> n;
+  FOR(i, 1, n + 1) G[i].clear();
   FOR(i, 1, n) {
     int u, v;
     cin >> u >> v;
     G[u].pb(v);
     G[v].pb(u);
   }
-  dfs1(1, 0);
-  dfs2(1, 0);
+  dfs(1, 0);
   cout << ans << '\n';
 }
 

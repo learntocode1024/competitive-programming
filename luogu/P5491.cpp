@@ -16,7 +16,6 @@
 #include <cstdio>
 #include <cstring>
 #include <iostream>
-#include <list>
 #include <string>
 #include <vector>
 using namespace std;
@@ -55,8 +54,8 @@ typedef unsigned int u32;
 typedef pair<int, int> pii;
 #define pb(x) push_back(x)
 #define mkp(x, y) make_pair(x, y)
-#define x first
-#define y second
+#define fi first
+#define se second
 #define FOR(x, y, z) for (int x = y; x < z; ++x)  // always [y, z)
 #define ROF(x, y, z) for (int x = z - 1; x >= y; --x)
 template <typename T>
@@ -68,58 +67,56 @@ void chkmin(T &a, const T &b) {
   a = min(a, b);
 }
 pii operator+(const pii &a, const pii &b) {
-  return mkp(a.x + b.x, a.y + b.y);
+  return mkp(a.fi + b.fi, a.se + b.se);
 }
 
 /*********************************** solution *********************************/
 using IO::rd;
-// #define MULTI
-const int N = 1005;
+#define MULTI
+const int N = 0;
 
-inline i64 ccw(i64 _x, i64 _y, i64 _z, i64 _w) {
-  return _x * _w - _y * _z;
+int q_pow(i64 x, int a, int p) {
+  i64 ret = 1;
+  while (a) {
+    if (a & 1) ret = ret * x % p;
+    x = x * x % p;
+    a >>= 1;
+  }
+  return ret;
 }
 
-struct seg {
-  pii a, b;
-  seg() = default;
-  seg(pii _a, pii _b) { a = _a, b = _b; };
-  bool cross(const seg &rhs) {
-    i64 m = ccw(b.x - a.x, b.y - a.y, rhs.a.x - a.x, rhs.a.y - a.y);
-    i64 n = ccw(b.x - a.x, b.y - a.y, rhs.b.x - b.x, rhs.b.y - b.y);
-    return (m > 0 && n < 0) || (m < 0 && n > 0);
+int cipolla(int n, int p) { // p is an odd prime
+  if (q_pow(n, (p-1)>>1, p) == p - 1) return -1;
+  if (n == 0) return 0;
+  srand(time(0));
+  i64 a, w = -1;
+  while (w == -1) {
+    a = rand() % (p - 1) + 1;
+    w = (a * a - n + p) % p;
+    if (q_pow(w, (p-1)>>1, p) == 1) w = -1;
   }
-};
-
-seg a[N * N];
-pii p[N];
-
-inline bool cross(seg aa, seg bb) {
-  return aa.cross(bb) && bb.cross(aa);
+  int t = (p+1) >> 1;
+  pair<i64, i64> x(1, 0), y(a, 1);
+  auto mul = [w, p] (pair<i64, i64> a, pair<i64, i64> b) {
+    pair<i64, i64> ret;
+    ret.fi = (a.fi * b.fi + a.se * b.se % p * w) % p;
+    ret.se = (a.fi * b.se + a.se * b.fi) % p;
+    return ret;
+  };
+  while (t) {
+    if (t & 1) x = mul(x, y);
+    y = mul(y, y);
+    t >>= 1;
+  }
+  return x.fi;
 }
 
 void solve() {
-  int n = rd();
-  FOR(i, 0, n) {
-    int x = rd(), y = rd();
-    p[i] = mkp(x, y);
-  }
-  int tot = 0;
-  FOR(i, 0, n) {
-    FOR(j, i + 1, n) {
-      a[tot++] = seg(p[i], p[j]);
-    }
-  }
-  int cnt = 0;
-  for (int i = 0; i < tot; ++i) {
-    bool yes = 1;
-    for (int j = 0; j < tot && yes; ++j) {
-      if (j == i) continue;
-      yes = yes && !cross(a[j], a[i]);
-    }
-    if (yes) ++cnt;
-  }
-  cout << cnt << '\n';
+  int n = rd(), p = rd();
+  int ans = cipolla(n, p);
+  if (ans == -1) cout << "Hola!\n";
+  else if (ans == 0) cout << ans << '\n';
+  else cout << min(ans, p - ans) << ' ' << max(ans, p - ans) << '\n';
 }
 
 int main() {
