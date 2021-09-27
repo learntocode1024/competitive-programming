@@ -222,21 +222,22 @@ void ln(i64 *a, int len) {
 
 i64 ff[N], g[N] = {1, p-1};
 
-void solve() {
-  int n = rd();
+void init() {
   i64 w = q_pow(3, (p-1)/N);
-  FOR(i, 0, n) ff[i] = rd();
   gp[0] = 1;
   FOR(i, 1, N) gp[i] = gp[i-1] * w % p;
   iv[1] = 1;
   FOR(i, 2, N) iv[i] = (p - p / i) * iv[p % i] % p;
-  sqrt(ff, n);
-  FOR(i, 0, n) cout << ff[i] << ' ';
-  cout << '\n';
+}
+
+void solve() {
+  int n = rd();
+  
 }
 
 int main() {
   IO::init_in();
+  init();
 #ifdef MULTI
   int T = IO::rd();
   while (T--) solve();
