@@ -256,10 +256,11 @@ void init() {
 
 void solve() {
   init();
-  int n = rd() + 1;
-  FOR(i, 0, n) h[i] = 1;
-  MSET(h, n);
-  FOR(i, 1, n) cout << h[i] << '\n';
+  int n = rd(), m = rd();
+  ++m;
+  FOR(i, 0, n) ++h[rd()];
+  MSET(h, m);
+  FOR(i, 1, m) cout << h[i] << '\n';
 }
 
 int main() {
