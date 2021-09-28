@@ -81,9 +81,9 @@ pii operator+(const pii &a, const pii &b) {
 /*********************************** solution *********************************/
 using IO::rd;
 // #define MULTI
-const int N = 1 << 19;
-const i64 p = 998244353;
-i64 gp[N], iv[N];
+const int N = 1 << 19, NN = 1e7+5;
+const i64 p = 1004535809;
+i64 gp[N], iv[NN];
 
 i64 q_pow(i64 x, int y) {
   i64 ret = 1;
@@ -137,102 +137,51 @@ void mul(i64 *a, i64 *b, int len) {
 }
 
 i64 c[N], A[N], B[N];
-i64 *a;
+i64 fac[NN], ifac[NN];
+int len, m, s, n;
 
-void cdq(int l, int r) {
-  if (r == l + 1) {
-    if (l) c[l] = c[l] * iv[l] % p;
-    return;
-  }
-  int mid = (l + r) >> 1;
-  cdq(l, mid);
-  FOR(i, l, mid) A[i-l] = c[i];
-  FOR(i, 0, r-l) B[i] = a[i];
-  int lim = wrap(mid + r - 2 * l);
-  dft(A, lim);
-  dft(B, lim);
-  FOR(i, 0, lim) A[i] = A[i] * B[i] % p;
-  idft(A, lim);
-  FOR(i, mid, r) red(c[i] += A[i-l]);
-  FOR(i, 0, lim) A[i] = B[i] = 0;
-  cdq(mid, r);
-}
-
-void exp(i64 *a, int len) {
-  c[0] = 1;
-  for (int i = 0; i < len; ++i) {
-    a[i] = i * a[i] % p;
-  }
-  ::a = a;
-  cdq(0, len);
-  for (int i = 0; i < len; ++i) {
-    a[i] = c[i];
-    c[i] = 0;
-  }
-}
-
-void inv(i64 *a, int len) {
-  c[0] = q_pow(a[0], p - 2);
-  int lm = wrap(len);
-  for (int n = 1; n < len; n <<= 1) {
-    int lim = n << 2;
-    FOR(i, 0, n) A[i] = c[i];
-    FOR(i, 0, n << 1) B[i] = a[i];
-    dft(A, lim);
-    dft(B, lim);
-    FOR(i, 0, lim) A[i] = (A[i] * 2 + p - A[i] * A[i] % p * B[i] % p) % p;
-    idft(A, lim);
-    FOR(i, 0, n << 1) c[i] = A[i];
-    FOR(i, 0, lim) A[i] = B[i] = 0;
-  }
-  for (int i = 0; i < len; ++i) a[i] = c[i];
-  for (int i = 0; i < lm; ++i) c[i] = 0;
-}
-
-i64 h[N], f[N];
-void sqrt(i64 *a, int len) {
-  h[0] = 1;
-  int lm = wrap(len);
-  for (int n = 1; n < len; n <<= 1) {
-    int lim = n << 2;
-    FOR(i, 0, n) f[i] = h[i];
-    inv(f, n << 1);
-    FOR(i, 0, n << 1) B[i] = a[i];
-    dft(f, lim);
-    dft(B, lim);
-    FOR(i, 0, lim) A[i] = (f[i] * B[i]) % p;
-    idft(A, lim);
-    FOR(i, 0, n << 1) h[i] = (A[i] + h[i]) * iv[2] % p;
-    FOR(i, 0, lim) f[i] = A[i] = B[i] = 0;
-  }
-  for (int i = 0; i < len; ++i) a[i] = h[i];
-  for (int i = 0; i < lm; ++i) h[i] = 0;
-}
-
-void ln(i64 *a, int len) {
-  FOR(i, 0, len) {
-    f[i] = a[i];
-    a[i] = (i + 1) * a[i + 1] % p;
-  }
-  inv(f, len);
-  mul(a, f, len << 1);
-  ROF(i, 1, len) a[i] = a[i-1] * iv[i] % p;
-  a[0] = 0;
-}
-
-i64 ff[N], g[N] = {1, p-1};
-
-void solve() {
-  int n = rd();
+void init() {
   i64 w = q_pow(3, (p-1)/N);
-  FOR(i, 0, n) ff[i] = rd();
   gp[0] = 1;
   FOR(i, 1, N) gp[i] = gp[i-1] * w % p;
   iv[1] = 1;
-  FOR(i, 2, N) iv[i] = (p - p / i) * iv[p % i] % p;
-  sqrt(ff, n);
-  FOR(i, 0, n) cout << ff[i] << ' ';
-  cout << '\n';
+  FOR(i, 2, len + 1) iv[i] = (p - p / i) * iv[p % i] % p;
+  fac[0] = fac[1] = ifac[0] = ifac[1] = 1;
+  FOR(i, 2, len + 1) fac[i] = fac[i - 1] * i % p, ifac[i] = ifac[i - 1] * iv[i] % p;
+}
+
+i64 w[N];
+i64 f[N], g[N];
+
+inline i64 C(int n, int k) {
+  if (k < 0 || k > n) return 0;
+  return fac[n] * ifac[k] % p * ifac[n - k] % p;
+}
+
+inline i64 multiC(int k) {
+  return (fac[n] * q_pow(ifac[s], k) % p * ifac[n - s * k] % p);
+}
+
+void solve() {
+  n = rd(), m = rd(), s = rd();
+  len = max(n, m);
+  init();
+  FOR(i, 0, m + 1) w[i] = rd();
+  for (int k = 0; k <= min(m, n / s); ++k) {
+    f[k] = C(m, k) * q_pow(m - k, n - k * s) % p * multiC(k) % p;
+  }
+  int lim = min(m, n / s) + 1;
+  FOR(i, 0, lim) f[i] = f[i] * fac[i] % p;
+  FOR(i, 0, lim) {
+    if ((i) & 1) g[i] = p - ifac[i];
+    else g[i] = ifac[i];
+  }
+  reverse(f, f + lim);
+  mul(f, g, lim * 2);
+  reverse(f, f + lim);
+  i64 ans = 0;
+  FOR(i, 0, lim) ans = (ans + f[i] * w[i] % p * ifac[i]) % p;
+  cout << ans << '\n';
 }
 
 int main() {
