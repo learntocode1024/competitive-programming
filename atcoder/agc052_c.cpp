@@ -53,7 +53,6 @@ typedef unsigned long long u64;
 typedef unsigned int u32;
 typedef pair<int, int> pii;
 #define pb(x) push_back(x)
-#define eb emplace_back
 #define mkp(x, y) make_pair(x, y)
 #define fi first
 #define se second
@@ -74,40 +73,29 @@ pii operator+(const pii &a, const pii &b) {
 /*********************************** solution *********************************/
 using IO::rd;
 // #define MULTI
-const int N = 3e5+5;
-vector<pii> G[N];
-int sz[N];
-int n;
-bool has2 = false;
-i64 dfs(int u, int fa) {
-  sz[u] = 1;
-  i64 len = -1;
-  for (auto v : G[u]) {
-    i64 ret = dfs(v.fi, u);
-    if (ret != -1) len = ret + v.se;
-    else if (sz[v] > 1) has2 = 1;
-    sz[u] += sz[v];
+const int N = 5005;
+const i64 p = 998244353;
+template <typename T>
+inline void red(T &x) {
+  if (x >= p) x -= p;
+}
+
+i64 q_pow(i64 x, int y) {
+  i64 ret = 1;
+  while (y) {
+    if (y & 1) ret = ret * x % p;
+    x = x * x % p;
+    y >>= 1;
   }
-  if (u == n) return 0;
   return ret;
 }
 
-void solve() {
-  n = rd();
-  int m = rd();
-  FOR(i, 1, n) {
-    int u = rd(), v = rd(), w = rd();
-    G[u].eb(v, w);
-    G[v].eb(u, w);
-  }
-  i64 len = dfs(1, 0);
-  if (has2) {
-    FOR(i, 0, m) cout << len << '\n';
-  } else {
-    FOR(i, 0, m) {
+int cnt[N][]
 
-    }
-  }
+void solve() {
+  int n = rd(), P = rd();
+  i64 ans = q_pow(P - 1, n);
+  
 }
 
 int main() {
