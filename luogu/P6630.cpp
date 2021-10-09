@@ -16,7 +16,6 @@
 #include <cstdio>
 #include <cstring>
 #include <iostream>
-#include <queue>
 #include <string>
 #include <vector>
 using namespace std;
@@ -74,76 +73,102 @@ pii operator+(const pii &a, const pii &b) {
 /*********************************** solution *********************************/
 using IO::rd;
 // #define MULTI
-const int N = 5e5+5;
+const int N = 2e5+5;
+const i64 p = 998244353;
+i64 n, k;
 
-int A[N], p[N];
-int n, k;
-struct DS {
-  int a[N<<2];
-  inline void up(int p) {
-    a[p] = (A[a[p<<1]] > A[a[p<<1|1]]) ? a[p<<1] : a[p<<1|1];
+i64 q;
+
+inline i64 q_pow(i64 x, int a) {
+  i64 ret = 1;
+  while (a) {
+    if (a & 1) ret = ret * x % p;
+    x = x * x % p;
+    a >>= 1;
   }
-  int Max(int p, int l, int r, int s, int t) {
-    if (l == s && r == t) {
-      return a[p];
-    }
-    int mid = (l + r) >> 1;
-    int ret = 0;
-    if (s < mid) {int x = Max(p<<1, l, mid, s, min(mid, t)); ret = (A[x] > A[ret]) ? x : ret;}
-    if (t > mid) {int x = Max(p<<1|1, mid, r, max(s, mid), t); ret = (A[x] > A[ret]) ? x : ret;}
+  return ret;
+}
+
+inline void red(i64 &x) { if (x >= p) x -= p; }
+
+struct mat {
+  i64 a[3][3];
+  mat() { memset(a, 0, sizeof(a)); }
+  const i64* operator[] (const int k) const { return a[k]; }
+  i64* operator[] (const int k) { return a[k]; }
+  mat operator* (const mat &rhs) {
+    mat ret;
+    FOR(i, 0, 3) FOR(j, 0, 3) FOR(k, 0, 3)
+      red(ret[i][k] += a[i][j] * rhs[j][k] % p);
     return ret;
   }
-  void mod(int p, int l, int r, int t) {
-    if (r - l == 1) {
-      a[p] = 0;
-      return;
-    }
-    int mid = (l + r) >> 1;
-    if (t < mid) mod(p<<1, l, mid, t);
-    else mod(p<<1|1, mid, r, t);
-    up(p);
+  mat operator+ (const mat &rhs) {
+    mat ret = *this;
+    FOR(i, 0, 3) FOR(j, 0, 3)
+      red(ret[i][j] += rhs[i][j]);
+    return ret;
   }
-  void build(int p, int l, int r) {
-    if (r - l == 1) {
-      a[p] = l;
-      return;
-    }
-    int mid = (l + r) >> 1;
-    build(p<<1, l, mid);
-    build(p<<1|1, mid, r);
-    up(p);
+  mat operator* (const i64 rhs) {
+    mat ret = *this;
+    FOR(i, 0, 3) FOR(j, 0, 3) ret[i][j] = ret[i][j] * rhs % p;
+    return ret;
   }
-} T;
+  inline friend i64 calc(mat x) {
+    int kk = k;
+    mat ret;
+    ret[0][0] = ret[1][1] = ret[2][2] = 1;
+    while (kk) {
+      if (kk & 1) ret = ret * x;
+      x = x * x;
+      kk >>= 1;
+    }
+    return ret[0][2];
+  }
+} m1, m2, m3, m4, m5;
+i64 ans;
 
-inline bool ismax(int x) {
-  return (!p[x] && T.Max(1, 1, n + 1, max(1, x - k + 1), min(n + 1, x + k)) == x);
+inline i64 c2(i64 x) { return x * (x + 1) / 2 % p; }
+
+int L[N], R[N], lc[N], rc[N], tot = 1;
+
+void build(int p, int l, int r) {
+  L[p] = l, R[p] = r;
+  if (l == r) return;
+  int m = rd();
+  lc[p] = ++tot;
+  build(lc[p], l, m);
+  rc[p] = ++tot;
+  build(rc[p], m + 1, r);
 }
+
+void work(int _p, int fl, int fr) {
+  i64 l = L[_p], r = R[_p];
+  i64 p1, p2, p3, p4, p5;
+  p1 = (l * (n - r + 1) % p) * q % p;
+  p2 = (c2(r - l + 1) + p - 1) * q % p;
+  p3 = (fl * (n - fr + 1) % p) * q % p;
+  p4 = ((l == fl) ? c2(fr - r) : c2(l - fl)) * q % p;
+  p5 = (1 + 4 * p - p1 - p2 - p3 - p4) % p;
+  p1 = (p1 + p - p3) % p;
+  if (_p == 1) p1 = q, p2 = p - q, p3 = p4 = p5 = 0;
+  mat cur = m1 * p1 + m2 * p2 + m3 * p3 + m4 * p4 + m5 * p5;
+  red(ans += calc(cur));
+  if (l == r) return;
+  work(lc[_p], l, r);
+  work(rc[_p], l, r);
+}
+
 void solve() {
+  m5[0][0] = m5[1][1] = m5[2][2] = 1;
+  m4[0][1] = m4[1][1] = m4[2][2] = 1;
+  m3[0][0] = m3[1][2] = m3[2][2] = 1;
+  m2[2][2] = 1;
+  m1[0][2] = m1[2][2] = 1;
   n = rd(), k = rd();
-  FOR(i, 1, n + 1) A[i] = rd();
-  T.build(1, 1, n + 1);
-  priority_queue<int> pq;
-  for (int i = 1; i <= n; ++i) {
-    if (ismax(i)) pq.push(i);
-  }
-  int t = n;
-  while (!pq.empty()) {
-    int u = pq.top();
-    pq.pop();
-    p[u] = t--;
-    T.mod(1, 1, n + 1, u);
-    int l = max(1, u - k + 1), r = u;
-    if (l < r) {
-      int v = T.Max(1, 1, n + 1, l, r);
-      if (ismax(v)) pq.push(v);
-    }
-    l = u + 1, r = min(n + 1, u + k);
-    if (l < r) {
-      int v = T.Max(1, 1, n + 1, l, r);
-      if (ismax(v)) pq.push(v);
-    }
-  }
-  FOR(i, 1, n + 1) cout << p[i] << '\n';
+  q = q_pow(n * (n + 1) / 2, p - 2);
+  build(1, 1, n);
+  work(1, 1, n);
+  cout << ans << '\n';
 }
 
 int main() {

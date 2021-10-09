@@ -20,6 +20,33 @@
 #include <vector>
 using namespace std;
 
+/********************************** buffer IO *********************************/
+namespace IO {
+char in[1 << 24];  // sizeof in varied in problem
+char const *o;
+void init_in() {
+  o = in;
+  in[fread(in, 1, sizeof(in) - 4, stdin)] = 0;  // set 0 at the end of buffer.
+}
+int rd() {
+  unsigned u = 0, s = 0;
+  while (*o && *o <= 32) ++o;  // skip whitespaces...
+  if (*o == '-')
+    s = ~s, ++o;
+  else if (*o == '+')
+    ++o;  // skip sign
+  while (*o >= '0' && *o <= '9')
+    u = (u << 3) + (u << 1) + (*o++ - '0');  // u * 10 = u * 8 + u * 2 :)
+  return static_cast<int>((u ^ s) + !!s);
+}
+char *rdstr(char *s) {
+  while (*o && *o <= 32) ++o;
+  while (*o > 32) *s++ = *o++;
+  *s = '\0';
+  return s;
+}
+}  // namespace IO
+
 /********************************* utility ************************************/
 typedef long long i64;
 typedef unsigned long long u64;
@@ -44,29 +71,18 @@ pii operator+(const pii &a, const pii &b) {
 }
 
 /*********************************** solution *********************************/
-#define MULTI
+using IO::rd;
+// #define MULTI
 const int N = 0;
-int tot = 0;
 
 void solve() {
-  ++tot;
-  i64 s, n, k;
-  cin >> s >> n >> k;
-  if (s == k) cout << "YES\n";
-  else if (s < k) cout << "NO\n";
-  else {
-    i64 t = s + k;
-    i64 tt = s - (s / k) * k + 1;
-    if ((s / k) & 1) t -= tt;
-    else t -= k - tt;
-    cout << ((n * 2 + 1 > t) ? "YES" : "NO") << '\n';
-  }
+  
 }
 
 int main() {
+  IO::init_in();
 #ifdef MULTI
-  int T;
-  cin >> T;
+  int T = IO::rd();
   while (T--) solve();
 #else
   solve();
