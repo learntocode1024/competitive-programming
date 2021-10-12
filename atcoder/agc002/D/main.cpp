@@ -75,26 +75,87 @@ pii operator+(const pii &a, const pii &b) {
 using IO::rd;
 // #define MULTI
 const int N = 1e5+5;
-int f[N];
+int n, m;
 
-vector<int> G[N];
+int u[N], v[N];
+int x[N], y[N], z[N];
+int ans[N];
 
 struct ds {
   int l, r;
   vector<int> q;
 };
-queue<ds> q;
+
+struct DS {
+  int f[N], sz[N];
+  int _t = 1e8;
+  int _get(int x) {
+    if (f[x] == x) return x;
+    return f[x] = _get(f[x]);
+  }
+  inline void _init() {
+    FOR(i, 1, n + 1) f[i] = i, sz[i] = 1;
+    _t = 0;
+  }
+  void move(int t) {
+    if (t == _t) return;
+    if (t < _t) _init();
+    while (_t < t) {
+      ++_t;
+      int f1 = _get(u[_t]), f2 = _get(v[_t]);
+      if (f1 != f2) {
+        if (sz[f1] < sz[f2]) swap(f1, f2);
+        f[f2] = f1;
+        sz[f1] += sz[f2];
+      }
+    }
+  }
+  bool query(int i) {
+    int f1 = _get(x[i]), f2 = _get(y[i]);
+    if (f1 == f2 && sz[f1] < z[i]) return 0;
+    if (f1 != f2 && sz[f1] + sz[f2] < z[i]) return 0;
+    return 1;
+  }
+} T;
+queue<ds> Q;
 void solve() {
-  int n = rd(), m = rd();
-  FOR(i, 1, n + 1) f[i] = i;
-  FOR(i, 0, m) {
-    int u = rd(), v = rd();
-    if (u > v) swap(u, v);
-    G[v].pb(u);
+  n = rd(), m = rd();
+  FOR(i, 1, m + 1) {
+    u[i] = rd(), v[i] = rd();
   }
   ds t0;
-  t0.l = 1, t0.r = n + 1;
-  
+  t0.l = 1, t0.r = m + 1;
+  int q = rd();
+  FOR(i, 0, q) {
+    x[i] = rd(), y[i] = rd(), z[i] = rd();
+    t0.q.pb(i);
+  }
+  Q.push(t0);
+  while (!Q.empty()) {
+    ds cur = Q.front();
+    Q.pop();
+    if (cur.r == cur.l + 1) {
+      for (auto to : cur.q) {
+        ans[to] = cur.l;
+      }
+      continue;
+    }
+    int mid = (cur.l + cur.r) >> 1;
+    T.move(mid - 1);
+    ds t1, t2;
+    t1.l = cur.l;
+    t1.r = t2.l = mid;
+    t2.r = cur.r;
+    for (auto id : cur.q) {
+      if (T.query(id)) t1.q.pb(id);
+      else t2.q.pb(id);
+    }
+    if (!t1.q.empty()) Q.push(t1);
+    if (!t2.q.empty()) Q.push(t2);
+  }
+  FOR(i, 0, q) {
+    cout << ans[i] << '\n';
+  }
 }
 
 int main() {

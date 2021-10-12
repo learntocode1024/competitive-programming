@@ -197,6 +197,14 @@ void work() {
   cout << 1ll * ans * q_pow(fac[n], p - 2) % p << '\n';
 }
 }
+namespace sol {
+
+void work() {
+  
+}
+}
+
+
 void solve() {
   n = rd(), k = rd();
   FOR(i, 1, n + 1) a[i] = rd();
