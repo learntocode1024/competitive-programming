@@ -73,10 +73,30 @@ pii operator+(const pii &a, const pii &b) {
 /*********************************** solution *********************************/
 using IO::rd;
 // #define MULTI
-const int N = 0;
+const int N = 1e5+5;
+
+int a[N];
 
 void solve() {
-  
+  int n = rd();
+  FOR(i, 1, n + 1) a[i] = rd();
+  sort(a + 1, a + n + 1);
+  reverse(a + 1, a + n + 1);
+  int i = 0;
+  while (a[i + 1] > i + 1 && a[i + 2] > i + 1) ++i;
+  int ans = 1;
+  if (a[i + 1] > i + 1) {
+    ans = (a[i + 1] - i) & 1;
+  } 
+  if (a[i + 2] == i + 1) {
+    int j = i + 1;
+    while (a[j + 1] == i + 1) ++j;
+    ans = min(ans, (j - i) & 1);
+  }
+  static const char* s[2] = {
+    "First", "Second"
+  };
+  cout << s[ans] << '\n';
 }
 
 int main() {
