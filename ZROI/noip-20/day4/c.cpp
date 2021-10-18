@@ -73,72 +73,110 @@ pii operator+(const pii &a, const pii &b) {
 /*********************************** solution *********************************/
 using IO::rd;
 // #define MULTI
-const int N = 3e5+5;
-vector<int> g[N];
+const int N = 1e5+5;
+const i64 p = 998244353;
+vector<int> C[N], g[N];
+i64 P[N], Q[N], dp[N];
+int to[N], vis[N], tot;
+bool on_cyc[N], dvis[N];
+int n;
 
-int vis[N];
-int a[N], b[N];
-int f[N], d[N];
-int s[N], t[N], tot, to;
-bool v[N];
+inline int q_pow(i64 a, int x) {
+  i64 ret = 1;
+  while (x) {
+    if (x & 1) ret = ret * a % p;
+    a = a * a % p;
+    x >>= 1;
+  }
+  return ret;
+}
 
-void dfs(int u) {
-  v[u] = 1;
-  for (auto to : g[u]) {
-    if (!v[to]) {
-      f[to] = u;
-      d[to] = d[u] + 1;
-      dfs(to);
-    }
+inline i64 rdfrac() {
+  i64 a = rd(), b = rd();
+  return a * q_pow(b, p - 2) % p;
+}
+
+i64 a1[N], a0[N], f[N];
+
+inline void elimination(const vector<int> &a) {
+  int n = a.size();
+  i64 pdq = 1;
+  for (int i = 0; i < n; ++i) {
+    pdq = pdq * Q[a[i]] % p;
+    pdq = pdq * (p + 1 - P[a[i]]) % p;
+  }
+  a1[n - 1] = 1;
+  a0[n - 1] = 0;
+  for (int i = n - 2; i >= 0; --i) {
+    i64 c = (p + 1 - P[a[i]]) * Q[a[i + 1]] % p;
+    a1[i] = a1[i + 1] * c % p;
+    a0[i] = (c * a0[i + 1] + P[a[i]] + p - P[a[i]] * pdq % p) % p;
+  }
+  i64 c0 = (p + 1 - P[a[n - 1]]) * Q[a[0]] % p;
+  i64 A = a1[0] * c0 % p;
+  i64 B = (c0 * a0[0] + P[a[n - 1]] + p - P[a[n - 1]] * pdq % p) % p;
+  i64 x = (p - B) * q_pow((p + A - 1) % p, p - 2) % p;
+  FOR(i, 0, n) {
+    dp[a[i]] = (a1[i] * x + a0[i]) % p;
   }
 }
 
-void path(int u, int v) {
-  tot = to = 0;
-  while (u != v) {
-    if (d[v] > d[u]) {
-      t[to++] = v;
-      v = f[v];
-    } else {
-      s[tot++] = u;
-      u = f[u];
-    }
+int cyc(int u) {
+  vis[u] = tot;
+  if (vis[to[u]] == tot) {
+    C[tot].pb(u);
+    on_cyc[u] = 1;
+    return to[u];
+  } else if (vis[to[u]]) {
+    return 0;
   }
-  s[tot++] = u;
-  FOR(i, 0, to) s[tot + i] = t[to - i - 1];
-  tot += to;
+  int ret = cyc(to[u]);
+  if (!ret) return 0;
+  C[tot].pb(u);
+  on_cyc[u] = 1;
+  if (ret == u) return 0;
+  return ret;
+}
+
+void dfs(int u) {
+  dvis[u] = 1;
+  dp[u] = P[u];
+  for (auto v : g[u]) {
+    if (!dvis[v]) dfs(v);
+    dp[u] = (dp[u] + (p + 1 - dp[u]) * dp[v] % p * Q[v] % p) % p;
+  }
 }
 
 void solve() {
-  int n = rd(), m = rd();
-  FOR(_, 0, m) {
-    int u = rd(), v = rd();
-    g[v].pb(u);
-    g[u].pb(v);
-  }
-  int q = rd();
-  FOR(i, 0, q) {
-    a[i] = rd();
-    b[i] = rd();
-    ++vis[a[i]];
-    ++vis[b[i]];
-  }
-  int cnt = 0;
-  FOR(i, 1, n + 1) {
-    if (vis[i] & 1) ++cnt;
-  }
-  if (cnt) {
-    cout << "NO\n" << cnt / 2 << '\n';
-  } else {
-    dfs(1);
-    cout << "YES\n";
-    FOR(i, 0, q) {
-      path(a[i], b[i]);
-      cout << tot << '\n';
-      FOR(i, 0, tot) cout << s[i] << ' ';
-      cout << '\n';
+  int n = rd();
+  FOR(i, 1, n + 1) P[i] = rdfrac();
+  FOR(i, 1, n + 1) to[i] = rd(), g[to[i]].pb(i);
+  FOR(i, 1, n + 1) Q[i] = rdfrac();
+  for (int i = 1; i <= n; ++i) {
+    if (!vis[i]) {
+      ++tot;
+      cyc(i);
     }
   }
+  FOR(i, 1, n + 1) {
+    if (!on_cyc[i] && !dvis[i]) {
+      dfs(i);
+    }
+  }
+  FOR(i, 1, n + 1) {
+    if (!on_cyc[i] && on_cyc[to[i]]) {
+      P[to[i]] = (P[to[i]] + (p + 1 - P[to[i]]) * dp[i] % p * Q[i] % p) % p;
+    }
+  }
+  FOR(i, 1, tot + 1) {
+    if (!C[i].empty()) {
+      elimination(C[i]);
+    }
+  }
+  FOR(i, 1, n + 1) {
+    cout << dp[i] << ' ';
+  }
+  cout << '\n';
 }
 
 int main() {

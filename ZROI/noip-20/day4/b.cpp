@@ -73,72 +73,74 @@ pii operator+(const pii &a, const pii &b) {
 /*********************************** solution *********************************/
 using IO::rd;
 // #define MULTI
-const int N = 3e5+5;
-vector<int> g[N];
+const int N = 1e6+5;
+int n;
+i64 ans = 0;
+int r[N], r1[N], c[N << 1];
 
-int vis[N];
-int a[N], b[N];
-int f[N], d[N];
-int s[N], t[N], tot, to;
-bool v[N];
-
-void dfs(int u) {
-  v[u] = 1;
-  for (auto to : g[u]) {
-    if (!v[to]) {
-      f[to] = u;
-      d[to] = d[u] + 1;
-      dfs(to);
+inline void calc1() {
+  int i = 0;
+  int cnt = 0;
+  if (!c[n]) cnt = 1;
+  for (; i < n; i += 2) {
+    if (i) {
+      if (!c[n - i]) ++cnt;
+      if (!c[n + i]) ++cnt;
     }
+    if (!r[n - i]) ans += cnt;
+  }
+  if (i == n + 1) {
+    if (!c[2 * n - 1]) --cnt;
+    if (!c[1]) --cnt;
+    i = n - 3;
+  } else {
+    i -= 2;
+  }
+  for (; i >= 0; i -= 2) {
+    if (!r1[n - i]) ans += cnt;
+    if (!c[n - i]) --cnt;
+    if (!c[n + i]) --cnt;
   }
 }
 
-void path(int u, int v) {
-  tot = to = 0;
-  while (u != v) {
-    if (d[v] > d[u]) {
-      t[to++] = v;
-      v = f[v];
-    } else {
-      s[tot++] = u;
-      u = f[u];
-    }
+inline void calc2() {
+  int i = 1;
+  int cnt = 0;
+  for (; i < n; i += 2) {
+    if (!c[n - i]) ++cnt;
+    if (!c[n + i]) ++cnt;
+    if (!r[n - i]) ans += cnt;
   }
-  s[tot++] = u;
-  FOR(i, 0, to) s[tot + i] = t[to - i - 1];
-  tot += to;
+  if (i == n + 1) {
+    if (!c[2 * n - 1]) --cnt;
+    if (!c[1]) --cnt;
+    i = n - 3;
+  } else {
+    i -= 2;
+  }
+  for (; i >= 0; i -= 2) {
+    if (!r1[n - i]) ans += cnt;
+    if (!c[n - i]) --cnt;
+    if (!c[n + i]) --cnt;
+  }
 }
 
 void solve() {
-  int n = rd(), m = rd();
-  FOR(_, 0, m) {
-    int u = rd(), v = rd();
-    g[v].pb(u);
-    g[u].pb(v);
-  }
-  int q = rd();
-  FOR(i, 0, q) {
-    a[i] = rd();
-    b[i] = rd();
-    ++vis[a[i]];
-    ++vis[b[i]];
-  }
-  int cnt = 0;
-  FOR(i, 1, n + 1) {
-    if (vis[i] & 1) ++cnt;
-  }
-  if (cnt) {
-    cout << "NO\n" << cnt / 2 << '\n';
-  } else {
-    dfs(1);
-    cout << "YES\n";
-    FOR(i, 0, q) {
-      path(a[i], b[i]);
-      cout << tot << '\n';
-      FOR(i, 0, tot) cout << s[i] << ' ';
-      cout << '\n';
+  n = rd();
+  int m = rd();
+  FOR(i, 0, m) {
+    int x = rd(), y = rd();
+    int id = n - x + y;
+    c[id] = 1;
+    if (x + y <= n + 1) {
+      r[n + 2 - x - y] = 1;
+    } else {
+      r1[x + y - n] = 1;
     }
   }
+  calc1();
+  calc2();
+  cout << ans << '\n';
 }
 
 int main() {

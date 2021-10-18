@@ -74,71 +74,47 @@ pii operator+(const pii &a, const pii &b) {
 using IO::rd;
 // #define MULTI
 const int N = 3e5+5;
-vector<int> g[N];
-
-int vis[N];
-int a[N], b[N];
-int f[N], d[N];
-int s[N], t[N], tot, to;
-bool v[N];
-
-void dfs(int u) {
-  v[u] = 1;
-  for (auto to : g[u]) {
-    if (!v[to]) {
-      f[to] = u;
-      d[to] = d[u] + 1;
-      dfs(to);
-    }
-  }
-}
-
-void path(int u, int v) {
-  tot = to = 0;
-  while (u != v) {
-    if (d[v] > d[u]) {
-      t[to++] = v;
-      v = f[v];
-    } else {
-      s[tot++] = u;
-      u = f[u];
-    }
-  }
-  s[tot++] = u;
-  FOR(i, 0, to) s[tot + i] = t[to - i - 1];
-  tot += to;
-}
+const int p = 998244353;
+int a[N], b[N], d[N];
+pii c[N];
+bool vis[N];
 
 void solve() {
-  int n = rd(), m = rd();
-  FOR(_, 0, m) {
-    int u = rd(), v = rd();
-    g[v].pb(u);
-    g[u].pb(v);
-  }
-  int q = rd();
-  FOR(i, 0, q) {
+  int n = rd(), T = rd();
+  int ans = 0;
+  FOR(i, 0, n) {
     a[i] = rd();
+    ans = (ans + 1ll * a[i] * a[i]) % p;
+  }
+  FOR(i, 0, n) {
     b[i] = rd();
-    ++vis[a[i]];
-    ++vis[b[i]];
+    ans = (ans + 1ll * b[i] * b[i]) % p;
   }
-  int cnt = 0;
-  FOR(i, 1, n + 1) {
-    if (vis[i] & 1) ++cnt;
+  FOR(i, 0, n) c[i] = mkp(b[i], a[i]);
+  sort(c, c + n);
+  sort(a, a + n);
+  FOR(i, 0, n) {
+    ans = (ans + p - 2ll * c[i].fi * a[i] % p) % p;
   }
-  if (cnt) {
-    cout << "NO\n" << cnt / 2 << '\n';
-  } else {
-    dfs(1);
-    cout << "YES\n";
-    FOR(i, 0, q) {
-      path(a[i], b[i]);
-      cout << tot << '\n';
-      FOR(i, 0, tot) cout << s[i] << ' ';
-      cout << '\n';
+  cout << ans << ' ';
+  if (T) {
+    FOR(i, 0, n) {
+      d[i] = lower_bound(a, a + n, c[i].se) - a;
     }
+    int cnt = 0;
+    for (int i = 0; i < n; ++i) {
+      if (!vis[i]) {
+        int u = i;
+        while (!vis[u]) {
+          vis[u] = 1;
+          u = d[u];
+        }
+        ++cnt;
+      }
+    }
+    cout << n - cnt;
   }
+  cout << '\n';
 }
 
 int main() {
