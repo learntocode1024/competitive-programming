@@ -70,10 +70,47 @@ pii operator+(const pii &a, const pii &b) {
 /*********************************** solution *********************************/
 using IO::rd;
 // #define MULTI
-const int N = 0;
-
+const int N = 5e5+5;
+vector<int> g[N];
+int a[N];
+int m, n, k, s;
+int c[N], d[N], tot;
 void solve() {
-  
+  m = rd(), n = rd(), k = rd(), s = rd();
+  FOR(i, 1, m + 1) {
+    a[i] = rd();
+    g[a[i]].pb(i);
+  }
+  FOR(i, 0, s) {
+    int u = rd();
+    if (!d[u]) {
+      c[tot++] = u;
+    }
+    ++d[u];
+  }
+  int mxl = m - k * n + k;
+  for (int i = 1; i <= m; i += k) {
+    int cur = 0;
+    for (int j = 0; j < tot; ++j) {
+      auto ind = lower_bound(begin(g[c[j]]), end(g[c[j]]), i);
+      ind += d[c[j]] - 1;
+      if (ind == g[c[j]].end()) {
+        cur = 1e8;
+      } else {
+        chkmax(cur, *ind);
+      }
+    }
+    if (cur - i + 1 <= mxl) {
+      cout << cur - i + 1 - s << '\n';
+      FOR(k, i, cur + 1) {
+        if (!d[a[k]]) cout << k << ' ';
+        else --d[a[k]];
+      }
+      cout << '\n';
+      return;
+    }
+  }
+  puts("-1");
 }
 
 int main() {

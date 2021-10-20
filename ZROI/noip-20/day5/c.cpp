@@ -36,6 +36,17 @@ int rd() {
     u = (u << 3) + (u << 1) + (*o++ - '0');  // u * 10 = u * 8 + u * 2 :)
   return static_cast<int>((u ^ s) + !!s);
 }
+long long rdll() {
+  unsigned long long u = 0, s = 0;
+  while (*o && *o <= 32) ++o;  // skip whitespaces...
+  if (*o == '-')
+    s = ~s, ++o;
+  else if (*o == '+')
+    ++o;  // skip sign
+  while (*o >= '0' && *o <= '9')
+    u = (u << 3) + (u << 1) + (*o++ - '0');  // u * 10 = u * 8 + u * 2 :)
+  return static_cast<long long>((u ^ s) + !!s);
+}
 char *rdstr(char *s) {
   while (*o && *o <= 32) ++o;
   while (*o > 32) *s++ = *o++;
@@ -70,10 +81,70 @@ pii operator+(const pii &a, const pii &b) {
 /*********************************** solution *********************************/
 using IO::rd;
 // #define MULTI
-const int N = 0;
+const int B = 64, N = 4e5+5;
+const int w = 60;
+vector<int> g[N];
+i64 a[N];
+int n;
 
+struct DS {
+  i64 s[B];
+  inline bool ins(i64 x) {
+    for (int i = w; i + 1; i--) {
+      if (!(x >> i))
+        continue;
+      if (!s[i]) {
+        s[i] = x;
+        return 1;
+      }
+      x ^= s[i];
+    }
+    return 0;
+  }
+  inline i64 gans() {
+    i64 ret = 0;
+    for (int i = w; i + 1; i--) {
+      if (ret < (ret ^ s[i])) ret ^= s[i];
+    }
+    return ret;
+  }
+  friend DS merge(const DS &lhs, const DS &rhs) {
+    DS ret = lhs;
+    FOR(i, 0, w + 1) ret.ins(rhs.s[i]);
+    return ret;
+  }
+} pa[B], pb[B], pd[B][B], da, db;
+int ta, tb;
+int ia[N], ib[N];
+
+void dfs1(int u, int fa) {
+  ia[u] = ta;
+  for (auto v : g[u]) {
+    if (v != fa) dfs1(v, u);
+  }
+  if (da.ins(a[u])) pa[++ta] = da;
+}
+void dfs2(int u, int fa) {
+  ib[u] = tb;
+  for (auto v : g[u]) {
+    if (v != fa) dfs2(v, u);
+  }
+  if (db.ins(a[u])) pb[++tb] = db;
+}
 void solve() {
-  
+  n = rd();
+  FOR(i, 0, n) rd();
+  FOR(i, 1, n + 1) a[i] = IO::rdll();
+  FOR(i, 1, n) {
+    int u = rd(), v = rd();
+    g[u].pb(v);
+    g[v].pb(u);
+  }
+  dfs1(1, 0);
+  FOR(i, 1, n + 1) reverse(g[i].begin(), g[i].end());
+  dfs2(1, 0);
+  FOR(i, 0, ta + 1) FOR(j, 0, tb + 1) pd[i][j] = merge(pa[i], pb[j]);
+  FOR(i, 1, n + 1) cout << pd[ia[i]][ib[i]].gans() << '\n';
 }
 
 int main() {

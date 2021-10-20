@@ -15,11 +15,13 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
 using namespace std;
 
 /********************************** buffer IO *********************************/
 namespace IO {
-char in[1 << 24];  // sizeof in varied in problem
+char in[1 << 28];  // sizeof in varied in problem
 char const *o;
 void init_in() {
   o = in;
@@ -69,18 +71,59 @@ pii operator+(const pii &a, const pii &b) {
 
 /*********************************** solution *********************************/
 using IO::rd;
-// #define MULTI
-const int N = 0;
+#define MULTI
+const int N = 3e5+5;
+using namespace __gnu_pbds;
+typedef tree<pii, null_type, greater<pii>, rb_tree_tag, tree_order_statistics_node_update> pset;
+int d, n, k;
+pset S;
+vector<pii> g[N];
+i64 ans, cur;
 
 void solve() {
-  
+  cur = ans = 0;
+  S.clear();
+  d = rd(), n = rd(), k = rd();
+  FOR(i, 1, d + 1) g[i].clear();
+  FOR(i, 0, n) {
+    int a = rd(), b = rd(), c = rd();
+    g[b].emplace_back(a, i);
+    g[c + 1].emplace_back(-a, i);
+  }
+  for (int i = 1; i <= d; ++i) {
+    for (auto v : g[i]) {
+      if (v.fi > 0) {
+        S.insert(v);
+        if (S.size() > k) {
+          if (S.order_of_key(v) < k) {
+            cur += v.fi;
+            cur -= S.find_by_order(k)->fi;
+          }
+        } else cur += v.fi;
+      } else {
+        v.fi = -v.fi;
+        if (S.size() > k) {
+          if (S.order_of_key(v) < k) {
+            cur -= v.fi;
+            S.erase(v);
+            cur += S.find_by_order(k-1)->fi;
+          } else S.erase(v);
+        } else cur -= v.fi, S.erase(v);
+      }
+    }
+    chkmax(ans, cur);
+  }
+  cout << ans << '\n';
 }
 
 int main() {
   IO::init_in();
 #ifdef MULTI
   int T = IO::rd();
-  while (T--) solve();
+  FOR(i, 0, T) {
+    cout << "Case #" << i + 1 << ": ";
+    solve();
+  }
 #else
   solve();
 #endif

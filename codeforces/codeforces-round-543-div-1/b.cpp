@@ -70,10 +70,66 @@ pii operator+(const pii &a, const pii &b) {
 /*********************************** solution *********************************/
 using IO::rd;
 // #define MULTI
-const int N = 0;
+const int N = 1e5+5;
+char a[N], b[N];
+int c[N], d[N];
+
+struct qry {
+  int i, dt;
+  qry() = default;
+  qry(int _i, int _dt) : i(_i), dt(_dt) {};
+} ans[N<<2], s[N<<2];
+int tot, t1;
 
 void solve() {
-  
+  int n = rd();
+  IO::rdstr(a);
+  IO::rdstr(b);
+  FOR(i, 0, n) a[i] -= '0', b[i] -= '0', d[i] = a[i];
+  int _ans = 0;
+  FOR(i, 0, n - 1) c[i] = b[i] - a[i], a[i + 1] += c[i], _ans += abs(c[i]);
+  if (a[n - 1] != b[n - 1]) {
+    puts("-1");
+    return;
+  }
+  for (int i = 0; i < n - 1; ++i) {
+    if (c[i] != 0 && ((d[i] == 9 && d[i + 1] == 0) || (d[i] == 0 && d[i + 1] == 9))) {
+      puts("-1");
+      return;
+    }
+  }
+  cout << _ans << '\n';
+  for (int i = 0; i < n - 1; ++i) {
+    if (d[i + 1] + c[i] < 10 && d[i + 1] + c[i] >= 0) {
+      ans[t1++] = qry(i + 1, c[i]);
+    } else if (d[i + 1] + c[i] >= 10) {
+      ans[t1++] = qry(i + 1, 9 - d[i + 1]);
+      s[tot++] = qry(i + 1, d[i + 1] + c[i] - 9);
+    } else {
+      ans[t1++] = qry(i + 1, d[i + 1]);
+      s[tot++] = qry(i + 1, c[i] - d[i + 1]);
+    }
+  }
+  int o = 1e5;
+  for (int i = 0; i < t1 && o; ++i) {
+    int f = 1;
+    if (ans[i].dt < 0) f = -1;
+    while (ans[i].dt != 0 && o) {
+      cout << ans[i].i << ' ' << f << '\n';
+      ans[i].dt -= f;
+      --o;
+    }
+  }
+  reverse(s, s + tot);
+  for (int i = 0; i < tot && o; ++i) {
+    int f = 1;
+    if (s[i].dt < 0) f = -1;
+    while (s[i].dt != 0 && o) {
+      cout << s[i].i << ' ' << f << '\n';
+      s[i].dt -= f;
+      --o;
+    }
+  }
 }
 
 int main() {

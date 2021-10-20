@@ -13,6 +13,7 @@
 #include <cstdio>
 #include <cstring>
 #include <iostream>
+#include <map>
 #include <string>
 #include <vector>
 using namespace std;
@@ -70,10 +71,61 @@ pii operator+(const pii &a, const pii &b) {
 /*********************************** solution *********************************/
 using IO::rd;
 // #define MULTI
-const int N = 0;
+const int N = 5005;
+int n;
+char s[N];
+i64 h[N], pw[N];
+const i64 k = 1145141;
+// const i64 p = 2869404841;
+int dp[N];
+int A, B;
+inline void Hash() {
+  h[0] = s[0];
+  pw[0] = 1;
+  FOR(i, 1, n) {
+    h[i] = 1ll * h[i - 1] * k + s[i];
+    pw[i] = 1ll * pw[i - 1] * k;
+  }
+}
+
+inline i64 H(int l, int r) {
+  --r, --l;
+  i64 ret = h[r];
+  if (l) ret = ret - 1ll * h[l - 1] * pw[r - l + 1];
+  return ret;
+}
+
+i64 e[N * N], tot;
+int hs[N][N];
+i64 ha[N][N];
+int g[N * N];
 
 void solve() {
-  
+  n = rd(), A = rd(), B = rd();
+  IO::rdstr(s);
+  Hash();
+  FOR(i, 1, n) FOR(j, i, n + 1) {
+    ha[i][j] = H(i, j);
+    e[tot++] = ha[i][j];
+  }
+  sort(e, e + tot);
+  tot = unique(e, e + tot) - e;
+  FOR(i, 1, n) FOR(j, i, n + 1) {
+    hs[i][j] = lower_bound(e, e + tot, ha[i][j]) - e;
+  }
+  FOR(i, 1, n) FOR(j, i, n + 1) {
+    if (g[hs[i][j]] == 0) g[hs[i][j]] = j;
+    else chkmin(g[hs[i][j]], j);
+  }
+  for (int i = 1; i <= n; ++i) {
+    dp[i] = dp[i - 1] + A;
+    for (int j = i; j > 0; --j) {
+      if (g[hs[i][j]] < j) {
+        chkmin(dp[i], dp[j - 1] + B);
+      }
+    }
+  }
+  cout << dp[n] << '\n';
 }
 
 int main() {

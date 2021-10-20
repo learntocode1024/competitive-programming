@@ -70,10 +70,45 @@ pii operator+(const pii &a, const pii &b) {
 /*********************************** solution *********************************/
 using IO::rd;
 // #define MULTI
-const int N = 0;
+const int N = 5e5+5;
+int a[N], b[N];
+int n;
+
+namespace sub1 {
+inline void work() {
+  FOR(u, 0, 1 << n) {
+    bool ok = 1;
+    int i = 0;
+    FOR(k, 0, n) {
+      int c = (u >> k) & 1;
+      i |= (c) << a[k];
+      i |= (c ^ 1) << b[k];
+    }
+    i >>= 1;
+    if (ok) {
+      int t = i << n;
+      t |= i;
+      FOR(k, 0, n + 1) {
+        if (((t >> k) & 7) == 7) ok = 0;
+        if (((t >> k) & 7) == 0) ok = 0;
+      }
+    }
+    if (ok) {
+      FOR(k, 0, n * 2) cout << "XY"[(i >> k) & 1];
+      cout << "\n";
+      return;
+    }
+  }
+  cout << "impossible\n";
+}
+}
+
+
 
 void solve() {
-  
+  n = rd();
+  FOR(i, 0, n) a[i] = rd(), b[i] = rd();
+  if (n <= 20) sub1::work();
 }
 
 int main() {

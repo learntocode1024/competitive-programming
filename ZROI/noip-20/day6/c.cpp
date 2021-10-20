@@ -69,21 +69,42 @@ pii operator+(const pii &a, const pii &b) {
 
 /*********************************** solution *********************************/
 using IO::rd;
-// #define MULTI
-const int N = 0;
+const int N = 102, W = 31;
+const i64 inf = 1e14;
+i64 f[N], s[N];
+i64 dp[W][N][N];
+// 
+int n, l;
+i64 ans;
 
 void solve() {
-  
+  n = rd(), l = rd();
+  if (n == 0 && l == 0) {
+    exit(0);
+  }
+  ans = inf;
+  FOR(i, 1, n + 1) f[i] = rd();
+  sort(f + 1, f + n + 1, [] (i64 a, i64 b) { return a > b; });
+  FOR(i, 1, n + 1) s[i] = s[i - 1] + f[i];
+  FOR(i, 0, l + 1) FOR(j, 0, n + 1) FOR(k, 0, n + 1) dp[i][j][k] = inf;
+  dp[0][0][1] = 0;
+  for (int i = 1; i <= l; ++i) {
+    for (int j = 0; j <= n; ++j) {
+      for (int k = 0; k <= n - j; ++k) {
+        if (dp[i][j][k] != inf) {
+          
+        }
+      }
+    }
+  }
+  cout << ans << '\n';
 }
 
 int main() {
   IO::init_in();
-#ifdef MULTI
-  int T = IO::rd();
-  while (T--) solve();
-#else
-  solve();
-#endif
+  while (true) {
+    solve();
+  }
   return 0;
 }
 /*
