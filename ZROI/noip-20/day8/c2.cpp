@@ -23,12 +23,10 @@ inline void chkmax(T &a, const T b) {
 const int N = 3005;
 const int p = 998244353;
 inline void red(i64 &x) { if (x >= p) x -= p; }
-i64 dp[N], f[N][N];
+i64 dp[N], idp[N];
 int n, k;
 i64 a[N];
 vector<int> g[N];
-int sz[N];
-i64 h[N], t[N], tt[N];
 int z;
 inline i64 q_pow(i64 x, int a) {
   i64 ret = 1;
@@ -44,7 +42,6 @@ inline i64 inv(i64 x) { return q_pow(x, p - 2); }
 
 void dfs1(int u, int fa) {
   dp[u] = z * a[u] % p;
-  sz[u] = 1;
   for (auto v : g[u]) {
     if (v == fa) continue;
     dfs1(v, u);
@@ -54,7 +51,7 @@ void dfs1(int u, int fa) {
 
 void dfs2(int u, int fa) {
   if (fa) {
-    dp[u] = dp[u] * (1 + dp[fa] * inv(dp[u] + 1) % p) % p;
+    dp[u] = dp[u] * (1 + dp[fa] * idp[u] % p) % p;
   }
   for (auto v : g[u]) {
     if (v == fa) continue;
@@ -62,7 +59,7 @@ void dfs2(int u, int fa) {
   }
 }
 
-i64 a0[N], G[N][N], c[N];
+i64 a0[N], c[N];
 i64 ifac[N], iv[N];
 
 void prework() {
@@ -76,27 +73,20 @@ void prework() {
   for (int i = 1; i <= n + 1; ++i) {
     i64 rem = 1;
     for (int j = n; j >= 0; --j) {
-      G[i][j] = rem;
+      if (j && j <= k) red(c[i] += rem);
       red(rem = a0[j] + i * rem % p);
     }
   }
   iv[1] = ifac[0] = ifac[1] = 1;
   FOR(i, 2, n + 1) iv[i] = (p - iv[p % i]) * (p / i) % p, ifac[i] = ifac[i - 1] * iv[i] % p;
   FOR(i, 1, n + 2) {
-    FOR(j, 1, k + 1) red(c[i] += G[i][j]);
     c[i] = c[i] * ifac[i - 1] % p;
     if ((n + 1 - i) & 1) c[i] = c[i] * (p - ifac[n + 1 - i]) % p;
     else c[i] = c[i] * ifac[n + 1 - i] % p;
   }
 }
 
-inline int calc(i64 *y) {
-  i64 ans = 0;
-  FOR(i, 1, n + 2) {
-    red(ans += y[i] * c[i] % p);
-  }
-  return ans;
-}
+i64 ans[N];
 
 inline void solve() {
   cin >> n >> k;
@@ -110,11 +100,16 @@ inline void solve() {
   }
   for (z = 1; z <= n + 1; ++z) {
     dfs1(1, 0);
+    i64 ii = 1;
+    idp[0] = 1;
+    FOR(i, 1, n + 1) idp[i] = ii, ii = ii * (dp[i] + 1) % p;
+    ii = inv(ii);
+    ROF(i, 1, n + 1) idp[i] = ii * idp[i] % p, ii = ii * (dp[i] + 1) % p;
     dfs2(1, 0);
-    FOR(i, 1, n + 1) f[i][z] = dp[i], dp[i] = 0;
+    FOR(i, 1, n + 1) red(ans[i] += c[z] * dp[i] % p), dp[i] = 0;
   }
   FOR(i, 1, n + 1) {
-    cout << calc(f[i]) << ' ';
+    cout << ans[i] << ' ';
   }
   cout << '\n';
 }
