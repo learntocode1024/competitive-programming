@@ -47,10 +47,39 @@ inline void chkmax(T &a, const T b) {
   a = max(a, b);
 }
 
-const int N = 0;
+const int N = 15;
+int vis[N * N];
+int a[N];
 
 inline void solve() {
-
+  int n;
+  rd(n);
+  int brd = (n - 1) * (n - 2) / 2;
+  int lim = (n) * (n - 1) / 2;
+  iota(a + 1, a + n + 1, 1);
+  do {
+    int s = 0;
+    FOR(i, 1, n + 1) {
+      s += i % a[i];
+    }
+    if (!vis[s]) {
+      println(s);
+      cout << "{";
+      FOR(i, 1, n + 1) {
+        cout << a[i] << ",}"[i == n];
+      }
+      cout << "\n===============\n";
+    }
+    ++vis[s];
+  } while (next_permutation(a + 1, a + n + 1));
+  FOR(i, 0, N * N) {
+    if (vis[i]) cout << i << ' ';
+  }
+  cout << '\n';
+  FOR(i, 0, N * N) {
+    if (vis[i]) cout << vis[i] << ' ';
+  }
+  cout << '\n';
 }
 
 int main() {
@@ -73,3 +102,4 @@ int main() {
  * - memory usage
  * - file IO
  */
+

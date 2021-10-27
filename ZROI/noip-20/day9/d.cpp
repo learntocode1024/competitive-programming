@@ -47,10 +47,67 @@ inline void chkmax(T &a, const T b) {
   a = max(a, b);
 }
 
-const int N = 0;
+const int N = 55;
+int n, p, q;
+int d[N][N];
+bool vis[N];
+vector<int> g[N];
+
+void dfs(int *d, int u, int fa) {
+  for (auto v : g[u]) {
+    if (v != fa) {
+      d[v] = d[u] + 1;
+      dfs(d, v, u);
+    }
+  }
+}
+
+int dst;
+int mrk(int u, int fa) {
+  if (u == dst) {
+    if (vis[u]) return 2;
+    vis[u] = 1;
+    return 1;
+  }
+  for (auto v : g[u]) {
+    if (v != fa) {
+      int rt = mrk(v, u);
+      if (rt == 2) return 2;
+      else if (rt == 1) {
+        if (vis[u]) return 2;
+        vis[u] = 1;
+        return 1;
+      }
+    }
+  }
+  return 0;
+}
 
 inline void solve() {
-
+  cin >> n >> p >> q;
+  if (n > 50) return;
+  FOR(i, 1, n) {
+    int u, v;
+    cin >> u >> v;
+    g[u].pb(v);
+    g[v].pb(u);
+  }
+  ++n;
+  FOR(i, 1, n) dfs(d[i], i, 0);
+  int ans = 0;
+  FOR(i, 1, n) FOR(j, i + 1, n) FOR(k, 1, n) FOR(l, k + 1, n) {
+    if (d[i][j] == p && d[k][l] == q && i != k && i != l && j != k && j != l) {
+      dst = j;
+      mrk(i, 0);
+      dst = l;
+      if (mrk(k, 0) == 1) {
+        //println(i, j, k, l);
+        ans += 4;
+      }
+      FOR(i, 1, n) vis[i] = 0;
+    }
+  }
+  cout << ans % 998244353 << '\n';
 }
 
 int main() {

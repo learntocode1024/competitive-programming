@@ -47,10 +47,15 @@ inline void chkmax(T &a, const T b) {
   a = max(a, b);
 }
 
-const int N = 0;
+const i64 n = 1e6;
 
 inline void solve() {
-
+  random_device rd;
+  mt19937_64 gen(rd());
+  uniform_int_distribution<i64> e{0ll, 1000000000000ll};
+  i64 a = e(gen);
+  FOR(i, 0, 5) chkmin(a, e(gen));
+  println(n, a);
 }
 
 int main() {
@@ -73,3 +78,4 @@ int main() {
  * - memory usage
  * - file IO
  */
+

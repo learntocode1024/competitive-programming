@@ -42,7 +42,34 @@ char *rdstr(char *s) {
   *s = '\0';
   return s;
 }
-}  // namespace IO
+} // namespace IO
+template<typename T>
+void rdint(T &a) {
+  a = IO::rd();
+}
+template<typename A, typename... B>
+void rdint(A &a, B& ...b) {
+  a = IO::rd();
+  rdint(b...);
+}
+template<typename A>
+void print(const A& a) {
+  cout << a;
+}
+template<typename A, typename... B>
+void print(const A& a, const B& ...b) {
+  cout << a;
+  print(b...);
+}
+template<typename A>
+void println(const A& a) {
+  cout << a << '\n';
+}
+template<typename A, typename... B>
+void println(const A& a, const B& ...b) {
+  cout << a << ' ';
+  println(b...);
+}
 
 /********************************* utility ************************************/
 typedef long long i64;
@@ -73,7 +100,7 @@ using IO::rd;
 const int N = 0;
 
 void solve() {
-  
+
 }
 
 int main() {

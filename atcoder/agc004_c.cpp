@@ -47,10 +47,18 @@ inline void chkmax(T &a, const T b) {
   a = max(a, b);
 }
 
-const int N = 0;
+const int N = 505;
+char s[N][N], t[N];
 
 inline void solve() {
-
+  int h, w;
+  rd(h, w);
+  FOR(i, 0, w - 1) t[i] = '#';
+  FOR(i, 0, h) rd(s[i]);
+  FOR(i, 0, h) i & 1 ? print('#', s[i] + 1, '\n') : print(t, ".\n");
+  print('\n');
+  FOR(i, 0, h) s[i][w-1] = '#';
+  FOR(i, 0, h) i & 1 ? print('.', t, '\n') : println(s[i]);
 }
 
 int main() {
@@ -73,3 +81,4 @@ int main() {
  * - memory usage
  * - file IO
  */
+

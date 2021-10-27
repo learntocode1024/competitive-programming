@@ -47,10 +47,50 @@ inline void chkmax(T &a, const T b) {
   a = max(a, b);
 }
 
-const int N = 0;
+const int N = 1e6+5;
+int tab[4][4][4] = {
+  {},
+{{0,1}},
+{{0,1,2},{0,2,1}},
+{{0,1,2,3},{0,2,1,3},{0,3,1,2},{0,1,3,2}}
+};
+
+inline i64 lim(i64 n) { return n * (n - 1) / 2; }
+
+int ans[N];
 
 inline void solve() {
-
+  int n;
+  i64 s;
+  cin >> n >> s;
+  if (s < 0 || s > lim(n)) {
+    println("SPFA is dead!");
+  } else {
+    int r = n;
+    while (r > 3 and s <= lim(r - 1)) --r;
+    if (r <= 3) {
+      for (int i = 1; i <= r; ++i) ans[i] = tab[r][s][i];
+    } else {
+      int d = lim(r) - s;
+      FOR(i, 1, r) ans[i] = i + 1;
+      ans[r] = 1;
+      if (d) {
+        if (d == 1) {
+          if (r & 1) {
+            int k = r >> 1;
+            swap(ans[r], ans[k]);
+            swap(ans[k], ans[k + 1]);
+          } else {
+            swap(ans[r], ans[r >> 1]);
+          }
+        } else {
+          swap(ans[d], ans[d - 1]);
+        }
+      }
+    }
+    FOR(i, r + 1, n + 1) ans[i] = i;
+    FOR(i, 1, n + 1) cout << ans[i] << '\n';
+  }
 }
 
 int main() {
@@ -73,3 +113,4 @@ int main() {
  * - memory usage
  * - file IO
  */
+

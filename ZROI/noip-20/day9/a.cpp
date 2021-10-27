@@ -47,10 +47,36 @@ inline void chkmax(T &a, const T b) {
   a = max(a, b);
 }
 
-const int N = 0;
+const int N = 1e6+5;
+vector<int> g[N];
+int d[N];
+char col[N];
+int n;
+int dfs(int u, int fa) {
+  int ret = u;
+  if (col[fa] != col[u]) d[u] = d[fa] + 1;
+  else d[u] = d[fa];
+  for (auto v : g[u]) {
+    if (v != fa) {
+      int rt = dfs(v, u);
+      if (d[rt] > d[ret]) ret = rt;
+    }
+  }
+  return ret;
+}
 
 inline void solve() {
-
+  cin >> n;
+  FOR(i, 1, n + 1) cin >> col[i];
+  FOR(i, 1, n) {
+    int u, v;
+    cin >> u >> v;
+    g[u].pb(v);
+    g[v].pb(u);
+  }
+  int rt = dfs(1, 0);
+  int dt = d[dfs(rt, 0)];
+  cout << dt / 2 << '\n';
 }
 
 int main() {
@@ -73,3 +99,4 @@ int main() {
  * - memory usage
  * - file IO
  */
+

@@ -47,20 +47,28 @@ inline void chkmax(T &a, const T b) {
   a = max(a, b);
 }
 
-const int N = 0;
-
-inline void solve() {
-
-}
+inline i64 lim(i64 n) { return n * (n - 1) / 2; }
 
 int main() {
-#ifndef MISAKA
-  //freopen(".in", "r", stdin);
-  //freopen(".out", "w", stdout);
-  ios::sync_with_stdio(0);
-  cin.tie(0);
-#endif
-  solve();
+  int n;
+  i64 s;
+  cin >> n >> s;
+  if (s < 0 || s > lim(n)) {
+    string ss;
+    cin >> ss;
+    if (ss != "SPFA") return 1;
+  cerr << "ok SPFA\n";
+  } else {
+    i64 s1 = 0;
+    FOR(i, 1, n + 1) {
+      int a;
+      cin >> a;
+      s1 += i % a;
+    }
+    if (s != s1) return 1;
+
+  cerr << "ok valid\n";
+  }
   return 0;
 }
 /* Checklist:
@@ -73,3 +81,4 @@ int main() {
  * - memory usage
  * - file IO
  */
+
