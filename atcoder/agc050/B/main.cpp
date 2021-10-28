@@ -74,29 +74,30 @@ pii operator+(const pii &a, const pii &b) {
 using IO::rd;
 // #define MULTI
 const int N = 505;
-int f[N][N], g[N];
-int a[N], b[N];
+int f[N][N], a[N];
 
 void solve() {
   int n = rd();
   FOR(i, 1, n + 1) a[i] = rd();
-  FOR(i, 1, n + 1) b[i] = b[i - 1] + a[i];
-  for (int i = 1; i + 2 <= n; ++i) f[i][i + 2] = max(0, b[i - 1] - b[i + 2]);
   for (int ln = 3; ln <= n; ++ln) {
     for (int l = 1; l + ln - 1 <= n; ++l) {
       int r = l + ln - 1;
-      for (int i = l; i < r; ++i) {
-        chkmax(f[l][r], f[l][i] + f[i + 1][r]);
+      f[l][r] = max(f[l + 3][r] + a[l] + a[l + 1] + a[l + 2], f[l][r - 3] + a[r] + a[r - 1] + a[r - 2]);
+      if (ln % 3 == 0 && ln > 3) {
+        chkmax(f[l][r], f[l + 1][r - 2] + a[l] + a[r] + a[r - 1]);
+        chkmax(f[l][r], f[l + 2][r - 1] + a[l] + a[r] + a[l + 1]);
+        if (ln >= 9) {
+          for (int m = l + 4; m < r; ++m) {
+            chkmax(f[l][r], a[l] + f[l + 1][m - 1] + a[m] + f[m + 1][r - 1] + a[r]);
+          }
+        }
+      }
+      FOR(m, l, r) {
+        chkmax(f[l][r], f[l][m] + f[m + 1][r]);
       }
     }
   }
-  for (int i = 1; i <= n; ++i) {
-    g[i] = g[i - 1];
-    for (int l = 3; i - l >= 0; l += 3) {
-      chkmax(g[i], g[i - l] + b[i] - b[i - l] + f[i - l + 1][i]);
-    }
-  }
-  cout << g[n] << '\n';
+  cout << f[1][n] << '\n';
 }
 
 int main() {
