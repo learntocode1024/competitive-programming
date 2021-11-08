@@ -52,25 +52,78 @@ int n;
 i64 g, r;
 int L[N];
 i64 f[N];
+i64 h[N], hh[N];
 
 struct DS {
-
-};
+  struct node {
+    int l, r;
+    int c;
+  } a[N << 6];
+#define lc a[p].l
+#define rc a[p].r
+#define P a[p]
+  int rt, tot = 0;
+  void seg(int &p, int l, int r, int s, int t, int v) {
+    if (!p) {
+      p = ++tot;
+      P.c = -1;
+    }
+    if (l == s && r == t) {
+      P.c = v;
+      return;
+    }
+    if (P.c != -1) {
+      if (!lc) lc = ++tot;
+      a[lc].c = P.c;
+      if (!rc) rc = ++tot;
+      a[rc].c = P.c;
+      P.c = -1;
+    }
+    int mid = l + (r - l) / 2;
+    if (t <= mid) seg(lc, l, mid, s, t, v);
+    else if (s >= mid) seg(rc, mid, r, s, t, v);
+    else seg(lc, l, mid, s, mid, v), seg(rc, mid, r, mid, t, v);
+  }
+  int get(int p, int l, int r, int s) {
+    if (!p) return 0;
+    if (P.c != -1) {assert(P.c > 0);return P.c;}
+    int mid = l + (r - l) / 2;
+    if (s < mid) return get(lc, l, mid, s);
+    else return get(rc, mid, r, s);
+  }
+} T;
 
 inline i64 query(i64 t) {
-  for (int i = 0; i < n; ++i) {
-    t += L[i];
-    if (t % (g + r) >= g) {
-      i64 d = g + r - t % (g + r);
-      t += d;
-    }
+  int _r = T.get(1, 0, g + r, t % (g + r));
+  if (_r == 0) return t + hh[n];
+  else {
+    t += hh[_r - 1];
+    t += g + r - t % (g + r);
+    t += f[_r];
   }
-  return t + L[n];
+  return t;
 }
+int rt;
 
 inline void solve() {
   cin >> n >> g >> r;
   FOR(i, 0, n + 1) cin >> L[i];
+  FOR(i, 1, n + 1) h[i] = (h[i - 1] + L[i - 1]) % (g + r);
+  hh[0] = L[0];
+  FOR(i, 1, n + 1) hh[i] = hh[i - 1] + L[i];
+  f[n] = L[n];
+  ROF(i, 1, n + 1) {
+    if (g - h[i] >= 0) T.seg(rt, 0, r + g, g - h[i], g - h[i] + r, i);
+    else T.seg(rt, 0, r + g, g + g + r - h[i], g + r, i), T.seg(rt, 0, r + g, 0, g - h[i] + r, i);
+    int R = T.get(1, 0, g + r, (g + r - h[i]) % (g + r));
+    if (R == 0) f[i] = hh[n] - hh[i - 1];
+    else {
+      i64 t = hh[r - 1] - hh[i - 1];
+      t += g + r - t % (g + r);
+      f[i] = f[R] + t;
+    }
+    assert(f[i] > 0);
+  }
   int q;
   cin >> q;
   i64 lst = 0;

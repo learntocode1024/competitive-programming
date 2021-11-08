@@ -50,38 +50,14 @@ inline void chkmax(T &a, const T b) {
 const int N = 1e4+5, M = 5e5+5;
 const int inf = 1e8;
 vector<pii> g[N];
-int d1[N], d2[N];
+int d1[N], d[N];
 priority_queue<pii> pq;
 bool vis[N], is[N];
 int tot;
 int dfn[N], low[N], lst[N];
 int n, m;
 
-void dfs(int u, int fa) {
-  vis[u] = 1;
-  low[u] = dfn[u] = ++tot;
-  int ch = 0;
-  for (auto v : g[u]) {
-    if (!vis[v.fi]) {
-      ch++;
-      dfs(v.fi, u);
-      low[u] = min(low[u], low[v.fi]);
-      if (fa != u && low[v.fi] >= dfn[u] && !is[u])
-        is[u] = 1;
-    } else if (v.fi != fa)
-      low[u] = min(low[u], dfn[v.fi]);
-  }
-  if (fa == u && ch >= 2 && !is[u]) {
-    is[u] = 1;
-  }
-}
-
-inline void getcut() {
-  FOR(i, 1, n + 1) if (!vis[i])
-    tot = 0, dfs(i, i);
-}
-
-inline void dijk(int *d, int ori) {
+inline void dijk(int ori) {
   FOR(i, 1, n + 1) d[i] = inf;
   d[ori] = 0;
   pq.emplace(0, ori);
@@ -99,8 +75,27 @@ inline void dijk(int *d, int ori) {
     }
   }
 }
-
 int all[N], tt;
+
+bool chk(long double mid, int S, int T) {
+  FOR(i, 1, n + 1) vis[i] = 0, d1[i] = inf;
+  d1[S] = 0;
+  pq.emplace(0, S);
+  while (!pq.empty()) {
+    auto u = pq.top();
+    pq.pop();
+    if (vis[u.se] || d[u.se] - d1[u.se] / mid < 1e-10) continue;
+    vis[u.se] = 1;
+    for (auto v : g[u.se]) {
+      if (!vis[v.fi] && d1[v.fi] > d1[u.se] + v.se) {
+        d1[v.fi] = d1[u.se] + v.se;
+        lst[v.fi] = u.se;
+        pq.emplace(-d1[v.fi], v.fi);
+      }
+    }
+  }
+  return vis[T];
+}
 
 inline void solve() {
   cin >> n >> m;
@@ -117,33 +112,14 @@ inline void solve() {
     puts("-1");
     return;
   }
-  getcut();
-  FOR(i, 1, n + 1) vis[i] = 0;
-  vis[I] = 1;
-  dijk(d1, C);
-  if (d1[T] == inf) {
-    puts("-1");
-    return;
+  dijk(I);
+  long double l = 0, r = 1e8;
+  FOR(_, 0, 50) {
+    long double mid = (l + r) / 2;
+    if (chk(mid, C, T)) r = mid;
+    else l = mid;
   }
-  all[0] = C;
-  all[1] = T;
-  tt = 2;
-  for (int i = T; i != C; i = lst[i]) {
-    if (is[i]) {
-      all[tt++] = i;
-    }
-  }
-  FOR(i, 1, n + 1) vis[i] = 0;
-  dijk(d2, I);
-  long double ans = 0;
-  for (int i = 0; i < tt; ++i) {
-    if (!d2[all[i]]) {
-      puts("-1");
-      return;
-    }
-    ans = fmax(ans, (long double) d1[all[i]] / d2[all[i]]);
-  }
-  cout << fixed << setprecision(20) << ans << '\n';
+  cout << (l > 1e7 ? -1 : l) << '\n';
 }
 
 int main() {
