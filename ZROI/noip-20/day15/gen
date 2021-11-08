@@ -1,0 +1,8 @@
+n=20000
+m=64
+echo $n $m
+for ((i=0;i<m;++i)) {
+  tr -dc 0-3 < /dev/urandom | head -c $n;
+  echo;
+}
+
