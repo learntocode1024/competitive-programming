@@ -46,28 +46,65 @@ template<typename T>
 inline void chkmax(T &a, const T b) {
   a = max(a, b);
 }
-typedef long double f80;
 
 const int N = 1e6+5;
-f80 a[N], c[N], d[N << 1];
-int n;
+const int p = 998244353;
+inline void red(int &x) { if (x >= p) x -= p; }
+int low[N], pri[N], inv[N], tpri;
+int f[N];
+int a[N];
+vector<int> g[N];
+
+i64 q_pow(i64 x, int y) {
+  i64 ret = 1;
+  while (y) {
+    if (y & 1) ret = ret * x % p;
+    x = x * x % p;
+    y >>= 1;
+  }
+  return ret;
+}
 
 inline void solve() {
-  cin >> n;
-  if (n <= 5000) {
-    FOR(i, 0, n) cin >> a[i];
-    FOR(i, 0, n) cin >> c[i];
-    FOR(i, 0, n) {
-      f80 ans = 0;
-      FOR(j, 0, n) ans += c[i] / (a[j] + c[i]);
-      cout << fixed << setprecision(12) << ans << ' ';
+  low[1] = f[1] = 1;
+  inv[1] = 1;
+  for (int i = 2; i <= 1000000; ++i) {
+    if (!low[i]) {
+      pri[tpri++] = i;
+      low[i] = i;
+      inv[i] = q_pow(i, p - 2);
+      red(f[i] = inv[i] + p - 1);
     }
-  } else {
-    FOR(i, 2, n << 1 | 1) d[i] = f80(1) / f80(i);
-    FOR(i, 2, n << 1 | 1) d[i] += d[i - 1];
-    FOR(i, 1, n + 1) cout << fixed << setprecision(12) << d[i + n] - d[i] << ' ';
+    for (int j = 0; j < tpri && pri[j] * i <= 1000000; ++j) {
+      int to = pri[j] * i;
+      low[to] = pri[j];
+      if (pri[j] == low[i]) {
+        f[to] = 1ll * f[i] * inv[pri[j]] % p;
+        break;
+      } else {
+        f[to] = 1ll * f[i] * f[pri[j]] % p;
+      }
+    }
   }
-  cout << '\n';
+  FOR(i, 1, 1000001) {
+    for (int j = i; j <= 1000000; j += i) {
+      g[j].pb(i);
+    }
+  }
+  int n;
+  cin >> n;
+  int ret = 0;
+  FOR(_, 0, n) {
+    int x;
+    cin >> x;
+    int ans = 0;
+    for (auto v : g[x]) {
+      red(ans += 1ll * a[v] * f[v] % p);
+      red(a[v] += x);
+    }
+    red(ret += 1ll * ans * x % p);
+  }
+  println(ret);
 }
 
 int main() {
@@ -90,3 +127,4 @@ int main() {
  * - memory usage
  * - file IO
  */
+

@@ -47,27 +47,34 @@ inline void chkmax(T &a, const T b) {
   a = max(a, b);
 }
 typedef long double f80;
+const int N = 2e5+5;
+int n, k;
+int a[N];
+f80 s[N];
+int dp[N];
 
-const int N = 1e6+5;
-f80 a[N], c[N], d[N << 1];
-int n;
+bool chk(f80 mid) {
+  FOR(i, 1, n + 1) s[i] = s[i - 1] + a[i] - mid;
+  FOR(i, 1, n + 1) {
+    dp[i] = -1;
+    for (int j = 0; j < i; ++j) {
+      if (s[i] >= s[j] && dp[j] != -1) chkmax(dp[i], dp[j] + 1);
+    }
+  }
+  //cerr << mid << ": " << dp[n] << '\n';
+  return dp[n] >= k;
+}
 
 inline void solve() {
-  cin >> n;
-  if (n <= 5000) {
-    FOR(i, 0, n) cin >> a[i];
-    FOR(i, 0, n) cin >> c[i];
-    FOR(i, 0, n) {
-      f80 ans = 0;
-      FOR(j, 0, n) ans += c[i] / (a[j] + c[i]);
-      cout << fixed << setprecision(12) << ans << ' ';
-    }
-  } else {
-    FOR(i, 2, n << 1 | 1) d[i] = f80(1) / f80(i);
-    FOR(i, 2, n << 1 | 1) d[i] += d[i - 1];
-    FOR(i, 1, n + 1) cout << fixed << setprecision(12) << d[i + n] - d[i] << ' ';
+  cin >> n >> k;
+  FOR(i, 1, n + 1) cin >> a[i];
+  f80 l = 0, r = 1e4;
+  FOR(i, 0, 30) {
+    f80 mid = (l + r) / 2;
+    if (chk(mid)) l = mid;
+    else r = mid;
   }
-  cout << '\n';
+  cout << fixed << setprecision(4) << l << '\n';
 }
 
 int main() {
@@ -90,3 +97,4 @@ int main() {
  * - memory usage
  * - file IO
  */
+

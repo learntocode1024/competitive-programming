@@ -156,9 +156,27 @@ inline void solve() {
 
 int main() {
 #ifndef MISAKA
+<<<<<<< HEAD
+=======
+  //freopen(".in", "r", stdin);
+  //freopen(".out", "w", stdout);
+>>>>>>> 0e749f1d98248ea37d67a437f97c467eaebd3db7
   ios::sync_with_stdio(0);
   cin.tie(0);
 #endif
   solve();
   return 0;
 }
+<<<<<<< HEAD
+=======
+/* Checklist:
+ * - data type
+ * - overflow
+ * - typo/logic
+ * - special cases
+ * - cleanup (multi-test)
+ * - bounds
+ * - memory usage
+ * - file IO
+ */
+>>>>>>> 0e749f1d98248ea37d67a437f97c467eaebd3db7

@@ -46,28 +46,75 @@ template<typename T>
 inline void chkmax(T &a, const T b) {
   a = max(a, b);
 }
-typedef long double f80;
 
 const int N = 1e6+5;
-f80 a[N], c[N], d[N << 1];
-int n;
+const int p = 1e9+7;
+const int i2 = 5e8+4;
+inline void red(i64 &x) { if (x >= p) x -= p; }
+char s[N];
+
+inline i64 f1(i64 x) {
+  return (x + p - x * x % p) % p;
+}
+
+inline i64 f2(i64 x) {
+  return (x + x * x) % p;
+}
+
+int tl;
+i64 c[N];
+i64 s1[N], s2[N];
 
 inline void solve() {
-  cin >> n;
-  if (n <= 5000) {
-    FOR(i, 0, n) cin >> a[i];
-    FOR(i, 0, n) cin >> c[i];
-    FOR(i, 0, n) {
-      f80 ans = 0;
-      FOR(j, 0, n) ans += c[i] / (a[j] + c[i]);
-      cout << fixed << setprecision(12) << ans << ' ';
+  cin >> s + 1;
+  tl = 1;
+  c[1] = 0;
+  int n = strlen(s + 1);
+  for (int i = 1; i <= n; ++i) {
+    s1[i] = s1[i - 1];
+    if (s[i] == '(') {
+      ++c[tl];
+      ++tl;
+      c[tl] = 0;
+    } else {
+      if (tl > 1) {
+        --tl;
+        s1[i] += c[tl];
+      } else {
+        tl = 1;
+        c[tl] = 0;
+      }
     }
-  } else {
-    FOR(i, 2, n << 1 | 1) d[i] = f80(1) / f80(i);
-    FOR(i, 2, n << 1 | 1) d[i] += d[i - 1];
-    FOR(i, 1, n + 1) cout << fixed << setprecision(12) << d[i + n] - d[i] << ' ';
   }
-  cout << '\n';
+  reverse(s + 1, s + n + 1);
+  c[1] = 0;
+  tl = 1;
+  for (int i = 1; i <= n; ++i) {
+    s2[i] = s2[i - 1];
+    if (s[i] == ')') {
+      ++c[tl];
+      ++tl;
+      c[tl] = 0;
+    } else {
+      if (tl > 1) {
+        --tl;
+        s2[i] += c[tl];
+      } else {
+        tl = 1;
+        c[tl] = 0;
+      }
+    }
+  }
+  reverse(s2 + 1, s2 + n + 1);
+  s2[n + 1] = 0;
+  i64 ans = 0;
+  i64 all = s1[n];
+  FOR(i, 1, n + 1) {
+    //cerr << s2[i] << " \n"[i==n];
+    ans += (all - s1[i - 1] - s2[i + 1]) * i % p;
+  }
+  println(ans);
+  FOR(i, 1, n + 1) s[i] = 0;
 }
 
 int main() {
@@ -77,7 +124,10 @@ int main() {
   ios::sync_with_stdio(0);
   cin.tie(0);
 #endif
-  solve();
+  int T;
+  cin >> T;
+  while (T--)
+    solve();
   return 0;
 }
 /* Checklist:
@@ -90,3 +140,4 @@ int main() {
  * - memory usage
  * - file IO
  */
+

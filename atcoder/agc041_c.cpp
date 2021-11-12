@@ -46,28 +46,62 @@ template<typename T>
 inline void chkmax(T &a, const T b) {
   a = max(a, b);
 }
-typedef long double f80;
 
-const int N = 1e6+5;
-f80 a[N], c[N], d[N << 1];
-int n;
+const int N = 10;
+const char* a[4][7] {
+    {
+      "aacd",
+      "bbcd",
+      "efgg",
+      "efhh"
+    },{
+      "aaxxy",
+      "bbw.y",
+      "ccwzz",
+      "..def",
+      "..def"
+    },{
+      "aabbcc",
+      "xyz...",
+      "xyz...",
+      "...pqr",
+      "...pqr",
+      "mmnntt"
+    },{
+      "..xxssy",
+      "bbf...y",
+      "ccf...g",
+      "ddw...g",
+      "..wttzz",
+      "...efh.",
+      "...efh."
+    }
+};
 
 inline void solve() {
-  cin >> n;
-  if (n <= 5000) {
-    FOR(i, 0, n) cin >> a[i];
-    FOR(i, 0, n) cin >> c[i];
-    FOR(i, 0, n) {
-      f80 ans = 0;
-      FOR(j, 0, n) ans += c[i] / (a[j] + c[i]);
-      cout << fixed << setprecision(12) << ans << ' ';
+  int n;
+  rd(n);
+  if (n == 3) cout << R"(aa.
+..b
+..b
+)";
+  else if (n < 4) println(-1);
+  else {
+    int r = n & 3;
+    FOR(i, 0, r + 4) {
+      print(a[r][i]);
+      FOR(i, r + 4, n) print('.');
+      cout << '\n';
     }
-  } else {
-    FOR(i, 2, n << 1 | 1) d[i] = f80(1) / f80(i);
-    FOR(i, 2, n << 1 | 1) d[i] += d[i - 1];
-    FOR(i, 1, n + 1) cout << fixed << setprecision(12) << d[i + n] - d[i] << ' ';
+    for (int i = r + 4; i < n; i += 4) {
+      FOR(j, 0, 4) {
+        FOR(_, 0, i) print('.');
+        print(a[0][j]);
+        FOR(_, i + 4, n) print('.');
+        print('\n');
+      }
+    }
   }
-  cout << '\n';
 }
 
 int main() {
@@ -90,3 +124,4 @@ int main() {
  * - memory usage
  * - file IO
  */
+

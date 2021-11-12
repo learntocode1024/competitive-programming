@@ -83,15 +83,6 @@ inline void work() {
 }
 
 namespace sol {
-bool solve15(int s1, int s5) {
-  FOR(i, 0, n) {
-    int t = min(s5, x2[i] / 5);
-    s5 -= t;
-    x2[i] -= t * 5;
-  }
-  FOR(i, 0, n) s1 -= x2[i];
-  return s1 >= 0;
-}
 inline void work() {
   FOR(i, 0, n) {
     if (x[i] & 1) --a, --x[i];
@@ -102,30 +93,56 @@ inline void work() {
     return;
   }
   b += a >> 1;
-  int tot = 0, tot5 = 0;
-  FOR(i, 0, n) tot += x[i] & 1;
-  FOR(i, 0, n) if ((x[i] & 1) && x[i] >= 5) ++tot5;
-  sort(x, x + n);
-  reverse(x, x + n);
-  if (b + d < tot) {
+  FOR(i, 0, n) {
+    x2[i] = x[i] % 5;
+    x[i] /= 5;
+  }
+  FOR(i, 0, n) {
+    if (x2[i] & 1) --b, --x2[i];
+    x2[i] >>= 1;
+  }
+  if (b < 0) {
     println("NO");
     return;
   }
-  FOR(d5, 0, min(d, tot5) + 1) {
-    if (b - tot + d5 < 0) continue;
-    FOR(i, 0, n) x2[i] = x[i];
-    int t = d5;
-    FOR(i, 0, n) {
-      if (t && (x2[i] & 1)) x2[i] -= 5, --t;
-      else if (x2[i] & 1) --x2[i];
-      x2[i] >>= 1;
-    }
-    if (solve15(c + (b - tot + d5) / 2, e + (d - d5) / 2)) {
-      println("YES");
-      return;
-    }
+  c += b / 2;
+  FOR(i, 0, n) {
+    c -= x2[i];
   }
-  println("NO");
+  if (c < 0) {
+    println("NO");
+    return;
+  }
+  // convert b, c to d
+  int k = min(b / 2, c);
+  b = b & 1 + 2 * k;
+  c = c - k;
+  int d1 = min(c / 2, b);
+  d += d1;
+  c -= 2 * d1;
+  b -= d1;
+  int d2 = min(b / 3, c);
+  d += d2;
+  b -= 3 * d2;
+  c -= d2;
+  d += b / 5;
+  FOR(i, 0, n) {
+    if (x[i] & 1) --d, --x[i];
+    x[i] >>= 1;
+  }
+  if (d < 0) {
+    println("NO");
+    return;
+  }
+  e += d / 2;
+  FOR(i, 0, n) {
+    e -= x[i];
+  }
+  if (e < 0) {
+    println("NO");
+    return;
+  }
+  println("YES");
 }
 }
 

@@ -46,28 +46,47 @@ template<typename T>
 inline void chkmax(T &a, const T b) {
   a = max(a, b);
 }
-typedef long double f80;
 
 const int N = 1e6+5;
-f80 a[N], c[N], d[N << 1];
-int n;
+const int p = 1e9+7;
+const int i2 = 5e8+4;
+inline void red(i64 &x) { if (x >= p) x -= p; }
+char s[N];
+
+inline i64 f1(i64 x) {
+  return (x + p - x * x % p) % p;
+}
+
+inline i64 f2(i64 x) {
+  return (x + x * x) % p;
+}
+
+int tl;
+i64 c1[N], c2[N];
 
 inline void solve() {
-  cin >> n;
-  if (n <= 5000) {
-    FOR(i, 0, n) cin >> a[i];
-    FOR(i, 0, n) cin >> c[i];
-    FOR(i, 0, n) {
-      f80 ans = 0;
-      FOR(j, 0, n) ans += c[i] / (a[j] + c[i]);
-      cout << fixed << setprecision(12) << ans << ' ';
+  cin >> s + 1;
+  i64 ans = 0;
+  tl = 1;
+  c1[1] = c2[1] = 0;
+  for (int i = 1; s[i]; ++i) {
+    if (s[i] == '(') {
+      ++c1[tl];
+      red(c2[tl] += f1(i));
+      ++tl;
+      c1[tl] = c2[tl] = 0;
+    } else {
+      if (tl > 1) {
+        --tl;
+        ans = (ans + c1[tl] * f2(i) + c2[tl]) % p;
+      } else {
+        tl = 1;
+        c1[tl] = c2[tl] = 0;
+      }
     }
-  } else {
-    FOR(i, 2, n << 1 | 1) d[i] = f80(1) / f80(i);
-    FOR(i, 2, n << 1 | 1) d[i] += d[i - 1];
-    FOR(i, 1, n + 1) cout << fixed << setprecision(12) << d[i + n] - d[i] << ' ';
+    s[i] = '\0';
   }
-  cout << '\n';
+  cout << ans * i2 % p << '\n';
 }
 
 int main() {
@@ -77,7 +96,10 @@ int main() {
   ios::sync_with_stdio(0);
   cin.tie(0);
 #endif
-  solve();
+  int T;
+  cin >> T;
+  while (T--)
+    solve();
   return 0;
 }
 /* Checklist:
@@ -90,3 +112,4 @@ int main() {
  * - memory usage
  * - file IO
  */
+

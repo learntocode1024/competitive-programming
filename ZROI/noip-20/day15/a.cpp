@@ -46,28 +46,29 @@ template<typename T>
 inline void chkmax(T &a, const T b) {
   a = max(a, b);
 }
-typedef long double f80;
 
-const int N = 1e6+5;
-f80 a[N], c[N], d[N << 1];
-int n;
+const int N = 2e4+5;
+bitset<N> b[N];
+int n, m;
+char s[N];
 
 inline void solve() {
-  cin >> n;
-  if (n <= 5000) {
-    FOR(i, 0, n) cin >> a[i];
-    FOR(i, 0, n) cin >> c[i];
+  cin >> n >> m;
+  while (m--) {
+    cin >> s;
+    bitset<N> cur, cur2;
+    FOR(i, 0, n) if ((s[i] - '0') & 1) cur.set(i);
+    FOR(i, 0, n) if ((s[i] - '0') & 2) cur2.set(i);
     FOR(i, 0, n) {
-      f80 ans = 0;
-      FOR(j, 0, n) ans += c[i] / (a[j] + c[i]);
-      cout << fixed << setprecision(12) << ans << ' ';
+      if ((s[i] - '0') == 2) b[i] ^= cur;
+      else if ((s[i] - '0') == 1) b[i] ^= cur2;
+      else if (s[i] == '3') b[i] ^= cur | cur2;
     }
-  } else {
-    FOR(i, 2, n << 1 | 1) d[i] = f80(1) / f80(i);
-    FOR(i, 2, n << 1 | 1) d[i] += d[i - 1];
-    FOR(i, 1, n + 1) cout << fixed << setprecision(12) << d[i + n] - d[i] << ' ';
   }
-  cout << '\n';
+  int ans = 0;
+  bitset<N> msk;
+  FOR(i, 0, n) ans += (b[i] & msk).count(), msk.set(i);
+  cout << ans << '\n';
 }
 
 int main() {
@@ -90,3 +91,4 @@ int main() {
  * - memory usage
  * - file IO
  */
+

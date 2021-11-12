@@ -46,28 +46,52 @@ template<typename T>
 inline void chkmax(T &a, const T b) {
   a = max(a, b);
 }
-typedef long double f80;
 
-const int N = 1e6+5;
-f80 a[N], c[N], d[N << 1];
+const int N = 1e5+5;
+bool dp[N][3][3];
+int b[N];
 int n;
+int mean(int a, int b, int c) {
+  int s[3] = {a, b, c};
+  sort(s, s + 3);
+  return s[1];
+}
+
+void ans(int i, int c0, int c) {
+  if (i == 0) print(b[c0 - 1] , ' ');
+  else {
+    for (int c1 = 0; c1 < 3; ++c1) {
+          if (i + c1 >= 2 && mean(b[i - 2 + c1], b[i - 1 + c0], b[i + c]) == b[i] && dp[i-1][c1][c0]) {
+            ans(i-1, c1, c0);
+            break;
+          }
+    }
+  }
+  print(b[c + i], ' ');
+}
 
 inline void solve() {
   cin >> n;
-  if (n <= 5000) {
-    FOR(i, 0, n) cin >> a[i];
-    FOR(i, 0, n) cin >> c[i];
-    FOR(i, 0, n) {
-      f80 ans = 0;
-      FOR(j, 0, n) ans += c[i] / (a[j] + c[i]);
-      cout << fixed << setprecision(12) << ans << ' ';
+  memset(dp, 0, n * sizeof(dp[1]));
+  FOR(i, 1, n - 1) cin >> b[i];
+  dp[0][2][1] = dp[0][2][2] = 1;
+  FOR(i, 1, n - 1) {
+    for (int c1 = 0; c1 < 3; ++c1) {
+      for (int c0 = 0; c0 < 3; ++c0) {
+        for (int c = 0; c < 3; ++c) {
+          if (i + c1 >= 2 && mean(b[i - 2 + c1], b[i - 1 + c0], b[i + c]) == b[i]) dp[i][c0][c] |= dp[i-1][c1][c0];
+        }
+      }
     }
-  } else {
-    FOR(i, 2, n << 1 | 1) d[i] = f80(1) / f80(i);
-    FOR(i, 2, n << 1 | 1) d[i] += d[i - 1];
-    FOR(i, 1, n + 1) cout << fixed << setprecision(12) << d[i + n] - d[i] << ' ';
   }
-  cout << '\n';
+  FOR(i, 0, 3) FOR(j, 0, 3) {
+    if (dp[n - 2][i][j]) {
+      ans(n - 2, i, j);
+      print('\n');
+      return;
+    }
+  }
+  println(-1);
 }
 
 int main() {
@@ -77,6 +101,9 @@ int main() {
   ios::sync_with_stdio(0);
   cin.tie(0);
 #endif
+int T;
+cin >> T;
+while (T--)
   solve();
   return 0;
 }
@@ -90,3 +117,4 @@ int main() {
  * - memory usage
  * - file IO
  */
+

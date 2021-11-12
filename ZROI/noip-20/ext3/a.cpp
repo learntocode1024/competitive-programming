@@ -46,28 +46,34 @@ template<typename T>
 inline void chkmax(T &a, const T b) {
   a = max(a, b);
 }
-typedef long double f80;
 
-const int N = 1e6+5;
-f80 a[N], c[N], d[N << 1];
-int n;
+const int N = 0;
+i64 ans;
+
+void find(i64 l, i64 r) {
+  //cerr << l << ' ' << r << '\n';
+  if (l == r / 2 + 1) {
+    chkmin(ans, r);
+    return;
+  }
+  if (l < r / 2 + 1) return;
+  if (r >= ans) return;
+  find(2 * l - r - 1, r);
+  find(2 * l - r - 2, r);
+  find(l, 2 * r - l + 1);
+  find(l, 2 * r - l);
+}
 
 inline void solve() {
-  cin >> n;
-  if (n <= 5000) {
-    FOR(i, 0, n) cin >> a[i];
-    FOR(i, 0, n) cin >> c[i];
-    FOR(i, 0, n) {
-      f80 ans = 0;
-      FOR(j, 0, n) ans += c[i] / (a[j] + c[i]);
-      cout << fixed << setprecision(12) << ans << ' ';
-    }
-  } else {
-    FOR(i, 2, n << 1 | 1) d[i] = f80(1) / f80(i);
-    FOR(i, 2, n << 1 | 1) d[i] += d[i - 1];
-    FOR(i, 1, n + 1) cout << fixed << setprecision(12) << d[i + n] - d[i] << ' ';
+  i64 l, r, lim;
+  cin >> l >> r >> lim;
+  ans = lim + 1;
+  if (l == 0) {
+    cout << (r <= lim ? r : -1) << '\n';
+    return;
   }
-  cout << '\n';
+  find(l, r);
+  cout << (ans == lim + 1 ? -1 : ans) << '\n';
 }
 
 int main() {
@@ -77,7 +83,10 @@ int main() {
   ios::sync_with_stdio(0);
   cin.tie(0);
 #endif
-  solve();
+  int T;
+  cin >> T;
+  while (T--)
+    solve();
   return 0;
 }
 /* Checklist:
@@ -90,3 +99,5 @@ int main() {
  * - memory usage
  * - file IO
  */
+
+

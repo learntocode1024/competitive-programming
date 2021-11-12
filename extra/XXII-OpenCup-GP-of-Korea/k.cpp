@@ -46,28 +46,40 @@ template<typename T>
 inline void chkmax(T &a, const T b) {
   a = max(a, b);
 }
-typedef long double f80;
 
-const int N = 1e6+5;
-f80 a[N], c[N], d[N << 1];
+const int N = 2e5+5;
+const int inf = 1919810;
+int p1[N], p2[N], p3[N];
+int r1[N], r2[N], r3[N];
 int n;
+
+struct SEGT_MN {
+  int c[N];
+  inline void build(int *a) {
+    
+  }
+};
+
+struct DS1 {
+
+} T1;
+
+bool scc_path(int u, int v) {
+  if (scc[u] == scc[v]) return true;
+}
 
 inline void solve() {
   cin >> n;
-  if (n <= 5000) {
-    FOR(i, 0, n) cin >> a[i];
-    FOR(i, 0, n) cin >> c[i];
-    FOR(i, 0, n) {
-      f80 ans = 0;
-      FOR(j, 0, n) ans += c[i] / (a[j] + c[i]);
-      cout << fixed << setprecision(12) << ans << ' ';
-    }
-  } else {
-    FOR(i, 2, n << 1 | 1) d[i] = f80(1) / f80(i);
-    FOR(i, 2, n << 1 | 1) d[i] += d[i - 1];
-    FOR(i, 1, n + 1) cout << fixed << setprecision(12) << d[i + n] - d[i] << ' ';
+  FOR(i, 1, n + 1) rd(p1[i], p2[i], p3[i]);
+  FOR(i, 1, n + 1) r1[p1[i]] = r2[p2[i]] = r3[p3[i]] = i;
+  build_scc();
+  int q;
+  cin >> q;
+  while (q--) {
+    int u, v;
+    cin >> u >> v;
+    println(scc_path(u, v) ? "YES" : "NO");
   }
-  cout << '\n';
 }
 
 int main() {
@@ -90,3 +102,4 @@ int main() {
  * - memory usage
  * - file IO
  */
+

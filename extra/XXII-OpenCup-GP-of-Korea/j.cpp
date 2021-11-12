@@ -46,28 +46,68 @@ template<typename T>
 inline void chkmax(T &a, const T b) {
   a = max(a, b);
 }
-typedef long double f80;
 
-const int N = 1e6+5;
-f80 a[N], c[N], d[N << 1];
+const int N = 55;
+int x[N], a[N];
+unordered_set<i64> S;
 int n;
+
+inline void mark_factor(i64 x) {
+  for (i64 i = 1; i * i <= x; ++i) {
+    if (x % i) continue;
+    S.insert(i);
+    S.insert(x / i);
+  }
+}
+int col[N];
 
 inline void solve() {
   cin >> n;
-  if (n <= 5000) {
-    FOR(i, 0, n) cin >> a[i];
-    FOR(i, 0, n) cin >> c[i];
-    FOR(i, 0, n) {
-      f80 ans = 0;
-      FOR(j, 0, n) ans += c[i] / (a[j] + c[i]);
-      cout << fixed << setprecision(12) << ans << ' ';
+  FOR(i, 0, n) rd(x[i], a[i]);
+  FOR(i, 0, n) FOR(j, i + 1, n) {
+    if (a[i] != a[j]) {
+      mark_factor(abs(x[i] - x[j]));
     }
-  } else {
-    FOR(i, 2, n << 1 | 1) d[i] = f80(1) / f80(i);
-    FOR(i, 2, n << 1 | 1) d[i] += d[i - 1];
-    FOR(i, 1, n + 1) cout << fixed << setprecision(12) << d[i + n] - d[i] << ' ';
   }
-  cout << '\n';
+  FOR(i, 2, n + 1) {
+    bool ok = 1;
+    int cnt = i;
+    FOR(j, 0, n) {
+      int r = x[j] % i;
+      if (r < 0) r += i;
+      if (!col[r]) {
+        col[r] = a[j];
+        --cnt;
+      } else if (col[r] != a[j]) {
+        ok = 0;
+        break;
+      }
+    }
+    if (!ok || cnt) {
+      FOR(j, 0, i) col[j] = 0;
+      continue;
+    }
+    for (int k = 1; k < i; ++k) {
+      if (i % k) continue;
+      bool ok2 = 1;
+      for (int j = 0; j < k; ++j) {
+        int cc = col[j];
+        for (int l = j + k; l < i; l += k) {
+          if (col[l] != cc) ok2 = 0;
+        }
+      }
+      if (ok2) {
+        S.insert(i);
+        break;
+      }
+    }
+    FOR(j, 0, i) col[j] = 0;
+  }
+  i64 s = 0;
+  for (auto v : S) {
+    s += v;
+  }
+  println(S.size(), s);
 }
 
 int main() {
@@ -90,3 +130,4 @@ int main() {
  * - memory usage
  * - file IO
  */
+

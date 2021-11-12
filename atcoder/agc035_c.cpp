@@ -46,28 +46,51 @@ template<typename T>
 inline void chkmax(T &a, const T b) {
   a = max(a, b);
 }
-typedef long double f80;
 
-const int N = 1e6+5;
-f80 a[N], c[N], d[N << 1];
-int n;
+const int N = 0;
 
 inline void solve() {
-  cin >> n;
-  if (n <= 5000) {
-    FOR(i, 0, n) cin >> a[i];
-    FOR(i, 0, n) cin >> c[i];
-    FOR(i, 0, n) {
-      f80 ans = 0;
-      FOR(j, 0, n) ans += c[i] / (a[j] + c[i]);
-      cout << fixed << setprecision(12) << ans << ' ';
+  int n;
+  rd(n);
+  if (__builtin_popcount(n + 1) == 1 && n > 1) {
+    println("Yes");
+    FOR(i, 1, 2 * n) println(i, i + 1);
+  } else if (n > 1 && n & 1) {
+    println("Yes");
+    int l = (1 << (31 - __builtin_clz(n)));
+    FOR(i, 1, l - 1) println(i, i + 1);
+    println(l - 1, n + 1);
+    FOR(i, n + 1, n + l - 1) println(i, i + 1);
+    for (int i = l; i < n; i += 2) {
+      println(i, i + 1);
+      println(1, i + 1);
+      println(1, i + n);
+      println(i + n, i + 1 + n);
     }
+  } else if (n > 1 && __builtin_popcount(n) > 1) {
+    println("Yes");
+    int l = (1 << (31 - __builtin_clz(n)));
+    FOR(i, 1, l - 1) println(i, i + 1);
+    println(l - 1, n + 1);
+    FOR(i, n + 1, n + l - 1) println(i, i + 1);
+    println(l, l+1);
+    println(l+1,1);
+    println(1,l+n);
+    println(l+n,l+n+1);
+    println(l+2,l+1);
+    println(2,l+2+n);
+    for (int i = l + 3; i <= n; i += 2) {
+      int t = (1 << (__builtin_ctz(i+1)+1)) - 1;
+      println(i, i + 1);
+      println(t, i + 1);
+      println(t, i + n);
+      println(i + n, i + 1 + n);
+    }
+
   } else {
-    FOR(i, 2, n << 1 | 1) d[i] = f80(1) / f80(i);
-    FOR(i, 2, n << 1 | 1) d[i] += d[i - 1];
-    FOR(i, 1, n + 1) cout << fixed << setprecision(12) << d[i + n] - d[i] << ' ';
+    println("No");
   }
-  cout << '\n';
+
 }
 
 int main() {
@@ -90,3 +113,4 @@ int main() {
  * - memory usage
  * - file IO
  */
+

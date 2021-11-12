@@ -46,28 +46,26 @@ template<typename T>
 inline void chkmax(T &a, const T b) {
   a = max(a, b);
 }
-typedef long double f80;
 
-const int N = 1e6+5;
-f80 a[N], c[N], d[N << 1];
+const int N = 2e5+5;
+
+struct DS {
+  struct node {
+    int l, r;
+    i64 s;
+  } a[N << 5];
+} T;
+
+int A[N], B[N];
 int n;
 
 inline void solve() {
-  cin >> n;
-  if (n <= 5000) {
-    FOR(i, 0, n) cin >> a[i];
-    FOR(i, 0, n) cin >> c[i];
-    FOR(i, 0, n) {
-      f80 ans = 0;
-      FOR(j, 0, n) ans += c[i] / (a[j] + c[i]);
-      cout << fixed << setprecision(12) << ans << ' ';
-    }
-  } else {
-    FOR(i, 2, n << 1 | 1) d[i] = f80(1) / f80(i);
-    FOR(i, 2, n << 1 | 1) d[i] += d[i - 1];
-    FOR(i, 1, n + 1) cout << fixed << setprecision(12) << d[i + n] - d[i] << ' ';
+  rd(n);
+  FOR(i, 0, n) rd(A[i]);
+  FOR(i, 0, n) rd(B[i]);
+  FOR(i, 0, n) {
+     
   }
-  cout << '\n';
 }
 
 int main() {
@@ -90,3 +88,4 @@ int main() {
  * - memory usage
  * - file IO
  */
+

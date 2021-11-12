@@ -46,27 +46,23 @@ template<typename T>
 inline void chkmax(T &a, const T b) {
   a = max(a, b);
 }
-typedef long double f80;
 
-const int N = 1e6+5;
-f80 a[N], c[N], d[N << 1];
+const int N = 2e5+5;
+char s[N * 3];
 int n;
+int o[N * 3];
+char c[3] = {'A', 'B', 'C'};
 
 inline void solve() {
-  cin >> n;
-  if (n <= 5000) {
-    FOR(i, 0, n) cin >> a[i];
-    FOR(i, 0, n) cin >> c[i];
+  rd(n, s);
+  int bel = 0;
+  do {
+    ++bel;
     FOR(i, 0, n) {
-      f80 ans = 0;
-      FOR(j, 0, n) ans += c[i] / (a[j] + c[i]);
-      cout << fixed << setprecision(12) << ans << ' ';
+      if (s[i] == c[0] && s[i + n] == c[1] && s[i + n + n] == c[2]) s[i] = s[i + n] = s[i + n + n] = bel;
     }
-  } else {
-    FOR(i, 2, n << 1 | 1) d[i] = f80(1) / f80(i);
-    FOR(i, 2, n << 1 | 1) d[i] += d[i - 1];
-    FOR(i, 1, n + 1) cout << fixed << setprecision(12) << d[i + n] - d[i] << ' ';
-  }
+  } while (next_permutation(c, c + 3));
+  FOR(j, 0, n * 3) cout << o[j];
   cout << '\n';
 }
 
@@ -90,3 +86,4 @@ int main() {
  * - memory usage
  * - file IO
  */
+

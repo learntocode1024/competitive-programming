@@ -46,28 +46,33 @@ template<typename T>
 inline void chkmax(T &a, const T b) {
   a = max(a, b);
 }
-typedef long double f80;
 
-const int N = 1e6+5;
-f80 a[N], c[N], d[N << 1];
+const int N = 5e5+5;
+char s[N], t[N];
 int n;
+int a[N], b[N];
 
 inline void solve() {
-  cin >> n;
-  if (n <= 5000) {
-    FOR(i, 0, n) cin >> a[i];
-    FOR(i, 0, n) cin >> c[i];
-    FOR(i, 0, n) {
-      f80 ans = 0;
-      FOR(j, 0, n) ans += c[i] / (a[j] + c[i]);
-      cout << fixed << setprecision(12) << ans << ' ';
-    }
-  } else {
-    FOR(i, 2, n << 1 | 1) d[i] = f80(1) / f80(i);
-    FOR(i, 2, n << 1 | 1) d[i] += d[i - 1];
-    FOR(i, 1, n + 1) cout << fixed << setprecision(12) << d[i + n] - d[i] << ' ';
+  cin >> n >> s >> t;
+  FOR(i, 0, n) s[i] -= 'A', t[i] -= 'A';
+  FOR(i, 0, n) s[i] = (s[i] - i % 3 + 3) % 3;
+  FOR(i, 0, n) t[i] = (t[i] - i % 3 + 3) % 3;
+  int t1 = 0, t2 = 0;
+  FOR(i, 0, n) {
+    a[++t1] = s[i];
+    if (t1 > 2 && a[t1] == a[t1-1] && a[t1] == a[t1-2]) t1 -= 3;
   }
-  cout << '\n';
+  FOR(i, 0, n) {
+    b[++t2] = t[i];
+    if (t2 > 2 && b[t2] == b[t2-1] && b[t2] == b[t2-2]) t2 -= 3;
+  }
+  FOR(i, 1, t1 + 1) {
+    if (t1 != t2 || a[i] != b[i]) {
+      println("NO");
+      return;
+    }
+  }
+  println("YES");
 }
 
 int main() {
@@ -90,3 +95,4 @@ int main() {
  * - memory usage
  * - file IO
  */
+
