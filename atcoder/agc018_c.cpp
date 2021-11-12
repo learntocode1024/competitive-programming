@@ -69,9 +69,8 @@ inline void solve() {
   sort(f, f + X + Y + Z);
   reverse(f, f + X + Y + Z);
   i64 cur = 0;
-  FOR(i, Y + Z - 1, X + Y + Z) S.insert({f[i].se, i});
-  s3[Y + Z - 1] = S.begin()->fi;
-  ROF(i, Z, Y + Z - 1) {
+  FOR(i, Y + Z, X + Y + Z) S.insert({f[i].se, i});
+  ROF(i, Y, Y + Z) {
     S.insert({f[i].se, i});
     int k = Y + Z - i;
     s3[i] = s3[i + 1];
@@ -85,7 +84,7 @@ inline void solve() {
     pq.push(f[i].se - f[i].fi);
     cur += pq.top();
     pq.pop();
-    chkmax(ans, cur + sum + s3[i]);
+    chkmax(ans, cur + sum + s3[i + 1]);
   }
   println(ans);
 }

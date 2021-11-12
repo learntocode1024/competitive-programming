@@ -4,9 +4,6 @@
  * URL: https://github.com/misaka18931/competitive-programming
  *
  * Original Author: misaka18931
- * Date:
- * Algorithm:
- * Difficulty:
  *
  *********************************************************************/
 
@@ -45,7 +42,34 @@ char *rdstr(char *s) {
   *s = '\0';
   return s;
 }
-}  // namespace IO
+} // namespace IO
+template<typename T>
+void rdint(T &a) {
+  a = IO::rd();
+}
+template<typename A, typename... B>
+void rdint(A &a, B& ...b) {
+  a = IO::rd();
+  rdint(b...);
+}
+template<typename A>
+void print(const A& a) {
+  cout << a;
+}
+template<typename A, typename... B>
+void print(const A& a, const B& ...b) {
+  cout << a;
+  print(b...);
+}
+template<typename A>
+void println(const A& a) {
+  cout << a << '\n';
+}
+template<typename A, typename... B>
+void println(const A& a, const B& ...b) {
+  cout << a << ' ';
+  println(b...);
+}
 
 /********************************* utility ************************************/
 typedef long long i64;
@@ -73,36 +97,10 @@ pii operator+(const pii &a, const pii &b) {
 /*********************************** solution *********************************/
 using IO::rd;
 // #define MULTI
-const int N = 2e3+5;
-const int p = 1e9+7;
-inline void red(int &x) { if (x >= p) x -= p; }
-
-int dp[N][N];
-int inv[N*N], fac[N*N], ifac[N*N];
-
-inline int C(int n, int k) {
-  if (k < 0 || k > n) return 0;
-  return 1ll * fac[n] * ifac[k] % p * ifac[n - k] % p;
-}
+const int N = 0;
 
 void solve() {
-  int n = rd(), k = rd();
-  if (k == 1) {
-    puts("1");
-    return;
-  }
-  inv[1] = fac[1] = ifac[1] = ifac[0] = fac[0] = 1;
-  for (int i = 2; i < N * N; ++i) {
-    fac[i] = 1ll * fac[i - 1] * i % p;
-    inv[i] = 1ll * p / i * (p - inv[p % i]) % p;
-    ifac[i] = 1ll * ifac[i - 1] * inv[i] % p;
-  }
-  FOR(i, 1, n + 1) dp[i][0] = 1;
-  FOR(i, 1, n + 1) FOR(j, 1, i + 1) {
-    if (j < i) dp[i][j] = dp[i - 1][j];
-    red(dp[i][j] += 1ll * dp[i][j - 1] * C(n * k - i - j - (k - 2) * (j - 1), k - 2) % p);
-  }
-  cout << 1ll * dp[n][n] * fac[n] % p << '\n';
+
 }
 
 int main() {
