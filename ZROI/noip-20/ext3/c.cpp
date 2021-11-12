@@ -47,61 +47,29 @@ inline void chkmax(T &a, const T b) {
   a = max(a, b);
 }
 
-const int N = 5e5+5;
-char s[N], t[N];
-int n, k;
-
-inline void trans_min() {
-  int i = 1, j = 0, k = 0;
-  while (i < n && j < n && k < n) {
-    if (s[(i + k) % n] == s[(j + k) % n]) ++k;
-    else {
-      if (s[(i + k) % n] < s[(j + k) % n]) j = j + k + 1;
-      else i = i + k + 1;
-      if (i == j) ++i;
-      k = 0;
-    }
-  }
-  chkmin(i, j);
-  FOR(f, 0, n) {
-    t[f + 1] = s[(f + i) % n];
-  }
-}
-
-int sa[N], rk[N << 1], tmp[N << 1];
-int vis[N];
-
-inline void suf_sort() {
-  iota(sa + 1, sa + n + 1, 1);
-  FOR(i, 1, n + 1) rk[i] = t[i];
-  for (int w = 1; w < n; w <<= 1) {
-    sort(sa + 1, sa + n + 1, [w] (auto a, auto b) { return rk[a] == rk[b] ? rk[a + w] < rk[b + w] : rk[a] < rk[b]; });
-    memcpy(tmp, rk, sizeof (rk));
-    for (int i = 1, c = 0; i <= n; ++i) {
-      if (tmp[sa[i]] == tmp[sa[i - 1]] && tmp[sa[i] + w] == tmp[sa[i - 1] + w]) {
-        rk[sa[i]] = c;
-      } else rk[sa[i]] = ++c;
-    }
-  }
-  vis[n + 1] = 1;
-  FOR(i, 1, k) {
-    vis[sa[i]] = 1;
-  }
-  for (int i = sa[k]; !vis[i]; ++i) print(t[i]);
-  print('\n');
-}
+const int N = 1e5+5;
+int dp[N];
+int a[N];
+int n;
 
 inline void solve() {
-  rd(n, k, s);
-  FOR(i, 0, n - 1) {
-    if (s[i] != s[i + 1]) {
-      trans_min();
-      suf_sort();
-      return;
-    }
+  cin >> n;
+  priority_queue<i64, vector<i64>, greater<i64> > pq;
+  FOR(i, 0, n) {
+    int x;
+    cin >> x;
+    pq.push(x);
   }
-  s[n / k + ((n % k) != 0)] = '\0';
-  cout << s << '\n';
+  i64 ans = 0;
+  while (pq.size() > 1) {
+    i64 a = pq.top();
+    pq.pop();
+    i64 b = pq.top();
+    pq.pop();
+    pq.push(a + b);
+    ans += a + b;
+  }
+  println(ans);
 }
 
 int main() {
@@ -111,6 +79,9 @@ int main() {
   ios::sync_with_stdio(0);
   cin.tie(0);
 #endif
+  int T;
+  cin >> T;
+  while (T--)
   solve();
   return 0;
 }
@@ -124,3 +95,4 @@ int main() {
  * - memory usage
  * - file IO
  */
+
