@@ -53,19 +53,76 @@ int p1[N], p2[N], p3[N];
 int r1[N], r2[N], r3[N];
 int n;
 
-struct SEGT_MN {
-  int c[N];
+template<const int& (*cmp)(const int&, const int&), int VAL>
+struct SEGT {
+  int c[N<<2];
+  #define lc (p<<1)
+  #define rc (p<<1|1)
+  int _A[N], _R[N];
+  void _build(int p, int l, int r) {
+    if (r - l == 1) {
+      c[p] = _A[l];
+      return;
+    }
+    int mid = (l + r) >> 1;
+    _build(lc, l, mid);
+    _build(rc, mid, r);
+    c[p] = cmp(c[lc], c[rc]);
+  }
+  int get(int p, int l, int r, int s, int t) {
+    if (l == s && r == t) return c[p];
+    int mid = (l + r) >> 1;
+    if (t <= mid) return get(lc, l, mid, s, t);
+    if (s >= mid) return get(rc, mid, r, s, t);
+    return cmp(get(lc, l, mid, s, mid), get(rc, mid, r, mid, t));
+  }
+  void ch(int p, int l, int r, int s) {
+    if (r == l + 1) {
+      c[p] = VAL;
+      return;
+    }
+    int mid = (l + r) >> 1;
+    if (s < mid) ch(lc, l, mid, s);
+    else ch(rc, mid, r, s);
+    c[p] = cmp(c[lc], c[rc]);
+  }
   inline void build(int *a) {
+    copy(a + 1, a + n + 1, _A + 1);
+    FOR(i, 1, n + 1) _R[_A[i]] = i;
+    _build(1, 1, n + 1);
+  }
+  inline void del(int x) {
+    ch(1, 1, n + 1, x);
+  }
+  inline int get(int x) {
+    int ret = get(1, 1, n + 1, 1, x);
+    if (cmp(ret, _A[x]) == _A[x]) return -1;
+    del(_R[ret]);
+    return _R[ret];
+  }
+};
+typedef SEGT<min<int>, inf> SEGT_MN;
+typedef SEGT<max<int>, 0> SEGT_MX;
+
+int tmp[N];
+
+template<class TREE>
+struct DS {
+  TREE t12, t13, t23;
+  inline void init(int *p1, int *p2, int *p3) {
     
   }
 };
 
-struct DS1 {
+DS<SEGT_MN> T1;
+DS<SEGT_MX> T2;
+int scc[N];
 
-} T1;
+inline void build_scc();
 
 bool scc_path(int u, int v) {
   if (scc[u] == scc[v]) return true;
+  return false;
 }
 
 inline void solve() {
