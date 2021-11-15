@@ -1,6 +1,4 @@
 #include <bits/stdc++.h>
-#include <ext/pb_ds/assoc_container.hpp>
-#include <ext/pb_ds/tree_policy.hpp>
 using namespace std;
 template<typename T>
 void rd(T &a) {
@@ -49,45 +47,11 @@ inline void chkmax(T &a, const T b) {
   a = max(a, b);
 }
 
-const int N = 1e5+5;
-int X, Y, Z;
-pii f[N];
-i64 ans, sum;
-i64 s3[N];
-priority_queue<int> pq;
-using namespace __gnu_pbds;
-tree<pii, null_type, greater<pii>, rb_tree_tag, tree_order_statistics_node_update> S;
+const int N = 1e4+5;
+
 
 inline void solve() {
-  rd(X, Y, Z);
-  FOR(i, 0, X + Y + Z) {
-    int a, b, c;
-    rd(a, b, c);
-    sum += a;
-    f[i] = mkp(b - a, c - a);
-  }
-  sort(f, f + X + Y + Z);
-  reverse(f, f + X + Y + Z);
-  i64 cur = 0;
-  FOR(i, Y + Z - 1, X + Y + Z) S.insert({f[i].se, i});
-  s3[Y + Z - 1] = S.begin()->fi;
-  ROF(i, Z, Y + Z - 1) {
-    S.insert({f[i].se, i});
-    int k = Y + Z - i;
-    s3[i] = s3[i + 1];
-    if (S.order_of_key({f[i].se, i}) < k) s3[i] += f[i].se;
-    else s3[i] += S.find_by_order(k - 1)->fi;
-  }
-  FOR(i, 0, Y) cur += f[i].fi, pq.push(f[i].se - f[i].fi);
-  chkmax(ans, cur + sum + s3[Y]);
-  for (int i = Y; i < Z + Y; ++i) {
-    cur += f[i].fi;
-    pq.push(f[i].se - f[i].fi);
-    cur += pq.top();
-    pq.pop();
-    chkmax(ans, cur + sum + s3[i]);
-  }
-  println(ans);
+  
 }
 
 int main() {

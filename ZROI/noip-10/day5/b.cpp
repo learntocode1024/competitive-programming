@@ -77,9 +77,44 @@ const int N = 1e5+5;
 int a[N];
 int lst[N], fir[N], p[N];
 
+bool validate(vector<int> &a) {
+  if (a.empty()) return 1;
+  for (auto i : a) lst[i] = p[i] = -1;
+  int n = a.size();
+  int g = 0;
+  int dif = 0;
+  for (int i = 0; i < n; ++i) {
+    if (lst[a[i]] == -1) {
+      ++dif;
+      lst[a[i]] = i;
+    } else {
+      if (p[a[i]] == -1) {
+        p[a[i]] = i - lst[a[i]];
+      } else if (p[a[i]] != i - lst[a[i]]) return 0;
+      if (g == 0) {
+        g = p[a[i]];
+      } else {
+        g = __gcd(g, p[a[i]]);
+      }
+      lst[a[i]] = i;
+    }
+  }
+  vector<int> to;
+  bool all = 1;
+  for (int i = 0; i < g; ++i) {
+    to.clear();
+    for (int j = i; j < n; j += g) {
+      to.pb(a[i]);
+    }
+  	all = all && validate(to);
+  }
+  return all;
+}
+
 void solve() {
   int n = rd();
-  FOR(i, 1, n + 1) a[i] = rd();
+  vector<int> va;
+  FOR(i, 1, n + 1) a[i] = rd(), va.pb(a[i]);
   bool same = 1, dis1 = 0, iper = 0;
   for (int i = 1; i <= n; ++i) {
     if (a[i] != a[1]) same = 0;
@@ -98,7 +133,7 @@ void solve() {
   for (int i = 1; i <= n; ++i) {
     if (p[a[i]] && (fir[a[i]] - p[a[i]] > 0)) ilper = 1;
   }
-  if ((dis1 && !same) || iper || ilper) cout << "No\n";
+  if ((dis1 && !same) || iper || ilper && !validate(va)) cout << "No\n";
   else cout << "Yes\n";
   FOR(i, 1, n + 1) lst[a[i]] = fir[a[i]] = p[a[i]] = 0;
 }

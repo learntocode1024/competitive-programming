@@ -73,10 +73,36 @@ pii operator+(const pii &a, const pii &b) {
 /*********************************** solution *********************************/
 using IO::rd;
 // #define MULTI
-const int N = 0;
+const int N = 2e3+5;
+const int p = 1e9+7;
+inline void red(int &x) { if (x >= p) x -= p; }
+
+int dp[N][N];
+int inv[N*N], fac[N*N], ifac[N*N];
+
+inline int C(int n, int k) {
+  if (k < 0 || k > n) return 0;
+  return 1ll * fac[n] * ifac[k] % p * ifac[n - k] % p;
+}
 
 void solve() {
-  
+  int n = rd(), k = rd();
+  if (k == 1) {
+    puts("1");
+    return;
+  }
+  inv[1] = fac[1] = ifac[1] = ifac[0] = fac[0] = 1;
+  for (int i = 2; i < N * N; ++i) {
+    fac[i] = 1ll * fac[i - 1] * i % p;
+    inv[i] = 1ll * p / i * (p - inv[p % i]) % p;
+    ifac[i] = 1ll * ifac[i - 1] * inv[i] % p;
+  }
+  FOR(i, 1, n + 1) dp[i][0] = 1;
+  FOR(i, 1, n + 1) FOR(j, 1, i + 1) {
+    if (j < i) dp[i][j] = dp[i - 1][j];
+    red(dp[i][j] += 1ll * dp[i][j - 1] * C(n * k - i - j - (k - 2) * (j - 1), k - 2) % p);
+  }
+  cout << 1ll * dp[n][n] * fac[n] % p << '\n';
 }
 
 int main() {
