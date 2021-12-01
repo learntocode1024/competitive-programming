@@ -48,7 +48,7 @@ inline void chkmax(T &a, const T b) {
 }
 
 const int N = 2e5+5;
-int M = 1e9+1;
+const int M = 1e9+1;
 
 struct DS {
   struct node {
@@ -80,16 +80,16 @@ struct DS {
     a[p].tg += v;
     if (a[p].r < 0) a[p].l = a[p].r = 0;
     else if (a[p].l < 0) a[p].l = 0;
-    if (a[p].l >= M) a[p].l = a[p].r = M-1;
+    if (a[p].l >= M) a[p].l = a[p].r = M - 1;
     else if (a[p].r >= M) a[p].r = M - 1;
   }
   inline void down(int p, int l, int r) {
     int v = a[p].tg;
     if (!v || r == l) return;
     int mid = l + (r - l) / 2;
-    if (!lc) init(lc, l + v, mid + v);
+    if (!lc) init(lc, l + v, mid + v), a[lc].tg = v;
     else _down(lc, v);
-    if (!rc) init(rc, mid + 1 + v, r + v);
+    if (!rc) init(rc, mid + 1 + v, r + v), a[rc].tg = v;
     else _down(rc, v);
     a[p].tg = 0;
   }
@@ -148,8 +148,8 @@ int main() {
 #ifndef MISAKA
   //freopen(".in", "r", stdin);
   //freopen(".out", "w", stdout);
-  // ios::sync_with_stdio(0);
-  // cin.tie(0);
+  ios::sync_with_stdio(0);
+  cin.tie(0);
 #endif
   solve();
   return 0;
