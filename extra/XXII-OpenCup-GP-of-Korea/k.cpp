@@ -53,8 +53,7 @@ int p1[N], p2[N], p3[N];
 int r1[N], r2[N], r3[N];
 int n;
 
-template<const int& (*cmp)(const int&, const int&), int VAL>
-struct SEGT {
+struct SEGT_MN {
   int c[N<<2];
   #define lc (p<<1)
   #define rc (p<<1|1)
@@ -67,24 +66,24 @@ struct SEGT {
     int mid = (l + r) >> 1;
     _build(lc, l, mid);
     _build(rc, mid, r);
-    c[p] = cmp(c[lc], c[rc]);
+    c[p] = min(c[lc], c[rc]);
   }
   int get(int p, int l, int r, int s, int t) {
     if (l == s && r == t) return c[p];
     int mid = (l + r) >> 1;
     if (t <= mid) return get(lc, l, mid, s, t);
     if (s >= mid) return get(rc, mid, r, s, t);
-    return cmp(get(lc, l, mid, s, mid), get(rc, mid, r, mid, t));
+    return min(get(lc, l, mid, s, mid), get(rc, mid, r, mid, t));
   }
   void ch(int p, int l, int r, int s) {
     if (r == l + 1) {
-      c[p] = VAL;
+      c[p] = inf;
       return;
     }
     int mid = (l + r) >> 1;
     if (s < mid) ch(lc, l, mid, s);
     else ch(rc, mid, r, s);
-    c[p] = cmp(c[lc], c[rc]);
+    c[p] = min(c[lc], c[rc]);
   }
   inline void build(int *a) {
     copy(a + 1, a + n + 1, _A + 1);
@@ -95,40 +94,181 @@ struct SEGT {
     ch(1, 1, n + 1, x);
   }
   inline int get(int x) {
-    int ret = get(1, 1, n + 1, 1, x);
-    if (cmp(ret, _A[x]) == _A[x]) return -1;
-    del(_R[ret]);
+    int ret = get(1, 1, n + 1, 1, x + 1);
+    if (min(ret, _A[x]) == _A[x]) return -1;
     return _R[ret];
   }
 };
-typedef SEGT<min<int>, inf> SEGT_MN;
-typedef SEGT<max<int>, 0> SEGT_MX;
 
-int tmp[N];
-
-template<class TREE>
-struct DS {
-  TREE t12, t13, t23;
-  inline void init(int *p1, int *p2, int *p3) {
-    
+struct SEGT_MX {
+  int c[N<<2];
+  #define lc (p<<1)
+  #define rc (p<<1|1)
+  int _A[N], _R[N];
+  void _build(int p, int l, int r) {
+    if (r - l == 1) {
+      c[p] = _A[l];
+      return;
+    }
+    int mid = (l + r) >> 1;
+    _build(lc, l, mid);
+    _build(rc, mid, r);
+    c[p] = max(c[lc], c[rc]);
+  }
+  int get(int p, int l, int r, int s, int t) {
+    if (l == s && r == t) return c[p];
+    int mid = (l + r) >> 1;
+    if (t <= mid) return get(lc, l, mid, s, t);
+    if (s >= mid) return get(rc, mid, r, s, t);
+    return max(get(lc, l, mid, s, mid), get(rc, mid, r, mid, t));
+  }
+  void ch(int p, int l, int r, int s) {
+    if (r == l + 1) {
+      c[p] = 0;
+      return;
+    }
+    int mid = (l + r) >> 1;
+    if (s < mid) ch(lc, l, mid, s);
+    else ch(rc, mid, r, s);
+    c[p] = max(c[lc], c[rc]);
+  }
+  inline void build(int *a) {
+    copy(a + 1, a + n + 1, _A + 1);
+    FOR(i, 1, n + 1) _R[_A[i]] = i;
+    _build(1, 1, n + 1);
+  }
+  inline void del(int x) {
+    ch(1, 1, n + 1, x);
+  }
+  inline int get(int x) {
+    int ret = get(1, 1, n + 1, x, n + 1);
+    if (max(ret, _A[x]) == _A[x]) return -1;
+    return _R[ret];
   }
 };
 
-DS<SEGT_MN> T1;
-DS<SEGT_MX> T2;
-int scc[N];
+int tmp[N];
 
-inline void build_scc();
+struct DS1 {
+  SEGT_MN t12, t13, t23;
+  inline void init() {
+    FOR(i, 1, n + 1) tmp[i] = p2[r1[i]];
+    t12.build(tmp);
+    FOR(i, 1, n + 1) tmp[i] = p3[r1[i]];
+    t13.build(tmp);
+    FOR(i, 1, n + 1) tmp[i] = p3[r2[i]];
+    t23.build(tmp);
+  }
+  inline void del(int u) {
+    t12.del(p1[u]);
+    t13.del(p1[u]);
+    t23.del(p2[u]);
+  }
+  inline int nxt(int u) {
+    int ret = t12.get(p1[u]);
+    if (ret == -1) ret = t13.get(p1[u]);
+    if (ret != -1) {
+      t12.del(ret);
+      t13.del(ret);
+      t23.del(p2[r1[ret]]);
+      return r1[ret];
+    } else {
+      ret = t23.get(p2[u]);
+      if (ret == -1) return -1;
+      t12.del(p1[r2[ret]]);
+      t13.del(p1[r2[ret]]);
+      t23.del(ret);
+      return r2[ret];
+    }
+    return -1;
+  }
+} T2;
+
+struct DS2 {
+  SEGT_MX t12, t13, t23;
+  inline void init() {
+    FOR(i, 1, n + 1) tmp[i] = p2[r1[i]];
+    t12.build(tmp);
+    FOR(i, 1, n + 1) tmp[i] = p3[r1[i]];
+    t13.build(tmp);
+    FOR(i, 1, n + 1) tmp[i] = p3[r2[i]];
+    t23.build(tmp);
+  }
+  inline void del(int u) {
+    t12.del(p1[u]);
+    t13.del(p1[u]);
+    t23.del(p2[u]);
+  }
+  inline int nxt(int u) {
+    int ret = t12.get(p1[u]);
+    if (ret == -1) ret = t13.get(p1[u]);
+    if (ret != -1) {
+      t12.del(ret);
+      t13.del(ret);
+      t23.del(p2[r1[ret]]);
+      return r1[ret];
+    } else {
+      ret = t23.get(p2[u]);
+      if (ret == -1) return -1;
+      t12.del(p1[r2[ret]]);
+      t13.del(p1[r2[ret]]);
+      t23.del(ret);
+      return r2[ret];
+    }
+    return -1;
+  }
+} T1;
+
+int rnk[N], f[N], tot;
+bool vis[N];
+int scc[N], cnt;
+
+void dfs1(int u) {
+  int v = T1.nxt(u);
+  while (v != -1) {
+    dfs1(v);
+    v = T1.nxt(u);
+  }
+  vis[u] = 1;
+  rnk[++tot] = u;
+}
+
+void dfs2(int u) {
+  scc[u] = cnt;
+  if (!f[cnt]) f[cnt] = u;
+  int v = T2.nxt(u);
+  while (v != -1) {
+    dfs2(v);
+    v = T2.nxt(u);
+  }
+}
+
+int pos[N];
+bool cmp(int b, int a) {
+  if (a == b) return 0;
+  return p1[a] > p1[b] ? (p2[a] > p2[b] || p3[a] > p3[b]) : (p2[a] > p2[b] && p3[a] > p3[b]);
+}
+
+inline void build_scc() {
+  FOR(i, 1, n + 1)
+    if (!vis[i])
+      T1.del(i), dfs1(i);
+  ROF(i, 1, n + 1)
+    if (!scc[rnk[i]])
+      ++cnt, T2.del(rnk[i]), dfs2(rnk[i]);
+}
 
 bool scc_path(int u, int v) {
   if (scc[u] == scc[v]) return true;
-  return false;
+  return cmp(u, v);
 }
 
 inline void solve() {
   cin >> n;
   FOR(i, 1, n + 1) rd(p1[i], p2[i], p3[i]);
   FOR(i, 1, n + 1) r1[p1[i]] = r2[p2[i]] = r3[p3[i]] = i;
+  T1.init();
+  T2.init();
   build_scc();
   int q;
   cin >> q;
@@ -159,4 +299,3 @@ int main() {
  * - memory usage
  * - file IO
  */
-
