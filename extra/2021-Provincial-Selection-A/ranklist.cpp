@@ -51,7 +51,7 @@ const int N = 15;
 int p[N], a[N];
 int n, m;
 
-inline void solve() {
+inline void factorial() {
   rd(n, m);
   int mxa = -1, imxa;
   FOR(i, 1, n + 1) {cin >> a[i];
@@ -72,6 +72,18 @@ inline void solve() {
   println(cnt);
 }
 
+i64 f[1<<13][505];
+
+void exponential() {
+  rd(n, m);
+  int mxa = -1, imxa;
+  FOR(i, 1, n + 1) {cin >> a[i];
+  if (a[i] > mxa) mxa = a[i], imxa = i;}
+  for (int u = 1; u < 1 << n; ++u) {
+    
+  }
+}
+
 int main() {
 #ifndef MISAKA
   //freopen(".in", "r", stdin);
@@ -79,7 +91,8 @@ int main() {
   ios::sync_with_stdio(0);
   cin.tie(0);
 #endif
-  solve();
+  // factorial();
+  exponential();
   return 0;
 }
 /* Checklist:
