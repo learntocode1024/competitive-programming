@@ -51,7 +51,7 @@ const int N = 15;
 int p[N], a[N];
 int n, m;
 
-inline void factorial() {
+inline void factorial() { // O(n*n!)
   rd(n, m);
   int mxa = -1, imxa;
   FOR(i, 1, n + 1) {cin >> a[i];
@@ -72,16 +72,41 @@ inline void factorial() {
   println(cnt);
 }
 
-i64 f[1<<13][505];
+i64 f[N][1<<13][505];
+inline int dif(int u, int v) {
+  if (v > u) {
+    return max(a[u] - a[v] + 1, 0);
+  } else {
+    return max(a[u] - a[v], 0);
+  }
+}
 
-void exponential() {
+void exponential() { // O(n^2*m*2^n)
   rd(n, m);
-  int mxa = -1, imxa;
-  FOR(i, 1, n + 1) {cin >> a[i];
+  int mxa = -1, imxa = -1;
+  FOR(i, 0, n) {cin >> a[i];
   if (a[i] > mxa) mxa = a[i], imxa = i;}
   for (int u = 1; u < 1 << n; ++u) {
-    
+    int c = __builtin_popcount(u);
+    if (c == 1) {
+      int i = __builtin_ctz(u);
+      int cc = dif(imxa, i) * n;
+      f[i][u][cc] = 1;
+    } else {
+      for (int T = u, i = __builtin_ctz(T); T; T ^= 1 << i, i = __builtin_ctz(T)) {
+        int v = u ^ (1 << i);
+        for (int S = v, j = __builtin_ctz(S); S; S ^= 1 << j, j = __builtin_ctz(S)) {
+          int dt = dif(j, i) * (n + 1 - c);
+          for (int tb = 0; tb + dt <= m; ++tb) {
+            f[i][u][dt + tb] += f[j][v][tb];
+          }
+        }
+      }
+    }
   }
+  i64 ans = 0;
+  FOR(i, 0, n) FOR(j, 0, m + 1) ans += f[i][(1 << n) - 1][j];
+  println(ans);
 }
 
 int main() {

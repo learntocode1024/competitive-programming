@@ -1,4 +1,6 @@
 #include <bits/stdc++.h>
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
 using namespace std;
 template<typename T>
 void rd(T &a) {
@@ -46,37 +48,53 @@ template<typename T>
 inline void chkmax(T &a, const T b) {
   a = max(a, b);
 }
-const int N = 1005;
-const int p = 998244353;
 
-i64 a[N];
-i64 coef[N];
-int n;
-i64 k;
-i64 q_pow(i64 x, int y) {
-  i64 ret = 1;
-  while (y) {
-    if (y & 1) ret = ret * x % p;
-    x = x * x % p;
-    y >>= 1;
+const int N = 1e6+5;
+int n, q;
+vector<int> h[N], g[N];
+int L[N], K[N];
+int a[N], d[N], ans[N], dd[N];
+using namespace __gnu_pbds;
+tree<pii, null_type, less<pii>, rb_tree_tag, tree_order_statistics_node_update> S;
+
+void dfs(int u) {
+  if (d[a[u]]) S.erase({d[a[u]], dd[a[u]]});
+  ++d[a[u]];
+  int mem = dd[a[u]];
+  dd[a[u]] = u;
+  S.insert({d[a[u]], u});
+  for (auto id : h[u]) {
+    int t = S.order_of_key({L[id], 0});
+    if (t + K[id] > S.size()) ans[id] = -1;
+    else {
+      ans[id] = a[S.find_by_order(t + K[id] - 1)->se];
+    }
   }
-  return ret;
+  for (auto v : g[u]) {
+    dfs(v);
+  }
+  S.erase({d[a[u]], u});
+  --d[a[u]];
+  dd[a[u]] = mem;
+  if (d[a[u]]) S.insert({d[a[u]], mem});
 }
 
 inline void solve() {
-  cin >> n >> k;
-  coef[0] = 1;
-  FOR(i, 0, n) cin >> a[i];
-  FOR(i, 0, n) {
-    ROF(j, 0, i + 1) {
-      coef[j + 1] = (coef[j + 1] + coef[j] * (k - j)) % p;
-      coef[j] = coef[j] * a[i] % p;
-    }
+  rd(n, q);
+  FOR(i, 1, n + 1) g[i].clear(), h[i].clear();
+  FOR(i, 1, n + 1) cin >> a[i];
+  FOR(i, 2, n + 1) {
+    int p;
+    cin >> p;
+    g[p].pb(i);
   }
-  i64 w0 = q_pow(n, p - 2), w = 1;
-  i64 ans = 0;
-  FOR(i, 0, n + 1) ans = (ans + coef[i] * w) % p, w = w * w0 % p;
-  println(ans);
+  FOR(i, 0, q) {
+    int v;
+    rd(v, L[i], K[i]);
+    h[v].pb(i);
+  }
+  dfs(1);
+  FOR(i, 0, q) cout << ans[i] << " \n"[i == q-1];
 }
 
 int main() {
@@ -86,6 +104,9 @@ int main() {
   ios::sync_with_stdio(0);
   cin.tie(0);
 #endif
+  int T;
+  cin >> T;
+  while (T--)
   solve();
   return 0;
 }

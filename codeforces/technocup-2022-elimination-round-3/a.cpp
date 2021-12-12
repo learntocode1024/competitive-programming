@@ -46,36 +46,25 @@ template<typename T>
 inline void chkmax(T &a, const T b) {
   a = max(a, b);
 }
-const int N = 1005;
-const int p = 998244353;
 
-i64 a[N];
-i64 coef[N];
-int n;
-i64 k;
-i64 q_pow(i64 x, int y) {
-  i64 ret = 1;
-  while (y) {
-    if (y & 1) ret = ret * x % p;
-    x = x * x % p;
-    y >>= 1;
-  }
-  return ret;
-}
+const int N = 105;
+int a[N];
 
 inline void solve() {
-  cin >> n >> k;
-  coef[0] = 1;
-  FOR(i, 0, n) cin >> a[i];
-  FOR(i, 0, n) {
-    ROF(j, 0, i + 1) {
-      coef[j + 1] = (coef[j + 1] + coef[j] * (k - j)) % p;
-      coef[j] = coef[j] * a[i] % p;
+  int n;
+  cin >> n;
+  int ans = 1;
+  FOR(i, 1, n + 1) cin >> a[i];
+  FOR(i, 1, n + 1) {
+    if (i > 1 && !a[i] && !a[i - 1]) {
+      ans = -1;
+      break;
+    }
+    if (a[i]) {
+      ans += 1;
+      if (a[i - 1]) ans += 4;
     }
   }
-  i64 w0 = q_pow(n, p - 2), w = 1;
-  i64 ans = 0;
-  FOR(i, 0, n + 1) ans = (ans + coef[i] * w) % p, w = w * w0 % p;
   println(ans);
 }
 
@@ -86,6 +75,9 @@ int main() {
   ios::sync_with_stdio(0);
   cin.tie(0);
 #endif
+  int T;
+  cin >> T;
+  while (T--)
   solve();
   return 0;
 }
