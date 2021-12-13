@@ -48,77 +48,107 @@ inline void chkmax(T &a, const T b) {
 }
 
 const int N = 2e5+5;
-const int mod = 998244353;
-#define LL long long
-#define M 5000000
-int tot = 0;
-#define mid (l+r>>1)
-LL n,q,p[M],mark[M][2],a[M],L,R,qs,num, lc[M], rc[M];
-void up(LL x){p[x]=(p[lc[x]]+p[rc[x]])%mod;}
-void pushdown(LL x,LL l,LL r){
-    p[lc[x]]=p[lc[x]]*mark[x][1]%mod;
-    p[lc[x]]=(p[lc[x]]+(mark[x][0]*(mid-l+1)))%mod;
-    p[rc[x]]=p[rc[x]]*mark[x][1]%mod;
-    p[rc[x]]=(p[rc[x]]+(mark[x][0]*(r-mid)))%mod;
-    mark[lc[x]][1]=mark[lc[x]][1]*mark[x][1]%mod;
-    mark[lc[x]][0]=(mark[lc[x]][0]*mark[x][1]+mark[x][0])%mod;
-    mark[rc[x]][1]=mark[rc[x]][1]*mark[x][1]%mod;
-    mark[rc[x]][0]=(mark[rc[x]][0]*mark[x][1]+mark[x][0])%mod;
-    mark[x][0]=0ll,mark[x][1]=1ll;
-}
-void add(LL &x,LL l,LL r,LL m){
-  if (!x) x = ++tot, mark[x][1]=1;
-    if(r<L||R<l) return;
-    if(L<=l&&r<=R){
-        mark[x][0]=(mark[x][0]+m)%mod;
-        p[x]=(p[x]+(m*(r-l+1)))%mod;
-        return;
-    }
-    pushdown(x,l,r);
-    add(lc[x],l,mid,m),add(rc[x],mid+1,r,m);
-    up(x);
-}
-void mult(LL &x,LL l,LL r,LL m){
-  if (!x) x = ++tot, mark[x][1]=1;
-    if(r<L||R<l) return;
-    if(L<=l&&r<=R){
-        mark[x][0]=mark[x][0]*m%mod;     
-        mark[x][1]=mark[x][1]*m%mod;
-        p[x]=p[x]*m%mod;
-        return;
-    }
-    pushdown(x,l,r);
-    mult(lc[x],l,mid,m),mult(rc[x],mid+1,r,m);
-    up(x);
-}
-LL query(LL x,LL l,LL r){
-    if(r<L||R<l || !x) return 0ll;
-    LL ans;
-    if(L<=l&&r<=R) ans=p[x]%mod;
-    else{
-        pushdown(x,l,r);
-        ans=(query(lc[x],l,mid)+query(rc[x],mid+1,r))%mod;
-        up(x);
-    }
-    return ans;
-}
-i64 rt;
+const int P = 998244353;
 
-int main(){
-  cin >> n;
-  int a;
-  cin >> a;
-  L = 1, R = a;
-  add(rt, 1, 1e9, 1);
-  for (int i = 1; i < n; ++i) {
-    cin >> a;
-    int num = p[rt];
-    L = a + 1, R = 1e9;
-    mult(rt, 1, 1e9, 0);
-    L = 1, R = a;
-    mult(rt, 1, 1e9, -1);
-    add(rt, 1, 1e9, num);
+struct segT {
+  struct node {
+    int l, r;
+    i64 s, m, c;
+  } a[N<<5];
+  #define lc a[p].l
+  #define rc a[p].r
+  int tot;
+  inline void init(int &p) {
+    p = ++tot;
+    a[p].m = 1;
   }
-  println(p[rt]);
-    return 0;
+  inline void up(int p) {
+    a[p].s = (a[lc].s + a[rc].s) % P;
+  }
+  inline void _dwn(int p, i64 l, i64 m, i64 c) {
+    a[p].s = (a[p].s * (P + m) + c * l) % P;
+    a[p].m = a[p].m * (P + m) % P;
+    a[p].c = (c + a[p].c * (P + m)) % P;
+  }
+  inline void dwn(int p, int l, int r) {
+    int mid = (r + l) >> 1;
+    if (!lc) init(lc);
+    if (!rc) init(rc);
+    _dwn(lc, mid - l, a[p].m, a[p].c);
+    _dwn(rc, r - mid, a[p].m, a[p].c);
+    a[p].m = 1;
+    a[p].c = 0;
+  }
+  void mul(int &p, int l, int r, int s, int t, i64 v) {
+    if (!p) init(p);
+    if (l == s && r == t) {
+      return _dwn(p, r - l, v, 0);
+    }
+    dwn(p, l, r);
+    int mid = (l + r) >> 1;
+    if (s < mid) mul(lc, l, mid, s, min(mid, t), v);
+    if (t > mid) mul(rc, mid, r, max(s, mid), t, v);
+    up(p);
+  }
+  void ch(int &p, int l, int r, int s, int t, i64 v) {
+    if (!p) init(p);
+    if (l == s && r == t) {
+      return _dwn(p, r - l, 1, v);
+    }
+    dwn(p, l, r);
+    int mid = (l + r) >> 1;
+    if (s < mid) ch(lc, l, mid, s, min(mid, t), v);
+    if (t > mid) ch(rc, mid, r, max(s, mid), t, v);
+    up(p);
+  }
+  int sum(int &p, int l, int r, int s, int t) {
+    if (!p) init(p);
+    if (l == s && r == t) {
+      return a[p].s;
+    }
+    dwn(p, l, r);
+    int mid = (l + r) >> 1;
+    i64 ret = 0;
+    if (s < mid) ret += sum(lc, l, mid, s, min(mid, t));
+    if (t > mid) ret += sum(rc, mid, r, max(s, mid), t);
+    return ret % P;
+  }
+} T;
+
+int n, rt, a;
+int L = 1, R = 1e9+1;
+
+inline void solve() {
+  cin >> n >> a;
+  T.ch(rt, L, R, 1, a + 1, 1);
+  FOR(I, 1, n) {
+    cin >> a;
+    int s = T.a[rt].s;
+    if (a + 1 < R) T.mul(rt, L, R, a + 1, R, 0);
+    T.mul(rt, L, R, 1, a + 1, -1);
+    T.ch(rt, L, R, 1, a + 1, s);
+  }
+  println(T.a[rt].s);
 }
+
+int main() {
+#ifndef MISAKA
+  //freopen(".in", "r", stdin);
+  //freopen(".out", "w", stdout);
+  ios::sync_with_stdio(0);
+  cin.tie(0);
+#endif
+  solve();
+  return 0;
+}
+/* Checklist:
+ * - data type
+ * - overflow
+ * - typo/logic
+ * - special cases
+ * - cleanup (multi-test)
+ * - bounds
+ * - memory usage
+ * - file IO
+ */
+
