@@ -48,61 +48,40 @@ inline void chkmax(T &a, const T b) {
 }
 
 //#define MULTI
-const int N = 1e5+5, M = 23;
-int n, m, k;
-int s[N], f[1<<M];
-int c[M][M];
-int g[M], h[M];
-int g1[M][1<<12], g2[M][1<<12];
-int h1[M][1<<12], h2[M][1<<12];
-int H, T;
+const int N = 2005;
+const int p = 924844033;
+int fac[N] = {1, 1};
+int f[N][N], h[N<<1][N];
+int n, k;
 
 inline void solve() {
-  rd(n, m, k);
-  H = m / 2;
-  T = (1 << H) - 1;
-  FOR(i, 0, n) cin >> s[i];
-  FOR(i, 1, n) ++c[s[i-1]-1][s[i]-1];
-  FOR(i, 0, m) c[i][i] = 0;
-  FOR(i, 0, m) FOR(j, 0, m) g[i] += c[j][i], h[i] += c[i][j];
-  FOR(i, 0, m) FOR(u, 0, 1 << H) {
-    FOR(j, 0, H) if ((u >> j) & 1) {
-      g1[i][u] += c[j][i];
-      h1[i][u] += c[i][j];
+  rd(n, k);
+  FOR(i, 2, n + 1) fac[i] = 1ll * fac[i - 1] * i % p;
+  f[0][0] = f[1][0] = f[1][1] = 1;
+  FOR(i, 2, n + 1) FOR(j, 0, (i + 1) / 2 + 1) {
+    f[i][j] = f[i - 1][j];
+    if (i > 1 && j > 0) f[i][j] += f[i - 2][j - 1];
+    f[i][j] %= p;
+  }
+  h[0][0] = 1;
+  FOR(i, 1, k + 1) FOR(j, 0, n + 1) {
+    int s = (n - i) / k;
+    for (int t = 0; t <= s && j - t >= 0; ++t) {
+      h[i][j] = (h[i][j] + 1ll * h[i - 1][j - t] * f[s][t]) % p;
     }
   }
-  FOR(i, 0, m) FOR(u, 0, 1 << (m - H)) {
-    FOR(j, 0, m - H) if ((u >> j) & 1) {
-      g2[i][u] += c[j + H][i];
-      h2[i][u] += c[i][j + H];
+  FOR(i, 1, k + 1) FOR(j, 0, n + 1) {
+    int s = (n - i) / k;
+    for (int t = 0; t <= s && j - t >= 0; ++t) {
+      h[i + k][j] = (h[i + k][j] + 1ll * h[i + k - 1][j - t] * f[s][t]) % p;
     }
   }
-  FOR(u, 1, 1<<m) {
-    f[u] = INT_MAX;
-    int ci = __builtin_popcount(u);
-    FOR(i, 0, m) if ((u>>i)&1) {
-      int v = u ^ (1<<i);
-      int cur = 0;
-      cur = k * g[i] - h[i];
-      cur -= (k - 1) * (g1[i][v & T] + g2[i][v >> H]);
-      cur += (k + 1) * (h1[i][v & T] + h2[i][v >> H]);
-      cur *= ci;
-      cur += f[v];
-      /*
-      FOR(j, 0, m) {
-        if ((v>>j)&1) {
-          cur += ci * c[j][i];
-          cur += k * ci * c[i][j];
-        } else {
-          cur += k * ci * c[j][i];
-          cur -= ci * c[i][j];
-        }
-      }
-      */
-      chkmin(f[u], cur);
-    }
+  i64 ans = 0;
+  FOR(i, 0, n + 1) {
+    if (i & 1) ans = (ans + p - 1ll * fac[n - i] * h[k<<1][i] % p) % p;
+    else ans = (ans + 1ll * fac[n - i] * h[k<<1][i]) % p;
   }
-  println(f[(1<<m)-1]);
+  println(ans);
 }
 
 int main() {
