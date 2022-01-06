@@ -55,7 +55,7 @@ typedef MontgomeryModInt<1000000007> mint;
 int a[N];
 int dis[N];
 mint f[N];
-int NUM;
+int NUM, NUM1;
 
 struct BIT {
   mint c[N];
@@ -74,11 +74,27 @@ struct BIT {
     }
     return ret;
   }
-} A, B;
+} A, B, C;
+struct BIT2 {
+  mint c[N];
+  int op[N];
+  void add(int x, mint v) {
+    for (; x <= n; x += x & -x) {
+      if (op[x] != NUM1) op[x] = NUM1, c[x] = 0;
+      c[x] += v;
+    }
+  }
+  mint get(int x) {
+    mint ret(0);
+    for (; x; x -= x & -x) {
+      if (op[x] != NUM1) op[x] = NUM1, c[x] = 0;
+      ret += c[x];
+    }
+    return ret;
+  }
+} D;
 
-struct PSGT {
-  
-} T;
+int l[N], o[N], smx[N];
 
 inline void get_f() {
   FOR(i, 1, n + 1) {
@@ -88,7 +104,9 @@ inline void get_f() {
     B.add(a[i], f[i]);
   }
 }
-
+int tx[N];
+mint tv[N];
+int tc;
 inline void solve() {
   cin >> n;
   FOR(i, 1, n + 1) cin >> a[i];
@@ -97,10 +115,39 @@ inline void solve() {
   int ttt = unique(dis, dis + n) - dis;
   FOR(i, 1, n + 1) a[i] = lower_bound(dis, dis + ttt, a[i]) - dis + 1;
   get_f();
-  ROF(i, 1, ttt + 1) {
-    
+  mint ans(0);
+  int t = 0;
+  l[0] = n;
+  for (int i = n - 1; i >= 0 && a[l[t]] < ttt; --i) {
+    if (a[i] > a[l[t]]) l[++t] = i;
   }
+  iota(o, o + n, 1);
+  sort(o, o + n, [] (int i, int j) { return a[i] == a[j] ? i < j : (a[i] > a[j]); });
+  int t1 = 0, t2 = 0;
+  while (t2 < n && a[o[t2]] == a[l[t]]) ++t2;
+  copy(a, a + n + 1, smx);
+  ROF(i, 1, n) chkmax(smx[i], smx[i + 1]);
+  ROF(i, 0, t + 1) {
+    int mx = a[l[i]];
+    while (t1 < n && a[o[t1]] >= mx) {
+      mint cur = D.get(n) - D.get(o[t1]) + (a[o[t1]] == smx[o[t1]]);
+      C.add(o[t1], cur);
+      // D.add(o[t1], cur);
+      tv[tc] = cur;
+      tx[tc++] = o[t1];
+      ++t1;
+    }
+    ++NUM1;
+    FOR(I, 0, tc) D.add(tx[I], tv[I]);
+    tc = 0;
+    while (t2 < n && (i == 0 || a[o[t2]] >= a[l[i - 1]])) {
+      if (l[i] > o[t2]) ans += (C.get(l[i]) - C.get(o[t2])) * f[o[t2]];
+      ++t2;
+    }
+  }
+  cout << ans << '\n';
   ++NUM;
+  ++NUM1;
 }
 
 int main() {

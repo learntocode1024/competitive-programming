@@ -1,0 +1,2 @@
+echo 1 5
+seq 1 10 | shuf -r | head -5
