@@ -1,4 +1,5 @@
 #include <bits/stdc++.h>
+#include "modint"
 using namespace std;
 template<typename T>
 void rd(T &a) {
@@ -47,64 +48,12 @@ inline void chkmax(T &a, const T b) {
   a = max(a, b);
 }
 
-//#define MULTI
 const int N = 2e6+5;
-const int p = 998244353;
+const int MOD = 998244353;
+typedef MontgomeryModInt<MOD> mint;
+//#define MULTI
 int n, x;
-vector<pii> g[N];
-
-int Q_pow(i64 x, int y) {
-  i64 ret = 1;
-  while (y) {
-    if (y & 1)
-      ret = ret * x % p;
-    x = x * x % p;
-    y >>= 1;
-  }
-  return ret;
-}
-
-inline i64 inv(int x) { return Q_pow(x, p - 2); }
-namespace sub1 {
-int c[N];
-bool v[N];
-i64 q[N], t = 1;
-i64 s[N];
-i64 f[N], g[N];
-
-void work() {
-  int c0 = -1;
-  FOR(i, 1, n + 1) if (g[i].size() == 1) {
-    c0 = i;
-    break;
-  }
-  if (c0 == -1) return;
-  v[c0] = 1;
-  s[0] = 1;
-  while (t < n) {
-    for (auto nxt : g[c0]) {
-      if (!v[nxt.fi]) {
-        q[t] = nxt.se;
-        s[t] = (p + 1 - q[t]) * s[t - 1] % p;
-        ++t;
-        c0 = nxt.fi;
-        break;
-      }
-    }
-  }
-  i64 ans = 0;
-  q[0] = 1;
-  FOR(i, 0, x) g[i] = 1;
-  for (int i = x; i < n; ++i) {
-    f[i] = s[i] * inv(s[i - x]) % p * q[i - x] % p;
-    if (i > x) f[x] = f[x] * g[i - x - 1] % p;
-    g[i] = (g[i - 1] - f[i] +  p )% p;
-    ans = (ans + f[i]) % p;
-  }
-  println(ans);
-}
-
-}
+vector<pair<int, mint> > g[N];
 
 namespace sub2 {
 int d[N];
@@ -126,6 +75,79 @@ inline void work() {
 }
 }
 
+int d[N], son[N];
+mint prson[N];
+const int MX = N<<1;
+int id[MX], hd[MX], tl[MX], nxt[MX], pre[MX], l[MX], tot;
+mint v[MX], tg[MX], s[MX];
+
+void l_s_d(int u, int fa) {
+  for (auto v : g[u]) if (v.fi != fa) {
+    l_s_d(v.fi, u);
+    if (v.se != 1) chkmax(d[u], d[v.fi] + 1);
+    if (v.se != 1 && d[son[u]] < d[v.fi]) son[u] = v.fi, prson[u] = -v.se + 1;
+  }
+}
+
+mint s1[N], s2[N];
+
+void dfs(int u, int fa) {
+  int &cur = id[u];
+  mint iv;
+  if (son[u] == 0) {
+    cur = u;
+    ++tot;
+    hd[u] = tl[u] = tot;
+    s[u] = tg[u] = v[tot] = 1;
+    nxt[tot] = pre[tot] = 0;
+    l[u] = 0;
+  } else {
+    dfs(son[u], u);
+    cur = id[son[u]];
+    mint tmp = s[cur] * (-prson[u] + 1);
+    tg[cur] *= prson[u];
+    s[cur] *= prson[u];
+    s[cur] += tmp;
+    iv = tg[cur].inverse();
+    ++tot;
+    v[tot] = iv * cur;
+    nxt[tot] = hd[cur];
+    pre[hd[cur]] = tot;
+    hd[cur] = tot;
+    ++l[cur];
+  }
+  while (l[cur] > x) {
+    --l[cur];
+    s[cur] -= tg[cur] * v[tl[cur]];
+    nxt[pre[tl[cur]]] = 0;
+    tl[cur] = pre[tl[cur]];
+  }
+  for (auto oson : g[u]) if (oson.fi != fa && oson.fi != son[u]) {
+    int V = oson.fi;
+    mint p = oson.se;
+    mint q = -p + 1;
+    dfs(V, u);
+    int e = l[id[V]];
+    int lm1 = 0, lm2 = 0;
+    int is2 = hd[cur], is1 = hd[id[V]];
+    int it = hd[cur], itv = 0;
+    for (int i = 0, it = hd[id[V]]; i <= e + 1; ++i, it = nxt[it]) s1[i] = tg[id[V]] * v[it];
+    for (int i = 0, it = hd[cur]; i <= e + 1; ++i, it = nxt[it]) s2[i] = v[it];
+    FOR(i, 1, e + 2) s1[i] += s1[i-1];
+    FOR(i, 1, e + 2) s2[i] += s2[i-1];
+    for (int i = 0; i <= l[cur]; ++i) {
+      if (i - 1 > e && x - i - 1 > e) break;
+      s[cur] -= tg[cur] * v[it];
+      if (min(i-1, x-i-1) >= 0) v[it] = q * (v[it] * s1[min(i-1, x-i-1)] + tg[id[V]] * v[itv] * s2[min(i-1, x - i)]) + p * v[it] * s[id[V]];
+      else if (min(i-1, x-i) >= 0) v[it] = q * (tg[id[V]] * v[itv] * s2[min(i-1, x - i)]) + p * v[it] * s[id[V]];
+      else v[it] = p * v[it] * s[id[V]];
+      s[cur] += tg[cur] * v[it];
+      it = nxt[it];
+      itv = (i == 0) ? hd[id[V]] : nxt[itv];
+    }
+  }
+}
+
 inline void solve() {
   int da, db;
   rd(n, da, db);
@@ -136,13 +158,19 @@ inline void solve() {
     FOR(i, 1, n) {
       int u, v, w;
       rd(u, v, w);
-      w = 61689804ll * w % p;
+      w = 61689804ll * w % MOD;
       if (w) t2 = 0;
       g[u].eb(v, w);
       g[v].eb(u, w);
     }
     if (t2) sub2::work();
-    else sub1::work();
+    else {
+      d[0] = -1;
+      v[0] = 0;
+      l_s_d(1, 0);
+      dfs(1, 0);
+      println(s[id[1]]);
+    }
   }
 }
 
