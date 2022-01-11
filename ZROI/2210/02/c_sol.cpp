@@ -105,6 +105,7 @@ struct sgT {
 int s[Q], t[Q];
 struct tup {
   int l, r, c;
+  bool operator< (const tup &rhs) const { return c < rhs.c; }
 };
 struct stat {
   int l, r;
@@ -178,6 +179,7 @@ inline void solve() {
     o.v.pb({l, r, i});
   }
   f.push(o);
+  FOR(i, 1, n + 1) sort(begin(g[i]), end(g[i])); // substract first!
   bfs();
   FOR(i, 0, q) println(ans[i]);
 }
