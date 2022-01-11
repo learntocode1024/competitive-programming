@@ -30,7 +30,7 @@ void println(const A& a, const B& ...b) {
 typedef long long i64;
 typedef unsigned long long u64;
 typedef unsigned u32;
-typedef pair<int, int> pii;
+typedef pair<int, i64> pil;
 #define mkp make_pair
 #define fi first
 #define se second
@@ -48,29 +48,64 @@ inline void chkmax(T &a, const T b) {
 }
 
 //#define MULTI
-const i64 N = 1e11+5;
-bitset<N> is, v;
+const i64 N = 3.5e5+5;
+i64 n;
+typedef pair<i64, i64> pll;
+map<pil, pll> G;
+int low[N], p[N], tot;
+pll cnt[N];
+
+pll g(int k, i64 n) {
+  if (k == 1) {
+    return {n/4-1+((n&3)>=1), n/4+((n&3)>=3)};
+  }
+  if (G.find({k, n}) != G.end()) return G[{k, n}];
+  i64 c1 = 0, c2 = 0;
+  pll x = g(k-1, n), y = {0, 0}, z = {0, 0};
+  if (n >= 1ll * p[k] * p[k]) {
+    y = g(k-1, n / p[k]), z = g(k-1, p[k-1]);//cnt[k-1];
+  }
+  if ((p[k] & 3) == 1) {
+    c1 = x.fi - y.fi + z.fi;
+    c2 = x.se - y.se + z.se;
+  } else {
+    c1 = x.fi - y.se + z.se;
+    c2 = x.se - y.fi + z.fi;
+  }
+  G[{k, n}] = {c1, c2};
+  return {c1, c2};
+}
 
 inline void solve() {
-  is[1] = 1;
-  for (i64 i = 2; i < N-1; ++i) {
-    if (!v[i]) {
-      is[i] = 1;
-      for (i64 j = i; j < N-1; j += i) {
-        v[i] = 1;
-      }
-    }
-  }
-  i64 ans = 0;
-  is[2] = 0;
   FOR(i, 2, N) {
-    if ((i&3) == 0) {
-      if ((i&7)) ans += is[i>>2];
-      if ((i&15)==0) ans += is[i>>4];
+    if (!low[i]) {
+      low[i] = p[++tot] = i;
+      if ((i & 3) == 1) ++cnt[tot].fi;
+      else if (i != 2) ++cnt[tot].se;
     }
-    if ((i&3) == 3) ans += is[i];
-    if (i % 20000000 == 0) cout << ans << ',';
+    for (int j = 1; j <= tot && p[j] <= low[i] && i * p[j] < N; ++j) {
+      low[p[j] * i] = p[j];
+    }
   }
+  FOR(i, 3, N) {
+    cnt[i].fi += cnt[i-1].fi;
+    cnt[i].se += cnt[i-1].se;
+  }
+  // for (int i = 10; i <= 100; i += 10) {
+  //   int k = 1;
+  //   while (p[k+1] * p[k+1] <= i) ++k;
+  //   println(g(k, i).fi, g(k, i).se);
+  // }
+  // return;
+  cin >> n;
+  int k0 = 1, k1 = 1, k2 = 1;
+  while (1ll * p[k0+1] * p[k0+1] <= n) ++k0;
+  while (1ll * p[k1+1] * p[k1+1] <= n/4) ++k1;
+  while (1ll * p[k2+1] * p[k2+1] <= n/16) ++k2;
+  pll c1 = g(k1, n/4), c2 = g(k2, n/16);
+  int ans = g(k0, n).se + c1.fi + c1.se + c2.fi + c2.se;
+  println(ans+2);
+  
 }
 
 int main() {
