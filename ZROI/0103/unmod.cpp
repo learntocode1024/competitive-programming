@@ -1,5 +1,4 @@
 #include <bits/stdc++.h>
-#include "modint"
 using namespace std;
 template<typename T>
 void rd(T &a) {
@@ -32,6 +31,7 @@ typedef long long i64;
 typedef unsigned long long u64;
 typedef unsigned u32;
 typedef pair<int, int> pii;
+typedef double f64;
 #define mkp make_pair
 #define fi first
 #define se second
@@ -50,10 +50,9 @@ inline void chkmax(T &a, const T b) {
 
 const int N = 2e6+5;
 const int MOD = 998244353;
-typedef MontgomeryModInt<MOD> mint;
 //#define MULTI
 int n, x;
-vector<pair<int, mint> > g[N];
+vector<pair<int, f64> > g[N];
 
 namespace sub2 {
 int d[N];
@@ -76,10 +75,10 @@ inline void work() {
 }
 
 int d[N], son[N];
-mint prson[N];
+f64 prson[N];
 const int MX = N<<1;
 int id[MX], hd[MX], tl[MX], nxt[MX], pre[MX], l[MX], tot;
-mint v[MX], tg[MX], s[MX];
+f64 v[MX], tg[MX], s[MX];
 
 void l_s_d(int u, int fa) {
   for (auto v : g[u]) if (v.fi != fa) {
@@ -89,11 +88,16 @@ void l_s_d(int u, int fa) {
   }
 }
 
-mint s1[N], s2[N];
+f64 s1[N], s2[N];
+void prt(int u) {
+  cerr << u << ": ";
+  for (int i = hd[id[u]]; i; i = nxt[i]) cerr << v[i] * tg[id[u]] << ' ';
+  cerr << '\n';
+}
 
 void dfs(int u, int fa) {
   int &cur = id[u];
-  mint iv;
+  f64 iv;
   if (son[u] == 0) {
     cur = u;
     ++tot;
@@ -104,11 +108,11 @@ void dfs(int u, int fa) {
   } else {
     dfs(son[u], u);
     cur = id[son[u]];
-    mint tmp = s[cur] * (-prson[u] + 1);
+    f64 tmp = s[cur] * (-prson[u] + 1);
     tg[cur] *= prson[u];
     s[cur] *= prson[u];
     s[cur] += tmp;
-    iv = tg[cur].inverse();
+    iv = 1/tg[cur];
     ++tot;
     v[tot] = iv * tmp;
     nxt[tot] = hd[cur];
@@ -124,10 +128,10 @@ void dfs(int u, int fa) {
   }
   for (auto oson : g[u]) if (oson.fi != fa && oson.fi != son[u]) {
     int V = oson.fi;
-    mint p = oson.se;
-    mint q = -p + 1;
+    f64 p = oson.se;
+    f64 q = -p + 1;
     dfs(V, u);
-    int e = l[id[V]];
+    int e = min(d[V], x - 1);
     int lm1 = 0, lm2 = 0;
     int is2 = hd[cur], is1 = hd[id[V]];
     int it = hd[cur], itv = 0;
@@ -147,6 +151,7 @@ void dfs(int u, int fa) {
       itv = (i == 0) ? hd[id[V]] : nxt[itv];
     }
   }
+  prt(u);
 }
 
 inline void solve() {
@@ -157,9 +162,10 @@ inline void solve() {
     x = db << 1;
     bool t2 = 1;
     FOR(i, 1, n) {
-      int u, v, w;
+      int u, v;
+      f64 w;
       rd(u, v, w);
-      w = 61689804ll * w % MOD;
+      w =  w / 10000000.0l;
       if (w) t2 = 0;
       g[u].eb(v, w);
       g[v].eb(u, w);

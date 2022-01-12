@@ -57,10 +57,18 @@ inline pii rpii(r32 &e) {
 }
 #define shuf(BEGIN, END) shuffle(BEGIN, END, rng)
 
+//#define MULTI
 const int N = 0;
+int n = 7, da = 15, db = 2;
+int f[N];
 
 int main() {
-
+  println(n, da, db);
+  r32 f{0, 10000000};
+  FOR(i, 2, n + 1) {
+    r32 e {1, i-1};
+    println(i, e(rng), 5000000);
+  }
   return 0;
 }
 /* Checklist:
@@ -73,3 +81,4 @@ int main() {
  * - memory usage
  * - file IO
  */
+
