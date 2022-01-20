@@ -48,7 +48,7 @@ inline void chkmax(T &a, const T b) {
   a = max(a, b);
 }
 
-const int N = 2e6+5;
+const int N = 4e6+5;
 const int MOD = 998244353;
 //#define MULTI
 int n, x;

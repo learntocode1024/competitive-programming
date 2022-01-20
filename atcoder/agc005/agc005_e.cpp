@@ -34,7 +34,7 @@ typedef pair<int, int> pii;
 #define mkp make_pair
 #define fi first
 #define se second
-#define pb insert_back
+#define pb push_back
 #define eb emplace_back
 #define FOR(i, j, k) for (int i = (j); i < (k); ++i)
 #define ROF(i, j, k) for (int i = ((k) - 1); i >= j; --i)
@@ -48,22 +48,56 @@ inline void chkmax(T &a, const T b) {
 }
 
 //#define MULTI
-const int N = 1e5+5;
-int a[N];
-int n;
-set<int> s;
+const int N = 2e5+5;
+int n, x, y, d[N], e[N], f[N];
+bool s[N];
+vector<int> g1[N], g2[N];
+int ans = 0;
+
+void dfs1(int u, int fa) {
+  if (e[u] >= d[u]) return;
+  if (s[u]) {
+    ans = -1;
+    return;
+  } else if (ans != -1) {
+    chkmax(ans, d[u]);
+  }
+  for (auto v : g1[u]) if (fa != v) {
+    e[v] = e[u] + 1;
+    dfs1(v, u);
+  }
+}
+
+void dfs2(int u, int fa) {
+  for (auto v : g2[u]) if (v != fa) {
+    f[v] = u;
+    d[v] = d[u] + 1;
+    dfs2(v, u);
+  }
+}
 
 inline void solve() {
-  rd(n);
-  FOR(i, 0, n) cin >> a[i];
-  for (int i = 0; i < n; i += 2) {
-    s.insert(a[i]);
+  rd(n, x, y);
+  FOR(i, 1, n) {
+    int u, v;
+    rd(u, v);
+    g1[u].pb(v);
+    g1[v].pb(u);
   }
-  sort(a, a + n);
-  for (int i = 0; i < n; i += 2) {
-    s.erase(a[i]);
+  FOR(i, 1, n) {
+    int u, v;
+    rd(u, v);
+    g2[u].pb(v);
+    g2[v].pb(u);
   }
-  println(s.size());
+  dfs2(y, 0);
+  FOR(u, 1, n + 1) {
+    for (auto v : g1[u]) {
+      if (!(f[u] == v || f[v] == u || f[f[u]] == v || f[f[v]] == u || f[u] == f[v])) s[u] = s[v] = 1;
+    }
+  }
+  dfs1(x, 0);
+  println(ans == -1 ? -1 : ans*2);
 }
 
 int main() {

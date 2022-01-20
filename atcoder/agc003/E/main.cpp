@@ -1,102 +1,108 @@
-/**********************************************************************
- * This file is the c++ solution to a particular CP problem written by
- * misaka18931 and was hosted on GitHub Repository below:
- * URL: https://github.com/misaka18931/competitive-programming
- *
- * Original Author: misaka18931
- * Date:
- * Algorithm:
- * Difficulty:
- *
- *********************************************************************/
-
-#include <algorithm>
-#include <cctype>
-#include <climits>
-#include <cstdio>
-#include <cstring>
-#include <iostream>
-#include <string>
-#include <vector>
+#include <bits/stdc++.h>
 using namespace std;
-
-/********************************** buffer IO *********************************/
-namespace IO {
-char in[1 << 24];  // sizeof in varied in problem
-char const *o;
-void init_in() {
-  o = in;
-  in[fread(in, 1, sizeof(in) - 4, stdin)] = 0;  // set 0 at the end of buffer.
+template<typename T>
+void rd(T &a) {
+  cin >> a;
 }
-int rd() {
-  unsigned u = 0, s = 0;
-  while (*o && *o <= 32) ++o;  // skip whitespaces...
-  if (*o == '-')
-    s = ~s, ++o;
-  else if (*o == '+')
-    ++o;  // skip sign
-  while (*o >= '0' && *o <= '9')
-    u = (u << 3) + (u << 1) + (*o++ - '0');  // u * 10 = u * 8 + u * 2 :)
-  return static_cast<int>((u ^ s) + !!s);
+template<typename A, typename... B>
+void rd(A &a, B& ...b) {
+  cin >> a;
+  rd(b...);
 }
-char *rdstr(char *s) {
-  while (*o && *o <= 32) ++o;
-  while (*o > 32) *s++ = *o++;
-  *s = '\0';
-  return s;
+template<typename A>
+void print(const A& a) {
+  cout << a;
 }
-}  // namespace IO
-
-/********************************* utility ************************************/
+template<typename A, typename... B>
+void print(const A& a, const B& ...b) {
+  cout << a;
+  print(b...);
+}
+template<typename A>
+void println(const A& a) {
+  cout << a << '\n';
+}
+template<typename A, typename... B>
+void println(const A& a, const B& ...b) {
+  cout << a << ' ';
+  println(b...);
+}
 typedef long long i64;
 typedef unsigned long long u64;
-typedef unsigned int u32;
+typedef unsigned u32;
 typedef pair<int, int> pii;
-#define pb(x) push_back(x)
-#define mkp(x, y) make_pair(x, y)
+#define mkp make_pair
 #define fi first
 #define se second
-#define FOR(x, y, z) for (int x = y; x < z; ++x)  // always [y, z)
-#define ROF(x, y, z) for (int x = z - 1; x >= y; --x)
-template <typename T>
-void chkmax(T &a, const T &b) {
-  a = max(a, b);
-}
-template <typename T>
-void chkmin(T &a, const T &b) {
+#define pb push_back
+#define eb emplace_back
+#define FOR(i, j, k) for (int i = (j); i < (k); ++i)
+#define ROF(i, j, k) for (int i = ((k) - 1); i >= j; --i)
+template<typename T>
+inline void chkmin(T &a, const T b) {
   a = min(a, b);
 }
-pii operator+(const pii &a, const pii &b) {
-  return mkp(a.fi + b.fi, a.se + b.se);
+template<typename T>
+inline void chkmax(T &a, const T b) {
+  a = max(a, b);
 }
 
-/*********************************** solution *********************************/
-using IO::rd;
-// #define MULTI
-const int N = 0;
+//#define MULTI
+const int N = 1e5+5;
+int n, q, t;
+i64 a[N];
+i64 c[N], d[N];
 
-void solve() {
-  
+void add(int i, i64 n, i64 v) {
+  if (i == 1) {
+    c[n] += v;
+    return;
+  }
+  i64 p = n / a[i-1], r = n - p * a[i-1];
+  d[i-1] += p * v;
+  i = lower_bound(a + 1, a + t + 1, r) - a;
+  add(i, r, v);
+}
+
+inline void solve() {
+  rd(n, q);
+  a[1] = n;
+  t = 1;
+  FOR(i, 0, q) {
+    i64 l;
+    rd(l);
+    while (t && a[t] >= l) --t;
+    a[++t] = l;
+  }
+  d[t] = 1;
+  ROF(i, 1, t + 1) add(i, a[i], d[i]);
+  ROF(i, 1, n) c[i] += c[i+1];
+  FOR(i, 0, n) println(c[i + 1]);
 }
 
 int main() {
-  IO::init_in();
-#ifdef MULTI
-  int T = IO::rd();
-  while (T--) solve();
-#else
-  solve();
+#ifndef MISAKA
+  //freopen(".in", "r", stdin);
+  //freopen(".out", "w", stdout);
+  ios::sync_with_stdio(0);
+  cin.tie(0);
 #endif
+#ifdef MULTI
+  int T;
+  cin >> T;
+  while (T--)
+#endif
+  solve();
   return 0;
 }
-/*
- * checklist:
- * - IO buffer size
- * - potential out-of-bound Errors
- * - inappropriate variable type
- * - potential Arithmetic Error
- * - potential Arithmetic Overflow
- * - typo / logical flaws
- * - clean-up on multiple test cases
- * - sufficient stress tests / random data tests
-*/
+/* Checklist:
+ * - data type
+ * - overflow
+ * - typo/logic
+ * - special cases
+ * - cleanup (multi-test)
+ * - bounds
+ * - memory usage
+ * - file IO
+ */
+

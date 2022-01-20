@@ -34,7 +34,7 @@ typedef pair<int, int> pii;
 #define mkp make_pair
 #define fi first
 #define se second
-#define pb insert_back
+#define pb push_back
 #define eb emplace_back
 #define FOR(i, j, k) for (int i = (j); i < (k); ++i)
 #define ROF(i, j, k) for (int i = ((k) - 1); i >= j; --i)
@@ -48,22 +48,43 @@ inline void chkmax(T &a, const T b) {
 }
 
 //#define MULTI
-const int N = 1e5+5;
-int a[N];
-int n;
-set<int> s;
+const int N = 5e4+5, P = 505;
+int m, p;
+i64 f[2][N][P];
+int w[2][N], v[2][N], t[2], s[2];
+
+inline void nxt(i64 *f, i64 *g, int w, int v) {
+  FOR(i, 0, p) g[i] = max(f[i], f[(i + p - w) % p] + v);
+}
+
+inline void ins(int c) {
+  int &l = t[c];
+  ++l;
+  rd(w[c][l], v[c][l]);
+  w[c][l] %= p;
+  nxt(f[c][l-1], f[c][l], w[c][l], v[c][l]);
+}
+
+inline void del(int c) {
+  if (t[c] == s[c]) {
+    int r = t[c^1] >> 1;
+    
+  } else --t[c];
+}
+
+i64 h[P<<1];
+d
+inline i64 query() {
+  int l, r;
+  rd(l, r);
+  i64 ans = 0, cur = 0;
+  FOR(i, 0, p) h[i] = h[i+p] = f[1][t[1]][i];
+  
+  return ans;
+}
 
 inline void solve() {
-  rd(n);
-  FOR(i, 0, n) cin >> a[i];
-  for (int i = 0; i < n; i += 2) {
-    s.insert(a[i]);
-  }
-  sort(a, a + n);
-  for (int i = 0; i < n; i += 2) {
-    s.erase(a[i]);
-  }
-  println(s.size());
+  
 }
 
 int main() {

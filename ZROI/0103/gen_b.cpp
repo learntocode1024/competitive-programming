@@ -59,15 +59,14 @@ inline pii rpii(r32 &e) {
 
 //#define MULTI
 const int N = 0;
-int n = 7, da = 15, db = 2;
-int f[N];
+int n = 2000000, da = 678653, db = 259137;
 
 int main() {
   println(n, da, db);
   r32 f{0, 10000000};
   FOR(i, 2, n + 1) {
     r32 e {1, i-1};
-    println(i, e(rng), 5000000);
+    println(i, e(rng), f(rng));
   }
   return 0;
 }

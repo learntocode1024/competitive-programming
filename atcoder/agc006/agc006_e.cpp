@@ -34,7 +34,7 @@ typedef pair<int, int> pii;
 #define mkp make_pair
 #define fi first
 #define se second
-#define pb insert_back
+#define pb push_back
 #define eb emplace_back
 #define FOR(i, j, k) for (int i = (j); i < (k); ++i)
 #define ROF(i, j, k) for (int i = ((k) - 1); i >= j; --i)
@@ -49,21 +49,46 @@ inline void chkmax(T &a, const T b) {
 
 //#define MULTI
 const int N = 1e5+5;
-int a[N];
 int n;
-set<int> s;
+int s[N][3];
+int a[N];
+bool b[N], vis[N], v[N];
 
 inline void solve() {
-  rd(n);
-  FOR(i, 0, n) cin >> a[i];
-  for (int i = 0; i < n; i += 2) {
-    s.insert(a[i]);
+  rd(n);FOR(j,0,3)FOR(i, 0, n) cin >> s[i][j];
+  FOR(i,0,n) {
+    if (s[i][0] + 1 == s[i][1] && s[i][2] - 1 == s[i][1] && s[i][1] % 3 == 2) a[i+1] = s[i][2]/3;
+    else if (s[i][0] - 1 == s[i][1] && s[i][2] + 1 == s[i][1] && s[i][1] % 3 == 2) a[i+1] = s[i][0]/3, b[i+1]=1;
+    else {
+      println("No");
+      return;
+    }
   }
-  sort(a, a + n);
-  for (int i = 0; i < n; i += 2) {
-    s.erase(a[i]);
+  for (int i = 1; i <= n; i += 2) vis[a[i]] = 1;
+  for (int i = 1; i <= n; i += 2) if (!vis[i]) {
+    println("No");
+    return;
   }
-  println(s.size());
+  bool b1 = 0, b2 = 0;
+  FOR(i, 1, n + 1) {if (i & 1) b1 ^= b[i]; else b2 ^= b[i];}
+  int c2 = n / 2, c1 = n - c2;
+  for (int i = 1; i <= n; i += 2) {
+    if (v[i]) continue;
+    for (int c = i; !v[c]; c = a[c]) v[c] = 1;
+    --c1;
+  }
+  for (int i = 2; i <= n; i += 2) {
+    if (v[i]) continue;
+    for (int c = i; !v[c]; c = a[c]) v[c] = 1;
+    --c2;
+  }
+  c1 &= 1;
+  c2 &= 1;
+  if ((b1 ^ c2) || (c1 ^ b2)) {
+    println("No");
+    return;
+  }
+  println("Yes");
 }
 
 int main() {

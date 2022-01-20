@@ -34,7 +34,7 @@ typedef pair<int, int> pii;
 #define mkp make_pair
 #define fi first
 #define se second
-#define pb insert_back
+#define pb push_back
 #define eb emplace_back
 #define FOR(i, j, k) for (int i = (j); i < (k); ++i)
 #define ROF(i, j, k) for (int i = ((k) - 1); i >= j; --i)
@@ -48,22 +48,19 @@ inline void chkmax(T &a, const T b) {
 }
 
 //#define MULTI
-const int N = 1e5+5;
-int a[N];
-int n;
-set<int> s;
+typedef long double f80;
+
+f80 calc(int n, f80 d, f80 x) {
+  if (n==1) {
+    return d + x/2;
+  }
+  return d + x * (2*n-1)/2 + calc(n-1, d + (2*d+5*x)/n/2, x+2*x/n);
+}
 
 inline void solve() {
-  rd(n);
-  FOR(i, 0, n) cin >> a[i];
-  for (int i = 0; i < n; i += 2) {
-    s.insert(a[i]);
-  }
-  sort(a, a + n);
-  for (int i = 0; i < n; i += 2) {
-    s.erase(a[i]);
-  }
-  println(s.size());
+  int n, d, x;
+  rd(n, d,x);
+  cout << fixed << setprecision(9) << calc(n, d, x) << '\n';
 }
 
 int main() {

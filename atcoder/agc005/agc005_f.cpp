@@ -1,4 +1,5 @@
 #include <bits/stdc++.h>
+#include "atcoder/convolution"
 using namespace std;
 template<typename T>
 void rd(T &a) {
@@ -34,7 +35,7 @@ typedef pair<int, int> pii;
 #define mkp make_pair
 #define fi first
 #define se second
-#define pb insert_back
+#define pb push_back
 #define eb emplace_back
 #define FOR(i, j, k) for (int i = (j); i < (k); ++i)
 #define ROF(i, j, k) for (int i = ((k) - 1); i >= j; --i)
@@ -48,22 +49,46 @@ inline void chkmax(T &a, const T b) {
 }
 
 //#define MULTI
-const int N = 1e5+5;
-int a[N];
-int n;
-set<int> s;
+const int N = 2e5+5;
+const int p = 924844033;
+int n, s[N];
+vector<int> g[N];
+int c[N];
+i64 inv[N], fac[N], ifac[N];
+void dfs(int u, int fa) {
+  s[u] = 1;
+  for (auto v : g[u]) if (v != fa) {
+    dfs(v, u);
+    s[u] += s[v];
+    ++c[s[v]];
+    ++c[n - s[v]];
+  }
+}
+
 
 inline void solve() {
-  rd(n);
-  FOR(i, 0, n) cin >> a[i];
-  for (int i = 0; i < n; i += 2) {
-    s.insert(a[i]);
+  cin >> n;
+  FOR(i, 1, n) {
+    int u, v;
+    rd(u, v);
+    g[u].pb(v);
+    g[v].pb(u);
   }
-  sort(a, a + n);
-  for (int i = 0; i < n; i += 2) {
-    s.erase(a[i]);
+  dfs(1, 0);
+  fac[0] = fac[1] = ifac[0] = ifac[1] = inv[1] = 1;
+  FOR(i, 2, n + 1) {
+    fac[i] = fac[i-1] * i % p;
+    inv[i] = (p - p / i) * inv[p % i] % p;
+    ifac[i] = ifac[i-1] * inv[i] % p;
   }
-  println(s.size());
+  fac[n+1] = fac[n] * n % p;
+  vector<int> A(n+1), B(n+1);
+  FOR(i, 0, n + 1) A[i] = ifac[i];
+  FOR(i, 0, n + 1) B[i] = c[n - i] * fac[n - i] % p;
+  auto C = atcoder::convolution<p>(A, B);
+  for (int i = 1; i <= n; ++i) {
+    println(ifac[i] * (fac[n+1]*ifac[n-i] % p+p-C[n-i]) % p);
+  }
 }
 
 int main() {

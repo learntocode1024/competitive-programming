@@ -34,7 +34,7 @@ typedef pair<int, int> pii;
 #define mkp make_pair
 #define fi first
 #define se second
-#define pb insert_back
+#define pb push_back
 #define eb emplace_back
 #define FOR(i, j, k) for (int i = (j); i < (k); ++i)
 #define ROF(i, j, k) for (int i = ((k) - 1); i >= j; --i)
@@ -48,22 +48,31 @@ inline void chkmax(T &a, const T b) {
 }
 
 //#define MULTI
-const int N = 1e5+5;
+const int N = 21e5+5;
 int a[N];
+int c[N];
 int n;
-set<int> s;
+
+bool chk(int m) {
+  FOR(i, 1, n << 1) c[i] = a[i] >= m;
+  bool r = c[n];
+  for (int j = 1, t = r ^ 1; j < n; ++j, t ^= 1) {
+    if (c[n-j] != t || c[n + j] != t) return t ^ 1;
+  }
+  if (~n & 1) r ^= 1;
+  return r;
+}
 
 inline void solve() {
-  rd(n);
-  FOR(i, 0, n) cin >> a[i];
-  for (int i = 0; i < n; i += 2) {
-    s.insert(a[i]);
+  cin >> n;
+  FOR(i, 1, n << 1) cin >> a[i];
+  int l = 1, r = n << 1;
+  while (r - l > 1) {
+    int m = (l + r) >> 1;
+    if (chk(m)) l = m;
+    else r = m;
   }
-  sort(a, a + n);
-  for (int i = 0; i < n; i += 2) {
-    s.erase(a[i]);
-  }
-  println(s.size());
+  println(l);
 }
 
 int main() {
