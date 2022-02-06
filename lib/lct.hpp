@@ -10,7 +10,7 @@ using std::swap;
  *   class attr:  extra attributes & lazy tags to be maintained
  *     bool attr::active(): whether the lazy tag has effect or not.
  *     void attr::reset(): reset lazy tag to be inactive.
- *     void attr::apply(): push lazy tags to current node.
+ *     void attr::apply(const attr&): push lazy tags to current node.
  *     void attr::merge(const attr&, const attr&): merge attributes of current node and it's childrens.
  *********************************************************************************************************/
 
@@ -109,6 +109,12 @@ struct LCT {
     setrt(u);
     access(v);
     splay(v); // cost amortized
+  }
+  attr &operator[] (int i) {
+    return a[i].var;
+  }
+  const attr &operator[] (int i) const {
+    return a[i].var;
   }
 };
 
