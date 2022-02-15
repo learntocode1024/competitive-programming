@@ -1,4 +1,5 @@
 #include <bits/stdc++.h>
+#include "atcoder/modint"
 using namespace std;
 template<typename T>
 void rd(T &a) {
@@ -47,39 +48,61 @@ inline void chkmax(T &a, const T b) {
   a = max(a, b);
 }
 
-typedef uniform_int_distribution<int> r32;
-typedef uniform_int_distribution<i64> r64;
-mt19937 rng(chrono::steady_clock().now().time_since_epoch().count());
-inline pii rpii(r32 &e) {
-  int a = e(rng), b = e(rng);
-  if (a > b) swap(a, b);
-  return {a, b};
+#define MULTI
+typedef atcoder::modint998244353 mint;
+
+i64 getlen(i64 i, i64 x, i64 c) {
+  if (!c) return 1e18+7;
+  return (x - (i+1)*c)/(c*2) + ((x - (i+1)*c) % (c*2) != 0);
 }
-#define shuf(BEGIN, END) shuffle(BEGIN, END, rng)
 
-const int T = 1, n = 300000, m = 40000;
-r32 e{1, 1000000000};
-int a[n];
+i64 getd(i64 i, i64 x) {
+  return (x/(i+1)) + (x % (i+1) != 0) - 1;
+}
 
-void gen() {
-  println(n, m);
-  FOR(i, 0, n) a[i] = e(rng);
-  FOR(i, 0, n) cout << a[i] << " \n"[i==n-1];
-  sort(a, a + n);
-  int t = unique(a, a + n) - a;
-  assert(1ll*t * (t - 1) > m*2);
-  shuf(a, a + t);
-  int cm = m;
-  FOR(i, 0, t) FOR(j, i + 1, t) {
-    if (!cm) break;
-    --cm;
-    println(a[i], a[j]);
+mint s1(i64 n) {
+  return mint(n) * mint(n+1) / mint(2);
+}
+
+mint s2(i64 n) {
+  return mint(n) * mint(n+1) * mint(2*n+1) / mint(6);
+}
+
+mint sum(i64 i, i64 n, i64 x, i64 c) {
+  mint mi = i, mn = n, mx = x, mc = c;
+  return mi * mx * (mn+1) + (mx-mi*mc) * s1(n) - mc * s2(n);
+}
+
+inline void solve() {
+  i64 n, x;
+  cin >> n >> x;
+  i64 i = 1;
+  mint ans(0);
+  while (i <= n) {
+    i64 c = getd(i, x);
+    i64 len = getlen(i, x, c);
+    chkmin(len, n - i + 1);
+    // println(i, x, c, i + len);
+    ans += sum(i, len - 1, x, c);
+    x -= c * len;
+    i += len;
   }
+  println(ans.val());
 }
 
 int main() {
-  println(T);
-  FOR(i,0,T) gen();
+#ifndef MISAKA
+  //freopen(".in", "r", stdin);
+  //freopen(".out", "w", stdout);
+  ios::sync_with_stdio(0);
+  cin.tie(0);
+#endif
+#ifdef MULTI
+  int T;
+  cin >> T;
+  while (T--)
+#endif
+  solve();
   return 0;
 }
 /* Checklist:
@@ -92,3 +115,4 @@ int main() {
  * - memory usage
  * - file IO
  */
+

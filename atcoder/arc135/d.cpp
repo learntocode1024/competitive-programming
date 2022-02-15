@@ -47,31 +47,59 @@ inline void chkmax(T &a, const T b) {
   a = max(a, b);
 }
 
-#define MULTI
-const int N = 1000;
-int a[N];
-int x[N], y[N];
+//#define MULTI
+const int N = 505;
+i64 a[N][N], x[N], y[N];
+i64 b[N][N];
 int n, m;
 
 inline void solve() {
   rd(n, m);
-  FOR(i, 0, n) cin >> a[i];
-  FOR(i, 0, m) rd(x[i], y[i]);
-  i64 ans = 0;
-  FOR(i, 0, n) FOR(j, i + 1, n) {
-    bool ok = a[i] != a[j];
-    FOR(k, 0, m) {
-      if (a[i] == x[k] && a[j] == y[k]) ok = 0;
-      if (a[i] == y[k] && a[j] == x[k]) ok = 0;
+  FOR(i, 1, n + 1) FOR(j, 1, m + 1) cin >> a[i][j];
+  FOR(i, 1, n + 1) FOR(j, 1, m + 1) if ((i+j)&1) a[i][j] = -a[i][j];
+  FOR(i, 1, n + 1) FOR(j, 1, m + 1) x[j] += a[i][j];
+  FOR(i, 1, n + 1) FOR(j, 1, m + 1) y[i] += a[i][j];
+  i64 cx = 0, cy = 0;
+  FOR(i, 1, m + 1) cx += abs(x[i]);
+  FOR(i, 1, n + 1) cy += abs(y[i]);
+  println(max(cx, cy));
+  FOR(i, 1, m + 1) {
+    if (x[i] > 0) {
+      FOR(j, 1, n + 1) if (y[j] > 0) {
+        i64 d = min(x[i], y[j]);
+        x[i] -= d;
+        y[j] -= d;
+        b[j][i] += d;
+      }
+    } else {
+      FOR(j, 1, n + 1) if (y[j] < 0) {
+        i64 d = max(x[i], y[j]);
+        x[i] -= d;
+        y[j] -= d;
+        b[j][i] += d;
+      }
     }
-    if (!ok) continue;
-    i64 cc = 0, xx = a[i] + a[j];
-    FOR(k, 0, n) {
-      if (a[k] == a[i] || a[k] == a[j]) ++cc;
-    }
-    chkmax(ans, cc * xx);
   }
-  println(ans);
+  FOR(i, 1, m + 1) if (x[i] > 0) {
+    FOR(j, 1, m + 1) if (x[j] < 0) {
+      i64 d = min(abs(x[i]), abs(x[j]));
+      x[i] -= d;
+      x[j] += d;
+      b[1][i] += d;
+      b[1][j] -= d;
+    }
+  }
+  FOR(i, 1, n + 1) if (y[i] > 0) {
+    FOR(j, 1, n + 1) if (y[j] < 0) {
+      i64 d = min(abs(y[i]), abs(y[j]));
+      y[i] -= d;
+      y[j] += d;
+      b[i][1] += d;
+      b[j][1] -= d;
+    }
+  }
+  FOR(i, 1, n + 1) FOR(j, 1, m + 1) if ((i+j)&1) b[i][j] = -b[i][j];
+  FOR(i, 1, n + 1) FOR(j, 1, m + 1) cout << b[i][j] << " \n"[j==m];
 }
 
 int main() {

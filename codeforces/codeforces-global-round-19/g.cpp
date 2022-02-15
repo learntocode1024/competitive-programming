@@ -47,12 +47,98 @@ inline void chkmax(T &a, const T b) {
   a = max(a, b);
 }
 
-//#define MULTI
-const int N = 2e5+5;
-int a[N];
+#define MULTI
+const int N = 5e4+5, W = 20;
+int cnt = 0;
+vector<int> work(int n) {
+  vector<int> a(W, 0);
+  if (!n) return a;
+  if (n == 1) {
+    a[0] = 1;
+    return a;
+  }
+  if (n == 2) {
+    a[0] = 1;
+    a[1] = 1;
+    return a;
+  }
+  int t =  (31 - __builtin_clz(n));
+  int m = 1 << t;
+  if (m == n) {
+    a = work(n - 1);
+    ++a[t];
+    return a;
+  }
+  a = work(m * 2 - n - 1);
+  int r = n - m;
+  auto b = work(r);
+  cnt += r;
+  a[t+1] += r;
+  a[t]++;
+  FOR(i, 0, W - 1) a[i+1] += b[i];
+  return a;
+}
+
+void dry(int n, int p = 1) {
+  if (n <= 2) {
+    return;
+  }
+  int t =  (31 - __builtin_clz(n));
+  int m = 1 << t;
+  if (m == n) {
+    dry(n - 1, p);
+    return;
+  }
+  dry(m * 2 - n - 1, p);
+  int r = n - m;
+  FOR(i, 1, r + 1) {
+    println(p * (m - i), p * (m + i));
+  }
+  dry(r, p<<1);
+  cnt += r;
+  return;
+}
 
 inline void solve() {
-  
+  cnt = 0;
+  int n;
+  rd(n);
+  if (n == 2) {
+    println(-1);
+    return;
+  }
+  auto a = work(n);
+  int t = 32 - __builtin_clz(n);
+  if (n == (1 << (t-1))) --t;
+  int I;
+  FOR(i, 0, t) if (a[i] > 1) {
+    a[i] -= 2;
+    ++a[i+1];
+    ++cnt;
+    I = i;
+    break;
+  }
+  auto b = a;
+  FOR(i, 0, t) {
+    while (b[i]) {
+      --b[i];
+      cnt += 2;
+      ++b[i+1];
+    }
+  }
+  ++cnt;
+  println(cnt);
+  dry(n);
+  println(1<<I, 1<<I);
+  FOR(i, 0, t) {
+    while (a[i]) {
+      --a[i];
+      println(1<<i, 0);
+      println(1<<i, 1<<i);
+      ++a[i+1];
+    }
+  }
+  println(0, 1<<t);
 }
 
 int main() {

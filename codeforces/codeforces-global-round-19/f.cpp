@@ -49,10 +49,46 @@ inline void chkmax(T &a, const T b) {
 
 //#define MULTI
 const int N = 2e5+5;
-int a[N];
+int deg[N], h[N];
+vector<int> g[N];
+bool vis[N];
+int n;
+priority_queue<pii, vector<pii>, greater<pii> > pq;
 
 inline void solve() {
-  
+  i64 ans = 0;
+  int H = 0;
+  rd(n);
+  FOR(i, 1, n + 1) cin >> h[i];
+  FOR(i, 1, n) {
+    int u, v;
+    rd(u, v);
+    ++deg[u], ++deg[v];
+    g[u].pb(v);
+    g[v].pb(u);
+  }
+  int cnted = 0;
+  FOR(i, 1, n + 1) if (deg[i] == 1) pq.push(mkp(h[i], i)), vis[i] = 1, ++cnted;
+  while (!pq.empty()) {
+    while (!pq.empty() && pq.top().fi <= H) {
+      int u = pq.top().se;
+      pq.pop();
+      for (auto v : g[u]) if (!vis[v]) {
+        --deg[v];
+        if (deg[v] == 1) vis[v] = 1, pq.push(mkp(h[v], v)), ++cnted;
+      }
+    }
+    if (pq.empty()) break;
+    int I = pq.top().fi;
+    if (pq.size() == 1 && cnted == n) {
+      ans += 2 * (I - H);
+      H = I;
+      continue;
+    }
+    ans += 1ll * pq.size() * (I - H);
+    H = I;
+  }
+  println(ans);
 }
 
 int main() {
