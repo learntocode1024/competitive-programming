@@ -51,7 +51,7 @@ inline void chkmax(T &a, const T b) {
 const int N = 200, W = 64;
 const int p = 998244353;
 int m, k;
-map<int, int> id[N];
+map<int, int> id;
 int tot;
 int inv[N];
 
@@ -65,8 +65,10 @@ int a[N];
 void dfs1(int n, int rem) {
   if (n == k+1) {
     int to = H(a[1], a[2], a[3]);
-    id[to] = tot++;
-    A[0][to][to] = B[0][to] = inv[m - rem + 1];
+    id[to] = tot;
+    //println("[", a[1], a[2], a[3], "]", tot);
+    A[0][tot][tot] = B[0][tot] = inv[m - rem + 1];
+    ++tot;
     return;
   }
   for (int i = 0; i <= rem; ++i) {
@@ -75,14 +77,18 @@ void dfs1(int n, int rem) {
   }
 }
 
-int dfs2(int n, int rem) {
+void dfs2(int n, int rem) {
   if (n == k+1) {
     int to = H(a[1], a[2], a[3]);
+    to = id[to];
     FOR(i, 1, k + 1) {
       if (a[i]) {
+        int last = a[i];
         --a[i];
         ++a[i-1];
-        
+        if (i != 1 && m - rem < m) ++a[k];
+        A[0][to][id[H(a[1], a[2], a[3])]] = 1ll * inv[m - rem + 1] * last % p;
+        if (i != 1 && m - rem < m) --a[k];
         ++a[i];
         --a[i-1];
       }
@@ -93,8 +99,8 @@ int dfs2(int n, int rem) {
     a[n] = i;
     dfs2(n+1, rem - i);
   }
-
 }
+int f[N], g[N];
 
 inline void solve() {
   int T;
@@ -102,9 +108,49 @@ inline void solve() {
   FOR(i, 2, N) {
     inv[i] = 1ll * (p - p / i) * inv[p % i] % p;
   }
-  rd(T, m, k);
+  rd(T, k, m);
   dfs1(1, m);
   dfs2(1, m);
+  FOR(b, 1, W) {
+    FOR(i, 0, tot) FOR(j, 0, tot) {
+      FOR(k, 0, tot) {
+        A[b][i][j] = (A[b][i][j] + 1ll * A[b-1][i][k] * A[b-1][k][j]) % p;
+      }
+    }
+    FOR(i, 0, tot) B[b][i] = B[b-1][i];
+    FOR(i, 0, tot) {
+      FOR(j, 0, tot) {
+        B[b][i] = (B[b][i] + 1ll * A[b-1][i][j] * B[b-1][j]) % p;
+      }
+    }
+  }/*
+  FOR(i, 0, tot) {
+        cout << B[0][i] << " \n"[i==tot-1];
+  }
+  FOR(i, 0, tot) FOR(j, 0, tot) 
+        cout << " (" << i << ',' << j << "): " <<  A[0][i][j] << " \n"[j==tot-1];
+        */
+  a[1] = a[2] = a[3] = 0;
+  a[k] = 1;
+  const int start = id[H(a[1], a[2], a[3])];
+  while (T--) {
+    i64 n;
+    rd(n);
+    FOR(i, 0, tot) f[i] = 0;
+    f[start] = 1;
+    int ans = 0;
+    FOR(b, 0, W) if ((n >> b) & 1) {
+      FOR(i, 0, tot) {
+        //cout << f[i] << " \n"[i==tot-1];
+        ans = (ans + 1ll * f[i] * B[b][i]) % p;
+      }
+      FOR(i, 0, tot) FOR(j, 0, tot) {
+        g[j] = (g[j] + 1ll * A[b][i][j] * f[i]) % p;
+      }
+      FOR(i, 0, tot) f[i] = g[i], g[i] = 0;
+    }
+    println(ans);
+  }
 }
 
 int main() {
