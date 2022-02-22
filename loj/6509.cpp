@@ -48,32 +48,59 @@ inline void chkmax(T &a, const T b) {
 }
 
 //#define MULTI
-const int N = 505;
-char s[N][N];
-
-void build(int x, int n, bool o) {
-  if (n <= 1) return;
-  if (o) {
-    FOR(i, 0, n - 1) {
-      s[x][x+i] = 'B';
-      s[x+i][x] = 'B';
-    }
-  } else {
-    FOR(i, 1, n) {
-      s[x+n-1][x+i] = s[x+i][x+n-1] = 'B';
-    }
-  }
-  build(x+1, n-2, o^1);
-}
+const int N = 1e5+5;
+const int p = 100003;
+int low[N], pri[N], tot;
+bool ok[N], a[N];
+vector<int> f[N];
+int fac[N], d[N], inv[N];
 
 inline void solve() {
-  int n;
-  rd(n);
-  FOR(i, 0, n) FOR(j, 0, n) s[i][j] = 'W';
-  build(0, n, 0);
-  FOR(i, 1, n - 1) println(s[i]);
-  println(s[0]);
-  println(s[n-1]);
+  low[1] = ok[1] = 1;
+  FOR(i,2,N) {
+    if (!low[i]) {
+      low[i] = pri[tot++] = i;
+      ok[i] = 1;
+    }
+    for (int j = 0; j < tot && pri[j] <= low[i] && pri[j] * i < N; ++j) {
+      int to = i * pri[j];
+      low[to] = pri[j];
+      ok[to] = (pri[j] != low[i]) && ok[i];
+    }
+  }
+  FOR(i, 1, N) {
+    for (int j = 1; j * i < N; ++j) if (ok[j]) {
+      f[j*i].pb(i);
+    }
+  }
+  fac[1] = fac[0] = inv[1] = 1;
+  FOR(i, 2, N) {
+    fac[i] = 1ll * fac[i - 1] * i % p;
+    inv[i] = 1ll * (p - p / i) * inv[p % i] % p;
+  }
+  int n, k;
+  rd(n, k);
+  d[n] = 1;
+  ROF(i, k + 1, n) {
+    d[i] = (1ll * d[i+1] * (n - i) % p * inv[i] % p + 1ll * n * inv[i] % p) % p;
+  }
+  FOR(i, 1, n + 1) {
+    int t;
+    cin >> t;
+    if (t == 1) for (auto v : f[i]) {
+      a[v] ^= 1;
+    }
+  }
+  int cnt = 0;
+  FOR(i, 1, n + 1) {
+    cnt += a[i];
+  }
+  if (cnt <= k) println(1ll * cnt * fac[n] % p);
+  else {
+    int ans = k;
+    FOR(i, k + 1, cnt + 1) ans += d[i];
+    println(1ll * ans * fac[n] % p);
+  }
 }
 
 int main() {

@@ -49,31 +49,24 @@ inline void chkmax(T &a, const T b) {
 
 //#define MULTI
 const int N = 505;
-char s[N][N];
-
-void build(int x, int n, bool o) {
-  if (n <= 1) return;
-  if (o) {
-    FOR(i, 0, n - 1) {
-      s[x][x+i] = 'B';
-      s[x+i][x] = 'B';
-    }
-  } else {
-    FOR(i, 1, n) {
-      s[x+n-1][x+i] = s[x+i][x+n-1] = 'B';
+long double f[N][N], g[N][N], C[N][N];
+int n, d, r;
+inline void solve() {
+  FOR(i, 0, N) C[i][0] = 1;
+  FOR(i, 1, N) FOR(j, 1, i + 1) {
+    C[i][j] = C[i-1][j] + C[i-1][j-1];
+  }
+  rd(n, d, r);
+  f[0][n] = 1;
+  FOR(i, 0, d + 1) FOR(j, 1, n + 1) {
+    FOR(k, 1, min(j, d - i) + 1) {
+      f[i+k][k] += f[i][j] * C[j][k];
+      g[i+k][k] += (g[i][j] + min(k, r) * f[i][j]) * C[j][k];
     }
   }
-  build(x+1, n-2, o^1);
-}
-
-inline void solve() {
-  int n;
-  rd(n);
-  FOR(i, 0, n) FOR(j, 0, n) s[i][j] = 'W';
-  build(0, n, 0);
-  FOR(i, 1, n - 1) println(s[i]);
-  println(s[0]);
-  println(s[n-1]);
+  long double p = 0, q = 0;
+  FOR(i, 1, n + 1) p += g[d][i], q += f[d][i];
+  cout << setprecision(7) << p/q+r << '\n';
 }
 
 int main() {

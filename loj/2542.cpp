@@ -48,32 +48,74 @@ inline void chkmax(T &a, const T b) {
 }
 
 //#define MULTI
-const int N = 505;
-char s[N][N];
-
-void build(int x, int n, bool o) {
-  if (n <= 1) return;
-  if (o) {
-    FOR(i, 0, n - 1) {
-      s[x][x+i] = 'B';
-      s[x+i][x] = 'B';
-    }
-  } else {
-    FOR(i, 1, n) {
-      s[x+n-1][x+i] = s[x+i][x+n-1] = 'B';
-    }
+const int N = 20;
+const int p = 998244353;
+int q_pow(i64 a, int x) {
+  i64 ret = 1;
+  while (x) {
+    if (x & 1) ret = ret * a % p;
+    a = a * a % p;
+    x >>= 1;
   }
-  build(x+1, n-2, o^1);
+  return ret;
+}
+
+int inv(int x) {
+  return q_pow(x, p - 2);
+}
+
+vector<int> g[N];
+int k[N], b[N];
+int msk;
+int f[1<<N];
+
+void calc(int u, int fa) {
+  k[u] = b[u] = 0;
+  if ((msk >> (u - 1)) & 1) return;
+  for (auto v : g[u]) if (v != fa) {
+    calc(v, u);
+    k[u] = (k[u] + k[v]) % p;
+    b[u] = (b[u] + b[v]) % p;
+  }
+  int d = g[u].size();
+  k[u] = inv(d + p - k[u]);
+  b[u] = 1ll * (d + b[u]) * k[u] % p;
 }
 
 inline void solve() {
-  int n;
-  rd(n);
-  FOR(i, 0, n) FOR(j, 0, n) s[i][j] = 'W';
-  build(0, n, 0);
-  FOR(i, 1, n - 1) println(s[i]);
-  println(s[0]);
-  println(s[n-1]);
+  int n, q, x;
+  rd(n, q, x);
+  FOR(i, 1, n) {
+    int u, v;
+    rd(u, v);
+    g[u].pb(v);
+    g[v].pb(u);
+  }
+  FOR(u, 1, 1 << n) {
+    if ((u >> (x - 1)) & 1) continue;
+    msk = u;
+    calc(x, 0);
+    if (__builtin_parity(u)) f[u] = b[x];
+    else f[u] = (p - b[x]) % p;
+  }
+  for (int i = 1; i < (1 << n); i <<= 1) {
+    for (int j = 0; j < (1 << n); j += i << 1) {
+      for (int k = j; k < j + i; ++k) {
+        f[k+i] = (f[k+i] + f[k]) % p;
+      }
+    }
+  }
+  while (q--) {
+    int s;
+    rd(s);
+    int u = 0;
+    while (s--) {
+      int t;
+      rd(t);
+      u |= 1 << (t-1);
+    }
+    println(f[u]);
+  }
 }
 
 int main() {

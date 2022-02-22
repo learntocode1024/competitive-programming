@@ -48,11 +48,17 @@ inline void chkmax(T &a, const T b) {
 }
 
 //#define MULTI
-const int N = 2e5+5;
-int a[N];
+const int N = 1e5+5;
+int b[N], c[N];
+int n;
 
 inline void solve() {
-  
+  rd(n);
+  FOR(i, 1, n + 1) rd(b[i]);
+  FOR(i, 1, n + 1) rd(c[i]);
+  int s = 0, t = 0;
+  i64 ans = c[n];
+
 }
 
 int main() {

@@ -48,32 +48,27 @@ inline void chkmax(T &a, const T b) {
 }
 
 //#define MULTI
-const int N = 505;
-char s[N][N];
-
-void build(int x, int n, bool o) {
-  if (n <= 1) return;
-  if (o) {
-    FOR(i, 0, n - 1) {
-      s[x][x+i] = 'B';
-      s[x+i][x] = 'B';
-    }
-  } else {
-    FOR(i, 1, n) {
-      s[x+n-1][x+i] = s[x+i][x+n-1] = 'B';
-    }
+const int N = 0;
+int sg(int a, int b) {
+  if (b&1) {
+    return a&1;
   }
-  build(x+1, n-2, o^1);
+  else {
+    if (a % (b+1) == b) return 2;
+    return (a%(b+1))&1;
+  }
 }
 
 inline void solve() {
   int n;
   rd(n);
-  FOR(i, 0, n) FOR(j, 0, n) s[i][j] = 'W';
-  build(0, n, 0);
-  FOR(i, 1, n - 1) println(s[i]);
-  println(s[0]);
-  println(s[n-1]);
+  int ans = 0;
+  FOR(i, 0, n) {
+    int a, b;
+    rd(a,b);
+    ans ^= sg(a,b);
+  }
+  println(ans?"Alice":"Bob");
 }
 
 int main() {

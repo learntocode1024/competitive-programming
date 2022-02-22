@@ -48,32 +48,66 @@ inline void chkmax(T &a, const T b) {
 }
 
 //#define MULTI
-const int N = 505;
-char s[N][N];
+const int N = 505, M = 15005;
+const int INF = 0x3f3f3f3f;
+int to[M<<1], hd[N], cur[N], nxt[M<<1], e[M<<1], cost[M<<1], tot = 1;
+int d[N];
+int n, m, C;
+void add_flow(int u, int v, int w, int c) {
+  to[++tot] = v, nxt[tot] = hd[u], hd[u] = tot, e[tot] = w, cost[tot] = c;
+  to[++tot] = u, nxt[tot] = hd[v], hd[v] = tot, e[tot] = 0, cost[tot] = -c;
+}
 
-void build(int x, int n, bool o) {
-  if (n <= 1) return;
-  if (o) {
-    FOR(i, 0, n - 1) {
-      s[x][x+i] = 'B';
-      s[x+i][x] = 'B';
-    }
-  } else {
-    FOR(i, 1, n) {
-      s[x+n-1][x+i] = s[x+i][x+n-1] = 'B';
+int qu[N<<1], h, t;
+bool vis[N];
+
+inline bool bfs() {
+  h = t = 1;
+  qu[1] = 1;
+  d[1] = 0;
+  FOR(i, 2, n + 1) d[i] = INF;
+  while (h <= t) {
+    int u = qu[h++];
+    vis[u] = 0;
+    for (int i = hd[u]; i; i = nxt[i]) if (e[i] && d[to[i]] > d[u] + cost[i]) {
+      d[to[i]] = cost[i] + d[u];
+      if (!vis[to[i]]) qu[++t] = to[i], vis[to[i]] = 1;
     }
   }
-  build(x+1, n-2, o^1);
+  return d[n] != INF;
+}
+
+
+int dfs(int u, int exc) {
+  if (u == n || !exc) return exc;
+  int rem = exc;
+  vis[u] = 1;
+  for (int& i = cur[u]; i; i = nxt[i]) if (e[i] && d[to[i]] == d[u] + cost[i] && !vis[to[i]]) {
+    int f = dfs(to[i], min(exc, e[i]));
+    e[i] -= f;
+    e[i^1] += f;
+    exc -= f;
+    C += f * cost[i];
+    if (!exc) break;
+  }
+  vis[u] = 0;
+  return rem - exc;
 }
 
 inline void solve() {
-  int n;
-  rd(n);
-  FOR(i, 0, n) FOR(j, 0, n) s[i][j] = 'W';
-  build(0, n, 0);
-  FOR(i, 1, n - 1) println(s[i]);
-  println(s[0]);
-  println(s[n-1]);
+  // int n, m;
+  rd(n, m);
+  FOR(i, 0, m) {
+    int s, t, c, w;
+    rd(s, t, c, w);
+    add_flow(s, t, c, w);
+  }
+  int flow = 0;
+  while (bfs()) {
+    FOR(i, 1, n + 1) cur[i] = hd[i];
+    flow += dfs(1, INF);
+  }
+  println(flow, C);
 }
 
 int main() {

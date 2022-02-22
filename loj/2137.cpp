@@ -48,32 +48,83 @@ inline void chkmax(T &a, const T b) {
 }
 
 //#define MULTI
-const int N = 505;
-char s[N][N];
+const int N = 1e5+5;
+vector<int> g0[N], g[N<<1];
+int low[N], dfn[N], s[N], t, e;
+int n, m;
+int f[N<<1], sz[N<<1];
+int all[N], sa, id;
+bool vis[N<<1];
+i64 ans = 0;
 
-void build(int x, int n, bool o) {
-  if (n <= 1) return;
-  if (o) {
-    FOR(i, 0, n - 1) {
-      s[x][x+i] = 'B';
-      s[x+i][x] = 'B';
-    }
-  } else {
-    FOR(i, 1, n) {
-      s[x+n-1][x+i] = s[x+i][x+n-1] = 'B';
-    }
+void calc(int u, int fa) {
+  vis[u] = 1;
+  if (u <= n) ++sz[u];
+  i64 a = 0;
+  for (auto v : g[u]) if (v != fa) {
+    calc(v, u);
+    sz[u] += sz[v];
+    a += 1ll * sz[v] * (sz[v]-1);
   }
-  build(x+1, n-2, o^1);
+  if (u <= n) {
+    ans += (1ll * (sa-1) * sa - a - (sa-sz[u]) * (sa-sz[u]-1)) * f[u];
+  } else {
+    ans += (1ll * (sa-1)*sa - a - (sa-sz[u]) * (sa-sz[u]-1)) * f[u];
+  }
+}
+
+void dfs(int u, int fa) {
+  static int tot = 0;
+  ++all[id];
+  low[u] = dfn[u] = ++tot;
+  f[u] = -1;
+  for (auto v : g0[u]) if (v != fa) {
+    if (!dfn[v]) {
+      s[++t] = v;
+      dfs(v, u);
+      chkmin(low[u], low[v]);
+      if (low[v] >= dfn[u] && (fa || g0[u].size()>1)) {
+        ++e;
+        f[e] = 1;
+        g[e].pb(u);
+        g[u].pb(e);
+        int tp;
+        do {
+          tp = s[t--];
+          g[e].pb(tp);
+          g[tp].pb(e);
+          ++f[e];
+        } while (t && tp != v);
+      }
+    } else chkmin(low[u], dfn[v]);
+  }
 }
 
 inline void solve() {
-  int n;
-  rd(n);
-  FOR(i, 0, n) FOR(j, 0, n) s[i][j] = 'W';
-  build(0, n, 0);
-  FOR(i, 1, n - 1) println(s[i]);
-  println(s[0]);
-  println(s[n-1]);
+  rd(n, m);
+  FOR(i, 0, m) {
+    int u, v;
+    rd(u, v);
+    g0[u].pb(v);
+    g0[v].pb(u);
+  }
+  e = n;
+  for (int i = 1; i <= n; ++i) if (!dfn[i]) {
+    id = i;
+  s[++t] = i;
+  dfs(i, 0);
+  ++e;
+  while (t) {
+    g[e].pb(s[t]);
+    g[s[t--]].pb(e);
+    ++f[e];
+  }
+  }
+  FOR(i, 1, n + 1) if (!vis[i]) {
+    sa = all[i];
+    calc(i, 0);
+  }
+  println(ans);
 }
 
 int main() {

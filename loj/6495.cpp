@@ -48,32 +48,47 @@ inline void chkmax(T &a, const T b) {
 }
 
 //#define MULTI
-const int N = 505;
-char s[N][N];
+const int N = 30;
+i64 f[N][N], inv[N], cf[N][N];
+float g[N][N], cg[N][N];
+int n, p;
 
-void build(int x, int n, bool o) {
-  if (n <= 1) return;
-  if (o) {
-    FOR(i, 0, n - 1) {
-      s[x][x+i] = 'B';
-      s[x+i][x] = 'B';
-    }
-  } else {
-    FOR(i, 1, n) {
-      s[x+n-1][x+i] = s[x+i][x+n-1] = 'B';
+void w1() {
+  g[1][1] = 1;
+  FOR(i, 0, N) cg[i][0] = 1;
+  FOR(i, 1, N) FOR(j, 1, i + 1) cg[i][j] = cg[i-1][j] + cg[i-1][j-1];
+  FOR(i, 2, n + 1) FOR(j, 1, i) {
+    FOR(d1, 1, i - j + 1) FOR(d2, 1, j + 1) {
+      g[i][max(d1, d2 + 1)] += g[i-j][d1] * g[j][d2] * cg[i-2][j-1];
     }
   }
-  build(x+1, n-2, o^1);
+  float ans = 0;
+  FOR(i, 1, n + 1) ans += i * g[n][i];
+  FOR(i, 1, n) ans /= i;
+  println(floor(ans + 0.5));
+}
+
+void w2() {
+  f[1][1] = 1;
+  FOR(i, 0, N) cf[i][0] = 1;
+  FOR(i, 1, N) FOR(j, 1, i + 1) cf[i][j] = (cf[i-1][j] + cf[i-1][j-1])%p;
+  FOR(i, 2, n + 1) FOR(j, 1, i) {
+    FOR(d1, 1, i - j + 1) FOR(d2, 1, j + 1) {
+      f[i][max(d1, d2 + 1)] =(f[i][max(d1, d2 + 1)] + f[i-j][d1] * f[j][d2] %p * cf[i-2][j-1] %p) % p;
+    }
+  }
+  i64 ans = 0;
+  FOR(i, 1, n + 1) ans = (ans + i * f[n][i]) % p;
+  inv[1] = 1;
+  FOR(i, 2, n) inv[i] = inv[p%i]*(p-p/i) % p;
+  FOR(i, 2, n) ans = ans * inv[i] % p;
+  println(ans);
+
 }
 
 inline void solve() {
-  int n;
-  rd(n);
-  FOR(i, 0, n) FOR(j, 0, n) s[i][j] = 'W';
-  build(0, n, 0);
-  FOR(i, 1, n - 1) println(s[i]);
-  println(s[0]);
-  println(s[n-1]);
+  rd(n, p);
+  w1(), w2();
 }
 
 int main() {

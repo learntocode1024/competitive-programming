@@ -48,63 +48,62 @@ inline void chkmax(T &a, const T b) {
 }
 
 //#define MULTI
-pii farey_pre(int N, pii a, pii b) { // Concrete Mathematics (Exercise 4.61)
-  int m = b.se - b.fi, m1 = a.se - a.fi;
-  int n = b.se, n1 = a.se;
-  int r = (n + N) / n1;
-  int n2 = r * n1 - n;
-  int m2 = r * m1 - m;
-  return {n2-m2, n2};
+const int N = 2e5+5;
+vector<pii> g[N];
+int n, m;
+int ans[N], cnt;
+int a[N], b[N], op[N];
+int f[N], id[N], dep[N];
+int bel[N];
+
+int get(int x) {
+  return x == bel[x] ? x : (bel[x] = get(bel[x]));
 }
 
-void print(pii a) {
-  cout << a.fi << '/' << a.se;
+void dfs(int u, int fa) {
+  for (auto v : g[u]) if (v.fi != fa) {
+    dep[v.fi] = dep[u] + 1;
+    f[v.fi] = u;
+    id[v.fi] = v.se;
+    dfs(v.fi, u);
+  }
 }
-int n, m, k;
 
-bool frac_lt(pii a, pii b, pii c) {
-  i64 s = c.fi;
-  s *= a.se;
-  s *= b.se;
-  i64 x = c.se, y = c.se;
-  x *= a.fi;
-  x *= b.se;
-  y *= a.se;
-  y *= b.fi;
-  x = abs(x-s);
-  y = abs(y-s);
-  return x<y;
+int tmp[N];
+
+void merge_path(int u, int v) {
+  int cur = 0;
+  while (1) {
+    u = get(u), v = get(v);
+    if (u == v) break;
+    if (dep[u] < dep[v]) swap(u, v);
+    tmp[cur++] = id[u];
+    bel[u] = f[u];
+  }
+  sort(tmp, tmp + cur);
+  FOR(i, 0, cur) {
+    ans[tmp[i]] = ++cnt;
+  }
 }
 
 inline void solve() {
-  rd(n, m, k);
-  pii a0 = {1,1}, a1 = {n-1, n};
-  FOR(i, 1, k) {
-    pii tmp = a1;
-    a1 = farey_pre(n, a1, a0);
-    a0 = tmp;
+  rd(n, m);
+  FOR(i, 1, m + 1) {
+    rd(a[i], b[i], op[i]);
+    if (op[i] == 1) {
+      g[a[i]].eb(b[i], i);
+      g[b[i]].eb(a[i], i);
+    }
   }
-  pii x = a1;
-  if (m >= n) {
-  print(x);
-  cout << ' ';
-  print(x);
-  cout << '\n';
-  return;
+  dfs(1, 0);
+  iota(bel, bel + n + 1, 0);
+  FOR(i, 1, m + 1) {
+    merge_path(a[i], b[i]);
+    if (!op[i]) {
+      ans[i] = ++cnt;
+    }
   }
-  a1 = {m-1, m}, a0 = {1,1};
-  pii y = {m-1, 1};
-  FOR(i, 0, k) {
-    if (frac_lt(a1, y, x)) y = a1;
-    if (a1.fi == 0) break;
-    pii tmp = a1;
-    a1 = farey_pre(m, a1, a0);
-    a0 = tmp;
-  }
-  print(x);
-  cout << ' ';
-  print(y);
-  cout << '\n';
+  FOR(i, 1, m + 1) cout << ans[i] << " \n"[i==m];
 }
 
 int main() {

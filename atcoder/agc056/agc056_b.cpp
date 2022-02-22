@@ -49,35 +49,13 @@ inline void chkmax(T &a, const T b) {
 
 const int N = 305;
 const int p = 998244353;
-int dp[N][N];
-int vis[N][N][N];
-pii a[N];
-int n, m;
 
-int run(int l, int r) {
-  if (dp[l][r] != -1) return dp[l][r];
-  if (l > r) return 1;
-  if (r == l) return dp[l][r] = 1;
-  int ans = 0;
-  int cnt = 0;
-  FOR(i, 0, m) {if (a[i].fi >= l && a[i].se <= r) {++cnt; FOR(j, a[i].fi + 1, a[i].se + 1) {
-    ++vis[l][r][j];
-  }
-  }
-  }
-  FOR(i, l, r + 1) if (!cnt || vis[l][r][i] != cnt) {
-    ans = (ans + 1ll * run(l, i - 1) * run(i + 1, r)) % p;
-  }
-  return dp[l][r] = ans;
-}
+int f[N][N];
 
 inline void solve() {
-  memset(dp, 0xff, sizeof(dp));
+  fill(begin(f), end(f), -1);
   cin >> n >> m;
   FOR(i, 0, m) cin >> a[i].fi >> a[i].se;
-  // sort(a, a + m);
-  run(1, n);
-  cout << dp[1][n] << '\n';
 }
 
 int main() {
