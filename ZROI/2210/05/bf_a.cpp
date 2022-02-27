@@ -1,0 +1,126 @@
+#include <bits/stdc++.h>
+using namespace std;
+template<typename T>
+void rd(T &a) {
+  cin >> a;
+}
+template<typename A, typename... B>
+void rd(A &a, B& ...b) {
+  cin >> a;
+  rd(b...);
+}
+template<typename A>
+void print(const A& a) {
+  cout << a;
+}
+template<typename A, typename... B>
+void print(const A& a, const B& ...b) {
+  cout << a;
+  print(b...);
+}
+template<typename A>
+void println(const A& a) {
+  cout << a << '\n';
+}
+template<typename A, typename... B>
+void println(const A& a, const B& ...b) {
+  cout << a << ' ';
+  println(b...);
+}
+typedef long long i64;
+typedef unsigned long long u64;
+typedef unsigned u32;
+typedef pair<int, int> pii;
+#define mkp make_pair
+#define fi first
+#define se second
+#define pb push_back
+#define eb emplace_back
+#define FOR(i, j, k) for (int i = (j); i < (k); ++i)
+#define ROF(i, j, k) for (int i = ((k) - 1); i >= j; --i)
+template<typename T>
+inline void chkmin(T &a, const T b) {
+  a = min(a, b);
+}
+template<typename T>
+inline void chkmax(T &a, const T b) {
+  a = max(a, b);
+}
+
+//#define MULTI
+const int N = 5e3+5;
+const int p = 998244353;
+int n;
+int a[N], f[N];
+struct numset {
+  bool vis[N];
+  int pre[N], nxt[N], re[N], tot;
+  inline void init(int n) {
+    FOR(i, 1, n + 3) {
+      pre[i] = i - 1;
+      nxt[i] = i + 1;
+    }
+  }
+  inline void ins(int x) {
+    x += 2;
+    if (!vis[x]) {
+      vis[x] = 1;
+      pre[nxt[x]] = pre[x];
+      nxt[pre[x]] = nxt[x];
+      re[tot++] = x;
+    }
+  }
+  inline int mex() {
+    return nxt[1] - 2;
+  }
+  inline void rev() {
+    ROF(i, 0, tot) {
+      pre[nxt[re[i]]] = re[i];
+      nxt[pre[re[i]]] = re[i];
+      vis[re[i]] = 0;
+    }
+    tot = 0;
+  }
+} ss;
+
+inline void solve() {
+  rd(n);
+  FOR(i, 1, n + 1) rd(a[i]);
+  ss.init(n);
+  f[0] = 1;
+  FOR(i, 1, n + 1) {
+    ROF(j, 1, i + 1) {
+      ss.ins(a[j]);
+      f[i] = (f[i] + 1ll * ss.mex() * f[j-1]) % p;
+    }
+    ss.rev();
+  }
+  println(f[n]);
+}
+
+int main() {
+#ifndef MISAKA
+  //freopen(".in", "r", stdin);
+  //freopen(".out", "w", stdout);
+  ios::sync_with_stdio(0);
+  cin.tie(0);
+#endif
+#ifdef MULTI
+  int T;
+  cin >> T;
+  while (T--)
+#endif
+  solve();
+  return 0;
+}
+/* Checklist:
+ * - data type
+ * - overflow
+ * - typo/logic
+ * - special cases
+ * - cleanup (multi-test)
+ * - bounds
+ * - memory usage
+ * - file IO
+ */
+
