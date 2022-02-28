@@ -66,6 +66,7 @@ inline int sum(int l, int r) {
 }
 
 int h[N], rk[N];
+i64 d2[N], d1[N], f[N];
 
 inline void solve() {
   int L, R;
@@ -74,23 +75,29 @@ inline void solve() {
     rd(h[i]);
     rk[h[i]] = i;
   }
-  int out = 0;
-  if (L == 1) {
-    out = n;
-    L = 2;
-  }
-  FOR(k, L, R + 1) {
-    i64 ans = 0;
-    FOR(i, 0, n+1) c[i] = 0;
-    ROF(i, 1, n+1) {
-      int x = rk[i];
-      add(x);
-      ans += min(sum(1,x), k) - sum(max(x-k+2,1),x);
-      ans += min(sum(x,n), k) - sum(x,min(x+k-2,n));
+  i64 ans = 0;
+  int m = 1;
+  ROF(i, 1, n+1) {
+    ++m;
+    int x = rk[i];
+    add(x);
+    int c = get(x);
+    c = min(c, m - c);
+    ++d2[1];
+    --d2[m/2+1];
+    --d2[(m+1)/2+1];
+    ++d2[m+1];
+    if (c < m/2) {
+      ++d2[m/2+1];
+      ++d2[(m+1)/2+1];
+      --d2[c+1];
+      --d2[m-c+1];
     }
-    out ^= ans;
   }
-  println(out);
+  FOR(i, 1, n + 1) d1[i] = d1[i-1] + d2[i];
+  FOR(i, 1, n + 1) f[i] = f[i-1] + d1[i];
+  FOR(i, L, R + 1) ans ^= f[i];
+  println(ans);
 }
 
 int main() {
