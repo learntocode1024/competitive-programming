@@ -48,11 +48,11 @@ inline void chkmax(T &a, const T b) {
 }
 
 //#define MULTI
-const int N = 505, M = 15005;
+const int N = 2005, M = 15005;
 const int INF = 0x3f3f3f3f;
 int to[M<<1], hd[N], cur[N], nxt[M<<1], e[M<<1], cost[M<<1], tot = 1;
 int d[N];
-int n, m, C;
+int n, m, C, s, T;
 void add_flow(int u, int v, int w, int c) {
   to[++tot] = v, nxt[tot] = hd[u], hd[u] = tot, e[tot] = w, cost[tot] = c;
   to[++tot] = u, nxt[tot] = hd[v], hd[v] = tot, e[tot] = 0, cost[tot] = -c;
@@ -63,9 +63,9 @@ bool vis[N];
 
 inline bool bfs() {
   h = t = 1;
-  qu[1] = 1;
-  d[1] = 0;
-  FOR(i, 2, n + 1) d[i] = INF;
+  qu[1] = s;
+  FOR(i, 1, n + 1) d[i] = INF;
+  d[s] = 0;
   while (h <= t) {
     int u = qu[h++];
     vis[u] = 0;
@@ -74,12 +74,12 @@ inline bool bfs() {
       if (!vis[to[i]]) qu[++t] = to[i], vis[to[i]] = 1;
     }
   }
-  return d[n] != INF;
+  return d[T] != INF;
 }
 
 
 int dfs(int u, int exc) {
-  if (u == n || !exc) return exc;
+  if (u == T || !exc) return exc;
   int rem = exc;
   vis[u] = 1;
   for (int& i = cur[u]; i; i = nxt[i]) if (e[i] && d[to[i]] == d[u] + cost[i] && !vis[to[i]]) {
@@ -93,21 +93,42 @@ int dfs(int u, int exc) {
   vis[u] = 0;
   return rem - exc;
 }
-
-inline void solve() {
-  // int n, m;
-  rd(n, m);
-  FOR(i, 0, m) {
-    int s, t, c, w;
-    rd(s, t, c, w);
-    add_flow(s, t, c, w);
-  }
+int flow() {
   int flow = 0;
   while (bfs()) {
     FOR(i, 1, n + 1) cur[i] = hd[i];
-    flow += dfs(1, INF);
+    flow += dfs(s, INF);
   }
-  println(flow, C);
+  return flow;
+}
+int R[N];
+inline void solve() {
+  int a,b,c,d,e,f;
+  rd(a,b,c,d,e,f);
+  n = a+2+a-min(c,e);
+  s = n-1, T = n;
+  FOR(i,1,a+1) {
+    int g;
+    rd(g);
+    R[i] = g;
+    add_flow(i,T,g,0);
+    add_flow(s,i,1e8,b);
+  }
+  FOR(i,1,a-min(c,e)) {
+    add_flow(i+a,i+a+1,1e8,0);
+  }
+  FOR(i,1,a-min(c,e)+1) {
+    add_flow(s,i+a,R[i],0);
+  }
+  FOR(i,1,a-c+1) {
+    add_flow(i+a,i+c,1e8,d);
+  }
+  FOR(i,1,a-e+1) {
+    add_flow(i+a,i+e,1e8,f);
+  }
+  flow();
+  // println(flow());
+  println(C);
 }
 
 int main() {

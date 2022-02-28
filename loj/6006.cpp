@@ -48,66 +48,95 @@ inline void chkmax(T &a, const T b) {
 }
 
 //#define MULTI
-const int N = 505, M = 15005;
-const int INF = 0x3f3f3f3f;
-int to[M<<1], hd[N], cur[N], nxt[M<<1], e[M<<1], cost[M<<1], tot = 1;
+const int N = 1205, M = 50005;
+int n, m, s, t;
+int hd[N], cur[N], to[M<<1], nxt[M<<1], e[M<<1], tot=1;
 int d[N];
-int n, m, C;
-void add_flow(int u, int v, int w, int c) {
-  to[++tot] = v, nxt[tot] = hd[u], hd[u] = tot, e[tot] = w, cost[tot] = c;
-  to[++tot] = u, nxt[tot] = hd[v], hd[v] = tot, e[tot] = 0, cost[tot] = -c;
+
+inline void add_flow(int u, int v, int c) {
+  to[++tot] = v, nxt[tot] = hd[u], hd[u] = tot, e[tot] = c;
+  to[++tot] = u, nxt[tot] = hd[v], hd[v] = tot, e[tot] = 0;
 }
 
-int qu[N<<4], h, t;
-bool vis[N];
-
+int qu[N], h, tl;
 inline bool bfs() {
-  h = t = 1;
-  qu[1] = 1;
-  d[1] = 0;
-  FOR(i, 2, n + 1) d[i] = INF;
-  while (h <= t) {
+  h = tl = 1;
+  qu[1] = s;
+  FOR(i, 1, n + 1) d[i] = -1;
+  d[s] = 0;
+  while (h <= tl) {
     int u = qu[h++];
-    vis[u] = 0;
-    for (int i = hd[u]; i; i = nxt[i]) if (e[i] && d[to[i]] > d[u] + cost[i]) {
-      d[to[i]] = cost[i] + d[u];
-      if (!vis[to[i]]) qu[++t] = to[i], vis[to[i]] = 1;
+    for (int i = hd[u]; i; i = nxt[i]) if (d[to[i]] == -1 && e[i]) {
+      d[to[i]] = d[u] + 1;
+      qu[++tl] = to[i];
+      if (to[i] == t) return true;
     }
   }
-  return d[n] != INF;
+  return false;
 }
 
-
-int dfs(int u, int exc) {
-  if (u == n || !exc) return exc;
-  int rem = exc;
-  vis[u] = 1;
-  for (int& i = cur[u]; i; i = nxt[i]) if (e[i] && d[to[i]] == d[u] + cost[i] && !vis[to[i]]) {
-    int f = dfs(to[i], min(exc, e[i]));
+inline i64 dfs(int u, i64 exc) {
+  if (!exc || u == t) return exc;
+  i64 rem = exc;
+  for (int &i = cur[u]; i; i = nxt[i]) if (d[to[i]] == d[u] + 1 && e[i]) {
+    i64 f = min((i64)e[i], exc);
+    f = dfs(to[i], f);
+    exc -= f;
     e[i] -= f;
     e[i^1] += f;
-    exc -= f;
-    C += f * cost[i];
     if (!exc) break;
   }
-  vis[u] = 0;
   return rem - exc;
 }
 
-inline void solve() {
-  // int n, m;
-  rd(n, m);
-  FOR(i, 0, m) {
-    int s, t, c, w;
-    rd(s, t, c, w);
-    add_flow(s, t, c, w);
-  }
-  int flow = 0;
+inline i64 flow() {
+  i64 ans = 0;
   while (bfs()) {
     FOR(i, 1, n + 1) cur[i] = hd[i];
-    flow += dfs(1, INF);
+    ans += dfs(s, 1e18);
   }
-  println(flow, C);
+  return ans;
+}
+int k;
+int ff[N];
+
+inline void solve() {
+  rd(k, m);
+  int S = 0;
+  n = k + m + 2;
+  s = n-1, t = n;
+  FOR(i, 1, k + 1) {
+    int a;
+    rd(a);
+    S += a;
+    ff[i] = a;
+    add_flow(i, t, a);
+  }
+  FOR(i, 1, m + 1) {
+    int p;
+    rd(p);
+    int w;
+    add_flow(s,i+k,1);
+    FOR(j, 0, p) {
+      rd(w);
+      add_flow(i+k,w,1);
+    }
+  }
+  if (flow()!=S) {
+    println("No Solution!");
+    return;
+  }
+  FOR(i, 1, k + 1) {
+    print(i,":");
+    if (!ff[i]) {
+      cout << " \n";
+    }
+    for (int j = hd[i]; j; j = nxt[j]) if ((j&1) && e[j]) {
+      cout << ' ' << to[j]-k;
+    }
+    cout << '\n';
+  }
+
 }
 
 int main() {
