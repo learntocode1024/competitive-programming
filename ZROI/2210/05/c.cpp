@@ -1,5 +1,10 @@
 #include <bits/stdc++.h>
 using namespace std;
+#ifndef MISAKA
+#define OO(x)
+#else
+#define OO(x) cout << __PRETTY_FUNCTION__ << ": " << #x << " : " << (x) << '\n';
+#endif
 template<typename T>
 void rd(T &a) {
   cin >> a;
@@ -10,22 +15,13 @@ void rd(A &a, B& ...b) {
   rd(b...);
 }
 template<typename A>
-void print(const A& a) {
-  cout << a;
-}
-template<typename A, typename... B>
-void print(const A& a, const B& ...b) {
-  cout << a;
-  print(b...);
-}
-template<typename A>
-void println(const A& a) {
+void O(const A& a) {
   cout << a << '\n';
 }
 template<typename A, typename... B>
-void println(const A& a, const B& ...b) {
+void O(const A& a, const B& ...b) {
   cout << a << ' ';
-  println(b...);
+  O(b...);
 }
 typedef long long i64;
 typedef unsigned long long u64;
@@ -36,8 +32,8 @@ typedef pair<int, int> pii;
 #define se second
 #define pb push_back
 #define eb emplace_back
-#define FOR(i, j, k) for (int i = (j); i < (k); ++i)
-#define ROF(i, j, k) for (int i = ((k) - 1); i >= j; --i)
+#define FOR(i, j, k) for (int i = (j); i <= (k); ++i)
+#define ROF(i, j, k) for (int i = (k); i >= (j); --i)
 template<typename T>
 inline void chkmin(T &a, const T b) {
   a = min(a, b);
@@ -50,17 +46,22 @@ inline void chkmax(T &a, const T b) {
 //#define MULTI
 const int N = 0;
 
-inline void solve() {
-  int x, y;
-  rd(x, y);
-  int t = 1e9, w;
-  FOR(i, 0, max(x,y)+1) {
-    if (((x+i) ^ (y+i)) < t) w = i;
-    chkmin(t, (x+i) ^ (y+i));
-    println((x+i)^(y+i));
+class QWQ {
+  mt19937 a;
+  uniform_int_distribution<int> e{0,1000000000};
+public:
+  QWQ() {
+    int s;
+    rd(s);
+    a.seed(s);
   }
-  println(t, w, abs(x-y));
+  inline int operator() () {
+    return e(a);
+  }
+} rng;
 
+inline void solve() {
+  O(rng());
 }
 
 int main() {
