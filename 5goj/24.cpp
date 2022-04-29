@@ -44,41 +44,25 @@ inline void chkmax(T &a, const T b) {
 }
 
 //#define MULTI
-const int N = 1e6+5;
-char s[N];
-int a[N];
-int n;
-
-inline int f(int r) {
-  int ans = 0;
-  for (int i = 0, k = 0; i < n; ++i) {
-    if (s[i] == '1') ++k;
-    else if (s[i] == '0') --k;
-    else {
-      if (k+2+a[i] <= r) ++k;
-      else --k;
-    }
-    chkmin(ans, k);
-  }
-  return ans;
+const int N = 0;
+i64 sg(i64 x) {
+  if (x < 1) return 0;
+  --x;
+  x <<= 1;
+  if (__builtin_parityll(x)) return x;
+  return x + 1;
 }
 
 inline void solve() {
-  rd(s);
-  n = strlen(s);
-  int lim = 0;
-  for (int i = 0, k = 0; i < n; ++i) {
-    if (s[i] == '1') ++k;
-    else --k;
-    chkmax(lim, k);
+  int n, m;
+  rd(n,m);
+  i64 ans = 0;
+  while (m--) {
+    int p, v;
+    rd(p,v);
+    if (v&1) ans ^= sg(n-p);
   }
-  a[n] = -114514;
-  for (int i = n-1; i >= 0; --i) {
-    if (s[i] == '1') {
-      a[i] = 1+max(a[i+1],0);
-    } else a[i] = -1+max(a[i+1],0);
-  }
-  O(min(lim-f(lim), lim+1-f(lim+1)));
+  O(ans?"YES":"NO");
 }
 
 int main() {

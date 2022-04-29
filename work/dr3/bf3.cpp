@@ -44,41 +44,13 @@ inline void chkmax(T &a, const T b) {
 }
 
 //#define MULTI
-const int N = 1e6+5;
-char s[N];
-int a[N];
-int n;
-
-inline int f(int r) {
-  int ans = 0;
-  for (int i = 0, k = 0; i < n; ++i) {
-    if (s[i] == '1') ++k;
-    else if (s[i] == '0') --k;
-    else {
-      if (k+2+a[i] <= r) ++k;
-      else --k;
-    }
-    chkmin(ans, k);
-  }
-  return ans;
-}
+const int N = 1<<10;
+int a[N], b[N];
 
 inline void solve() {
-  rd(s);
-  n = strlen(s);
-  int lim = 0;
-  for (int i = 0, k = 0; i < n; ++i) {
-    if (s[i] == '1') ++k;
-    else --k;
-    chkmax(lim, k);
-  }
-  a[n] = -114514;
-  for (int i = n-1; i >= 0; --i) {
-    if (s[i] == '1') {
-      a[i] = 1+max(a[i+1],0);
-    } else a[i] = -1+max(a[i+1],0);
-  }
-  O(min(lim-f(lim), lim+1-f(lim+1)));
+  int x;
+  rd(x);
+  for (int i = 3; i < x; i += 3) for (int j = 3; j < x; j += 3) if ((i|j) == x) O(i,j);
 }
 
 int main() {

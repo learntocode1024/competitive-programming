@@ -44,41 +44,43 @@ inline void chkmax(T &a, const T b) {
 }
 
 //#define MULTI
-const int N = 1e6+5;
+const int N = 2505;
+const int p = 2147483587, q = 1129;
+i64 H[N], pw[N];
 char s[N];
-int a[N];
-int n;
-
-inline int f(int r) {
-  int ans = 0;
-  for (int i = 0, k = 0; i < n; ++i) {
-    if (s[i] == '1') ++k;
-    else if (s[i] == '0') --k;
-    else {
-      if (k+2+a[i] <= r) ++k;
-      else --k;
-    }
-    chkmin(ans, k);
-  }
-  return ans;
+int n, a, b, c;
+i64 f[N][N];
+inline i64 h(int l, int r) {
+  return (H[r] - H[l-1] * pw[r - l + 1]);
 }
 
 inline void solve() {
-  rd(s);
-  n = strlen(s);
-  int lim = 0;
-  for (int i = 0, k = 0; i < n; ++i) {
-    if (s[i] == '1') ++k;
-    else --k;
-    chkmax(lim, k);
+  rd(n);
+  cin >> s + 1;
+  rd(a,b,c);
+  FOR(l,1,n) FOR(r,1,n) f[l][r] = 1e18;
+  FOR(i,1,n) f[i][i] = a;
+  pw[0] = 1;
+  FOR(i,1,n) pw[i] = 1ll * pw[i-1] * q;
+  FOR(i,1,n) H[i] = (1ll * H[i-1] * q + s[i]);
+  for (int len = 1; len <= n; ++len) for (int l = 1; l < n; ++l) {
+    int r = l + len - 1;
+    if (r > n) continue;
+    chkmin(f[l][r], f[l][r-1] + a);
+    chkmin(f[l][r], f[l+1][r] + a);
+    const i64 cur = h(l,r);
+    i64 to = f[l][r] + b + c;
+    for (int i = r + 1; i + len - 1 <= n; ++i) {
+      if (h(i,i+len-1) == cur) {
+        i += len - 1;
+        to += c;
+      } else {
+        to += a;
+      }
+      chkmin(f[l][i], to);
+    }
   }
-  a[n] = -114514;
-  for (int i = n-1; i >= 0; --i) {
-    if (s[i] == '1') {
-      a[i] = 1+max(a[i+1],0);
-    } else a[i] = -1+max(a[i+1],0);
-  }
-  O(min(lim-f(lim), lim+1-f(lim+1)));
+  O(f[1][n]);
 }
 
 int main() {

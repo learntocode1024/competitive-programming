@@ -44,41 +44,53 @@ inline void chkmax(T &a, const T b) {
 }
 
 //#define MULTI
+const int CNT[8] = {4, 13, 74, 732, 12085, 319988, 13170652, 822378267};
+unordered_map<u64, bool> vis;
 const int N = 1e6+5;
-char s[N];
-int a[N];
-int n;
-
-inline int f(int r) {
-  int ans = 0;
-  for (int i = 0, k = 0; i < n; ++i) {
-    if (s[i] == '1') ++k;
-    else if (s[i] == '0') --k;
-    else {
-      if (k+2+a[i] <= r) ++k;
-      else --k;
-    }
-    chkmin(ans, k);
-  }
-  return ans;
-}
+u64 qu[N], hd, tl;
 
 inline void solve() {
-  rd(s);
-  n = strlen(s);
-  int lim = 0;
-  for (int i = 0, k = 0; i < n; ++i) {
-    if (s[i] == '1') ++k;
-    else --k;
-    chkmax(lim, k);
+  u64 u = 0ull;
+  int k, n;
+  rd(k,n);
+  FOR(i,1,n) {
+    int x;
+    rd(x);
+    u |= 1ull << x;
   }
-  a[n] = -114514;
-  for (int i = n-1; i >= 0; --i) {
-    if (s[i] == '1') {
-      a[i] = 1+max(a[i+1],0);
-    } else a[i] = -1+max(a[i+1],0);
+  int ans = 0;
+  n = 1 << k;
+  FOR(_,0,n) {
+    u64 u1 = u;
+    FOR(i,0,n-1) if ((u1>>i)&1) FOR(j,0,n-1) if ((u1>>j)&1) {
+      u |= 1ull<<(i|j);
+      u |= 1ull<<(i&j);
+    }
   }
-  O(min(lim-f(lim), lim+1-f(lim+1)));
+  O(u);
+  if (u) ++ans;
+  qu[hd = tl = 1] = u;
+  vis[u] = 1;
+  while (hd <= tl) {
+    u = qu[hd++];
+      if (u == 2052)  {
+        O("1");
+      }
+    FOR(i,0,n-1) if ((~u>>i)&1ull) {
+      u64 v = u | (1ull << i);
+      FOR(j,0,n-1) if ((u>>j)&1ull) {
+        v |= 1ull<<(j|i);
+        v |= 1ull<<(j&i);
+      }
+       if (!vis[v]) {
+        qu[++tl] = v;
+        ++ans;
+        vis[v] = 1;
+        O(v);
+      }
+    }
+  }
+  O(ans);
 }
 
 int main() {

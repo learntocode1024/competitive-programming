@@ -43,42 +43,27 @@ inline void chkmax(T &a, const T b) {
   a = max(a, b);
 }
 
-//#define MULTI
-const int N = 1e6+5;
-char s[N];
-int a[N];
-int n;
-
-inline int f(int r) {
-  int ans = 0;
-  for (int i = 0, k = 0; i < n; ++i) {
-    if (s[i] == '1') ++k;
-    else if (s[i] == '0') --k;
-    else {
-      if (k+2+a[i] <= r) ++k;
-      else --k;
-    }
-    chkmin(ans, k);
-  }
-  return ans;
-}
+#define MULTI
+const int N = 105;
+char s[N][N];
 
 inline void solve() {
-  rd(s);
-  n = strlen(s);
-  int lim = 0;
-  for (int i = 0, k = 0; i < n; ++i) {
-    if (s[i] == '1') ++k;
-    else --k;
-    chkmax(lim, k);
+  int n,m;
+  rd(n,m);
+  FOR(i,0,n-1) rd(s[i]);
+  if (s[0][0] == '1') {
+    O(-1);
+    return;
   }
-  a[n] = -114514;
-  for (int i = n-1; i >= 0; --i) {
-    if (s[i] == '1') {
-      a[i] = 1+max(a[i+1],0);
-    } else a[i] = -1+max(a[i+1],0);
+  int cnt = 0;
+  FOR(i,0,n-1) FOR(j,0,m-1) if (s[i][j] == '1') ++cnt;
+  O(cnt);
+  FOR(i,0,n-1) ROF(j,1,m-1) {
+    if (s[i][j] == '1') O(i+1,j,i+1,j+1);
   }
-  O(min(lim-f(lim), lim+1-f(lim+1)));
+  ROF(i,1,n-1) if (s[i][0] == '1') {
+    O(i,1,i+1,1);
+  }
 }
 
 int main() {

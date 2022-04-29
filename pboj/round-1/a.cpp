@@ -43,42 +43,45 @@ inline void chkmax(T &a, const T b) {
   a = max(a, b);
 }
 
-//#define MULTI
-const int N = 1e6+5;
-char s[N];
+#define MULTI
+const int N = 3e5+5, W = 50;
 int a[N];
 int n;
-
-inline int f(int r) {
-  int ans = 0;
-  for (int i = 0, k = 0; i < n; ++i) {
-    if (s[i] == '1') ++k;
-    else if (s[i] == '0') --k;
-    else {
-      if (k+2+a[i] <= r) ++k;
-      else --k;
-    }
-    chkmin(ans, k);
-  }
-  return ans;
-}
+int f[N][W];
+int dp[N];
 
 inline void solve() {
-  rd(s);
-  n = strlen(s);
-  int lim = 0;
-  for (int i = 0, k = 0; i < n; ++i) {
-    if (s[i] == '1') ++k;
-    else --k;
-    chkmax(lim, k);
+  rd(n);
+  FOR(i,0,n-1) rd(a[i]);
+  ROF(i,1,n-1) a[i] -= a[i-1];
+  FOR(i,1,n) FOR(j,0,W-1) {
+    f[i][j] = 0;
   }
-  a[n] = -114514;
-  for (int i = n-1; i >= 0; --i) {
-    if (s[i] == '1') {
-      a[i] = 1+max(a[i+1],0);
-    } else a[i] = -1+max(a[i+1],0);
+  int m = 0;
+  for (int i = 1, j = 1; i < n; ++i) {
+    if (a[j-1] || a[i]) a[j++] = a[i];
+    m = j;
   }
-  O(min(lim-f(lim), lim+1-f(lim+1)));
+  n = m;
+  FOR(i,1,n-1) {
+    if (!a[i]) continue;
+    int c = __builtin_ctz(abs(a[i]));
+    a[i] /= (1<<c);
+    f[i][c] = i;
+    int j = i - 1;
+    while (j && a[j] == a[i] && f[j][c]) {
+      f[i][c+1] = f[j][c];
+      j = f[j][c] - 1;
+      ++c;
+    }
+  }
+  FOR(i,1,n-1) {
+    dp[i] = dp[i-1]+1;
+    FOR(j,0,W-1) if (f[i][j]) {
+      chkmin(dp[i], dp[f[i][j]-1] + 1);
+    }
+  }
+  O(dp[n-1]+1);
 }
 
 int main() {

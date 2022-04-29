@@ -44,41 +44,51 @@ inline void chkmax(T &a, const T b) {
 }
 
 //#define MULTI
-const int N = 1e6+5;
-char s[N];
-int a[N];
-int n;
-
-inline int f(int r) {
-  int ans = 0;
-  for (int i = 0, k = 0; i < n; ++i) {
-    if (s[i] == '1') ++k;
-    else if (s[i] == '0') --k;
-    else {
-      if (k+2+a[i] <= r) ++k;
-      else --k;
-    }
-    chkmin(ans, k);
-  }
-  return ans;
-}
+const int N = 105, M = 5005;
+const int p = 998244353;
+int n, t, s;
+int f[N][N][N];
+int g[N][N];
+int to[N][M], m[N];
+int inv[M];
 
 inline void solve() {
-  rd(s);
-  n = strlen(s);
-  int lim = 0;
-  for (int i = 0, k = 0; i < n; ++i) {
-    if (s[i] == '1') ++k;
-    else --k;
-    chkmax(lim, k);
+  inv[1] = 1;
+  FOR(i,2,M-1) {
+    inv[i] = 1ll * (p-p/i) * inv[p%i] % p;
   }
-  a[n] = -114514;
-  for (int i = n-1; i >= 0; --i) {
-    if (s[i] == '1') {
-      a[i] = 1+max(a[i+1],0);
-    } else a[i] = -1+max(a[i+1],0);
+  rd(n,s,t);
+  FOR(i,1,n) f[i][i][0] = 1;
+  FOR(i,1,n) {
+    rd(m[i]);
+    FOR(j,1,m[i]) rd(to[i][j]);
   }
-  O(min(lim-f(lim), lim+1-f(lim+1)));
+  FOR(i,0,t-1) FOR(j,1,n) FOR(k,1,n) if (f[j][k][i]) {
+    FOR(l, 1, m[k]) {
+      f[j][to[k][l]][i+1] = (f[j][to[k][l]][i+1] + 1ll * inv[m[k]] * f[j][k][i]) % p;
+    }
+  }
+  int ans = 0;
+  FOR(u,1,n) {
+    FOR(tt,1,m[u]) {
+      int v = to[u][tt];
+      g[v][0] = v == u;
+      FOR(i,1,t) {
+        g[v][i] = f[v][u][i];
+        FOR(j,0,i-1) {
+          g[v][i] = (g[v][i] + p - 1ll * g[v][j] * f[u][u][i-j] % p) % p;
+        }
+      }
+      FOR(i,1,t) g[v][i] = (g[v][i] + g[v][i-1]) % p;
+    }
+    FOR(i,0,t-1) {
+      FOR(nxt,1,m[u]) {
+        int v = to[u][nxt];
+        ans = (ans + 1ll * v * f[s][u][i] % p * g[v][t-i-1]) % p;
+      }
+    }
+  }
+  O(ans);
 }
 
 int main() {

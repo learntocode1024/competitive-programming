@@ -45,40 +45,46 @@ inline void chkmax(T &a, const T b) {
 
 //#define MULTI
 const int N = 1e6+5;
-char s[N];
-int a[N];
-int n;
-
-inline int f(int r) {
-  int ans = 0;
-  for (int i = 0, k = 0; i < n; ++i) {
-    if (s[i] == '1') ++k;
-    else if (s[i] == '0') --k;
-    else {
-      if (k+2+a[i] <= r) ++k;
-      else --k;
-    }
-    chkmin(ans, k);
-  }
-  return ans;
-}
+i64 a[N], b[N];
+i64 r, ans;
+set<int, greater<int> > s;
+i64 n, c;
 
 inline void solve() {
-  rd(s);
-  n = strlen(s);
-  int lim = 0;
-  for (int i = 0, k = 0; i < n; ++i) {
-    if (s[i] == '1') ++k;
-    else --k;
-    chkmax(lim, k);
+  rd(n, c);
+  FOR(i,1,n) rd(a[i]);
+  FOR(i,1,n) rd(b[i]);
+  FOR(i,1,n) {
+    int k = min(a[i],b[i]);
+    ans += k;
+    a[i] -= k;
+    b[i] -= k;
   }
-  a[n] = -114514;
-  for (int i = n-1; i >= 0; --i) {
-    if (s[i] == '1') {
-      a[i] = 1+max(a[i+1],0);
-    } else a[i] = -1+max(a[i+1],0);
+  if (c) {
+    FOR(i,1,n) {
+      if (a[i]) {
+        s.insert(a[i]/c);
+        r += a[i]%c;
+      }
+      if (b[i]) {
+        i64 k = min(r, b[i]);
+        ans += k;
+        r -= k;
+        b[i] -= k;
+        if (!b[i]||!s.size()) continue;
+        set<int> tmp;
+        for (auto it = s.begin(); it != s.end() && b[i];) {
+          tmp.insert(*it-1);
+          r += c-min(b[i],c);
+          ans += min(b[i],c);
+          b[i] = max(0ll,b[i]-c);
+          it = s.erase(it);
+        }
+        for (auto v : tmp) s.insert(v);
+      }
+    }
   }
-  O(min(lim-f(lim), lim+1-f(lim+1)));
+  O(ans);
 }
 
 int main() {

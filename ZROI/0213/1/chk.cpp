@@ -44,56 +44,37 @@ inline void chkmax(T &a, const T b) {
 }
 
 //#define MULTI
-const int N = 1e6+5;
-char s[N];
-int a[N];
-int n;
-
-inline int f(int r) {
-  int ans = 0;
-  for (int i = 0, k = 0; i < n; ++i) {
-    if (s[i] == '1') ++k;
-    else if (s[i] == '0') --k;
-    else {
-      if (k+2+a[i] <= r) ++k;
-      else --k;
-    }
-    chkmin(ans, k);
-  }
-  return ans;
-}
-
-inline void solve() {
-  rd(s);
-  n = strlen(s);
-  int lim = 0;
-  for (int i = 0, k = 0; i < n; ++i) {
-    if (s[i] == '1') ++k;
-    else --k;
-    chkmax(lim, k);
-  }
-  a[n] = -114514;
-  for (int i = n-1; i >= 0; --i) {
-    if (s[i] == '1') {
-      a[i] = 1+max(a[i+1],0);
-    } else a[i] = -1+max(a[i+1],0);
-  }
-  O(min(lim-f(lim), lim+1-f(lim+1)));
-}
+const int N = 1e5+5;
+int n, m;
+int p[N];
 
 int main() {
-#ifndef MISAKA
-  //freopen(".in", "r", stdin);
-  //freopen(".out", "w", stdout);
-  ios::sync_with_stdio(0);
-  cin.tie(0);
-#endif
-#ifdef MULTI
-  int T;
-  cin >> T;
-  while (T--)
-#endif
-  solve();
+  rd(n);
+  FOR(i,1,n) rd(p[i]);
+  rd(m);
+  if (m >= n) {
+    O("0 pts!");
+    return 1;
+  }
+  int om = m;
+  while (m--) {
+    int a, c;
+    rd(a,c);
+    p[a] += c;
+    p[a+1] += c;
+    if (p[a] < 0 || p[a+1] < 0) {
+      O("negative!");
+      return 1;
+    }
+  }
+  FOR(i,2,n) {
+    if (p[i] != p[1]) {
+      O("invalid!");
+      FOR(j,1,n) cout << p[j] << " \n"[j==n];
+      return 1;
+    }
+  }
+  cout << "ok: " << om << '/' << n << '\n';
   return 0;
 }
 /* Checklist:

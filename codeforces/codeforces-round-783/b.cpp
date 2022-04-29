@@ -28,11 +28,60 @@ mt19937_64 rng(chrono::steady_clock::now().time_since_epoch().count());
 template <typename T> inline void ckmin(T &a, const T &b) { a = min(a, b); }
 template <typename T> inline void ckmax(T &a, const T &b) { a = max(a, b); }
 //#define IOFILE "filename"
-//#define MULTI
-const int N = 0;
+#define MULTI
+const int N = 5e5+5;
+i64 s[N];
+int a[N];
+int f[N];
+int mx[N];
+map<i64, int> id;
+struct sgT {
+  int mx[N<<2];
+  int get(int p, int l, int r, int s, int t) {
+    if (l == s && r == t) return mx[p];
+    int ret = -1e8;
+    int m = (l + r) >> 1;
+    if (s < m) ckmax(ret,get(p<<1,l,m,s,min(m,t)));
+    if (t > m) ckmax(ret,get(p<<1|1,m,r,max(m,s),t));
+    return ret;
+  }
+  void set(int p, int l, int r, int s, int v) {
+    ckmax(mx[p], v);
+    if (r - l == 1) return;
+    int m = (l + r) >> 1;
+    if (s < m) set(p<<1,l,m,s,v);
+    else set(p<<1|1,m,r,s,v);
+  }
+} L, H;
 
 inline void sol() {
-  //
+  int n;
+  cin >> n;
+  FOR(i,1,n) cin >> a[i], s[i] = s[i-1] + a[i];
+  f[0] = 0;
+  id.clear();
+  id[0] = 0;
+  FOR(i,1,n) id[s[i]] = 0;
+  int tot = 0;
+  for (auto &x : id) {
+    x.se = ++tot;
+  }
+  FOR(i,0,n+4) mx[i] = -1e8;
+  FOR(i,1,(n+4)<<2) L.mx[i] = H.mx[i] = -1e8;
+  mx[id[0]] = 0;
+  L.set(1,1,n+3,id[0],0);
+  H.set(1,1,n+3,id[0],0);
+  FOR(i,1,n) {
+    int cid = id[s[i]];
+    f[i] = -1e8;
+    ckmax(f[i], mx[cid]);
+    if (cid > 1) ckmax(f[i], L.get(1,1,n+3,1,cid) + i);
+    ckmax(f[i], H.get(1,1,n+3,cid+1,n+3) - i);
+    ckmax(mx[cid], f[i]);
+    L.set(1,1,n+3,cid,f[i]-i);
+    H.set(1,1,n+3,cid,f[i]+i);
+  }
+  O(f[n]);
 }
 
 int main() {
@@ -52,3 +101,4 @@ int main() {
     sol();
   return 0;
 }
+

@@ -29,10 +29,34 @@ template <typename T> inline void ckmin(T &a, const T &b) { a = min(a, b); }
 template <typename T> inline void ckmax(T &a, const T &b) { a = max(a, b); }
 //#define IOFILE "filename"
 //#define MULTI
-const int N = 0;
+const int N = 5005;
+int a[N];
+i64 b[N];
+i64 work(int n) {
+  if(!n)return 0;
+  i64 ret = 0;
+  FOR(i,1,n) {
+    i64 k = (b[i-1] / b[i]) + 1;
+    b[i] = k * b[i];
+    ret += k;
+  }
+  return ret;
+}
 
 inline void sol() {
-  //
+  i64 ans = 1e18;
+  int n;
+  cin >> n;
+  FOR(i,1,n) cin >> a[i];
+  FOR(i,1,n) {
+    i64 cur = 0;
+    FOR(j,1,i-1) b[i-j] = a[j];
+    cur = work(i-1);
+    FOR(j,i+1,n) b[j-i] = a[j];
+    cur += work(n-i);
+    ckmin(ans, cur);
+  }
+  O(ans);
 }
 
 int main() {
@@ -52,3 +76,4 @@ int main() {
     sol();
   return 0;
 }
+

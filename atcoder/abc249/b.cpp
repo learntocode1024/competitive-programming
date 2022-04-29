@@ -32,7 +32,16 @@ template <typename T> inline void ckmax(T &a, const T &b) { a = max(a, b); }
 const int N = 0;
 
 inline void sol() {
-  //
+  string s;
+  cin >> s;
+  bool up = 0, lo = 0;
+  for (auto c : s) {
+    up |= isupper(c);
+    lo |= islower(c);
+  }
+  sort(begin(s), end(s));
+  if (!up || !lo || unique(begin(s), end(s)) != end(s)) O("No");
+  else O("Yes");
 }
 
 int main() {
@@ -52,3 +61,4 @@ int main() {
     sol();
   return 0;
 }
+

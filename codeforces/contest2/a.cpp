@@ -44,41 +44,47 @@ inline void chkmax(T &a, const T b) {
 }
 
 //#define MULTI
-const int N = 1e6+5;
-char s[N];
-int a[N];
+const int N = 1e5+5, M = 1e6+6;
+int tot;
+pii o[M];
+vector<int> g[N];
 int n;
 
-inline int f(int r) {
-  int ans = 0;
-  for (int i = 0, k = 0; i < n; ++i) {
-    if (s[i] == '1') ++k;
-    else if (s[i] == '0') --k;
-    else {
-      if (k+2+a[i] <= r) ++k;
-      else --k;
+void dfs(int u, int fa, int t) {
+  o[++tot] = {u,t};
+  int lim = g[u].size();
+  chkmax(lim, t);
+  for (auto v : g[u]) if (v != fa) {
+    if (t == lim) {
+      t -= g[u].size();
+      o[++tot] = {u,t};
     }
-    chkmin(ans, k);
+    ++t;
+    dfs(v, u, t);
+    o[++tot] = {u,t};
   }
-  return ans;
+    if (t == lim) {
+      t -= g[u].size();
+      o[++tot] = {u,t};
+    }
 }
 
 inline void solve() {
-  rd(s);
-  n = strlen(s);
-  int lim = 0;
-  for (int i = 0, k = 0; i < n; ++i) {
-    if (s[i] == '1') ++k;
-    else --k;
-    chkmax(lim, k);
+  rd(n);
+  FOR(i,1,n-1) {
+    int u, v;
+    rd(u,v);
+    g[u].pb(v);
+    g[v].pb(u);
   }
-  a[n] = -114514;
-  for (int i = n-1; i >= 0; --i) {
-    if (s[i] == '1') {
-      a[i] = 1+max(a[i+1],0);
-    } else a[i] = -1+max(a[i+1],0);
+  o[++tot] = {1,0};
+  int d = 0;
+  for (auto u : g[1]) {
+    dfs(u, 1, ++d);
+    o[++tot] = {1,d};
   }
-  O(min(lim-f(lim), lim+1-f(lim+1)));
+  O(tot);
+  FOR(i,1,tot) O(o[i].fi, o[i].se);
 }
 
 int main() {

@@ -44,41 +44,46 @@ inline void chkmax(T &a, const T b) {
 }
 
 //#define MULTI
-const int N = 1e6+5;
-char s[N];
-int a[N];
-int n;
+const int N = 2e5+5;
+map<pii, int> id;
+map<pii, pii> vis;
+set<pii> S;
+const int dx[4] = {1,-1,0,0}, dy[4] = {0,0,-1,1};
 
-inline int f(int r) {
-  int ans = 0;
-  for (int i = 0, k = 0; i < n; ++i) {
-    if (s[i] == '1') ++k;
-    else if (s[i] == '0') --k;
-    else {
-      if (k+2+a[i] <= r) ++k;
-      else --k;
-    }
-    chkmin(ans, k);
-  }
-  return ans;
-}
+pii qu[N<<4];
+pii ans[N];
+int hd, tl;
 
 inline void solve() {
-  rd(s);
-  n = strlen(s);
-  int lim = 0;
-  for (int i = 0, k = 0; i < n; ++i) {
-    if (s[i] == '1') ++k;
-    else --k;
-    chkmax(lim, k);
+  int n;
+  rd(n);
+  FOR(i,1,n) {
+    int x, y;
+    rd(x,y);
+    id[{x,y}] = i;
+    FOR(k,0,3) {
+      S.insert(mkp(x+dx[k],y+dy[k]));
+    }
   }
-  a[n] = -114514;
-  for (int i = n-1; i >= 0; --i) {
-    if (s[i] == '1') {
-      a[i] = 1+max(a[i+1],0);
-    } else a[i] = -1+max(a[i+1],0);
+  for (auto v : id) S.erase(v.fi);
+  hd = 1;
+  for (auto v : S) {
+    qu[++tl] = v;
+    vis[v] = v;
   }
-  O(min(lim-f(lim), lim+1-f(lim+1)));
+  while (hd <= tl) {
+    pii u = qu[hd++];
+    FOR(k,0,3) {
+      int x = u.fi+dx[k], y = u.se+dy[k];
+      if (vis.find({x,y})!=vis.end() || id.find({x,y}) == id.end()) continue;
+      vis[{x,y}] = vis[u];
+      qu[++tl] = mkp(x,y);
+    }
+  }
+  for (auto v : id) {
+    ans[v.se] = vis[v.fi];
+  }
+  FOR(i,1,n) O(ans[i].fi, ans[i].se);
 }
 
 int main() {

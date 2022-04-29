@@ -1,9 +1,10 @@
 #include <bits/stdc++.h>
 using namespace std;
-template <typename T> inline void O(const T &x) { cout << x << '\n'; }
-template <typename T, typename... W> inline void O(const T &x, const W &...b) {
+template <typename T> inline void wrtln(const T &x) { cout << x << '\n'; }
+template <typename T, typename... W>
+inline void wrtln(const T &x, const W &...b) {
   cout << x << ' ';
-  O(b...);
+  wrtln(b...);
 }
 #ifndef MISAKA
 #define err(...)
@@ -28,11 +29,27 @@ mt19937_64 rng(chrono::steady_clock::now().time_since_epoch().count());
 template <typename T> inline void ckmin(T &a, const T &b) { a = min(a, b); }
 template <typename T> inline void ckmax(T &a, const T &b) { a = max(a, b); }
 //#define IOFILE "filename"
-//#define MULTI
-const int N = 0;
+#define MULTI
+const int N = 3e5+5;
+int h[N];
 
 inline void sol() {
-  //
+  int n;
+  int mx = 0;
+  cin >> n;
+  FOR(i,1,n) {
+    cin >> h[i];
+    ckmax(mx, h[i]);
+  }
+  i64 x = 0, y = 0;
+  i64 t = INT64_MAX;
+  FOR(i,1,n) h[i] = mx - h[i];
+  FOR(i,1,n) y += h[i], x += h[i] & 1;
+  ckmin(t, max(x*2-1, y/3*2+y%3));
+  y += n;
+  x = n - x;
+  ckmin(t, max(x*2-1, y/3*2+y%3));
+  wrtln(t);
 }
 
 int main() {
@@ -52,3 +69,5 @@ int main() {
     sol();
   return 0;
 }
+
+

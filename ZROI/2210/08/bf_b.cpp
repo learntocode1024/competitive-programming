@@ -44,41 +44,66 @@ inline void chkmax(T &a, const T b) {
 }
 
 //#define MULTI
-const int N = 1e6+5;
-char s[N];
-int a[N];
-int n;
-
-inline int f(int r) {
-  int ans = 0;
-  for (int i = 0, k = 0; i < n; ++i) {
-    if (s[i] == '1') ++k;
-    else if (s[i] == '0') --k;
-    else {
-      if (k+2+a[i] <= r) ++k;
-      else --k;
+const int N = 2e5+5, W = 20;
+int p[N];
+int n, m;
+vector<int> g[N];
+struct O1LCA {
+  int e[W][N<<1];
+  int rk[N<<1], pos[N], d[N], tot;
+  void dfs(int u, int fa) {
+    pos[u] = ++tot;
+    rk[tot] = u;
+    e[0][tot] = tot;
+    for (auto v : g[u]) if (v != fa) {
+      dfs(v, u);
+      e[0][++tot] = pos[u];
     }
-    chkmin(ans, k);
   }
-  return ans;
-}
+  inline void build() {
+    dfs(p[1], 0);
+    FOR(i, 1, W) {
+      FOR(j, 1, tot + 1 - (1<<i)) {
+        e[i][j] = min(e[i-1][j], e[i-1][j+(1<<(i-1))]);
+      }
+    }
+  }
+  inline int lca(int u, int v) {
+    u = pos[u], v = pos[v];
+    if (u > v) swap(u, v);
+    int t = 31 - __builtin_clz(v - u + 1);
+    int x = min(e[t][u], e[t][v-(1<<t)+1]);
+    return rk[x];
+  }
+  inline int operator() (int u, int v) {
+    return lca(u,v);
+  }
+} a;
 
 inline void solve() {
-  rd(s);
-  n = strlen(s);
-  int lim = 0;
-  for (int i = 0, k = 0; i < n; ++i) {
-    if (s[i] == '1') ++k;
-    else --k;
-    chkmax(lim, k);
+  rd(n,m);
+  FOR(i,1,n) rd(p[i]);
+  FOR(i,2,n) {
+    int fa;
+    rd(fa);
+    g[p[fa]].pb(p[i]);
+    g[p[i]].pb(p[fa]);
   }
-  a[n] = -114514;
-  for (int i = n-1; i >= 0; --i) {
-    if (s[i] == '1') {
-      a[i] = 1+max(a[i+1],0);
-    } else a[i] = -1+max(a[i+1],0);
+  a.build();
+  FOR(i,1,m) {
+    int l, r;
+    rd(l,r);
+    int ans = 0;
+    FOR(i,l,r) FOR(j,i,r) {
+      bool ok = 1;
+      FOR(x,i,j)FOR(y,x,j) {
+        int v = a(x,y);
+        if (v < i || v > j) ok = 0;
+      }
+      ans += ok;
+    }
+    O(ans);
   }
-  O(min(lim-f(lim), lim+1-f(lim+1)));
 }
 
 int main() {

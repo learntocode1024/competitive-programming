@@ -32,7 +32,7 @@ template <typename T> inline void ckmax(T &a, const T &b) { a = max(a, b); }
 const int N = 0;
 
 inline void sol() {
-  //
+
 }
 
 int main() {
@@ -52,3 +52,4 @@ int main() {
     sol();
   return 0;
 }
+

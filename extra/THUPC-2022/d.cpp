@@ -44,41 +44,49 @@ inline void chkmax(T &a, const T b) {
 }
 
 //#define MULTI
-const int N = 1e6+5;
-char s[N];
-int a[N];
-int n;
+const int N = 1e5+5;
+int p[N];
+int a[N], m;
+bool vis[N];
+int x, y;
+int o;
+pii b[N<<3];
+bool t = 0;
 
-inline int f(int r) {
-  int ans = 0;
-  for (int i = 0, k = 0; i < n; ++i) {
-    if (s[i] == '1') ++k;
-    else if (s[i] == '0') --k;
-    else {
-      if (k+2+a[i] <= r) ++k;
-      else --k;
-    }
-    chkmin(ans, k);
-  }
-  return ans;
+void cyc() {
+  if (m == 1) return;
+  b[o++] = mkp(a[1], x);
+  b[o++] = mkp(a[2], y);
+  b[o++] = mkp(a[2], x);
+  FOR(i,3,m) b[o++] = mkp(a[i], y);
+  b[o++] = mkp(a[1], y);
+  t ^= 1;
 }
 
 inline void solve() {
-  rd(s);
-  n = strlen(s);
-  int lim = 0;
-  for (int i = 0, k = 0; i < n; ++i) {
-    if (s[i] == '1') ++k;
-    else --k;
-    chkmax(lim, k);
+  int n;
+  rd(n);
+  x = n+1, y = n+2;
+  FOR(i,1,n) rd(p[i]);
+  bool ok = 1;
+  FOR(i,1,n) if (p[i] != i) ok = 0;
+  if (ok) {
+    O(0,0);
+    return;
   }
-  a[n] = -114514;
-  for (int i = n-1; i >= 0; --i) {
-    if (s[i] == '1') {
-      a[i] = 1+max(a[i+1],0);
-    } else a[i] = -1+max(a[i+1],0);
+  FOR(i,1,n) if (!vis[i]) {
+    int j = i;
+    m = 0;
+    while (!vis[j]) {
+      vis[j] = 1;
+      a[++m] = j;
+      j = p[j];
+    }
+    cyc();
   }
-  O(min(lim-f(lim), lim+1-f(lim+1)));
+  if (t) b[o++] = mkp(x,y);
+  O(2,o);
+  FOR(i,0,o-1) O(b[i].fi, b[i].se);
 }
 
 int main() {

@@ -44,41 +44,32 @@ inline void chkmax(T &a, const T b) {
 }
 
 //#define MULTI
-const int N = 1e6+5;
+const int N = 2e5+5;
+int f[N][4];
 char s[N];
-int a[N];
-int n;
-
-inline int f(int r) {
-  int ans = 0;
-  for (int i = 0, k = 0; i < n; ++i) {
-    if (s[i] == '1') ++k;
-    else if (s[i] == '0') --k;
-    else {
-      if (k+2+a[i] <= r) ++k;
-      else --k;
-    }
-    chkmin(ans, k);
-  }
-  return ans;
-}
 
 inline void solve() {
-  rd(s);
-  n = strlen(s);
-  int lim = 0;
-  for (int i = 0, k = 0; i < n; ++i) {
-    if (s[i] == '1') ++k;
-    else --k;
-    chkmax(lim, k);
+  cin >> s + 1;
+  int n = strlen(s+1);
+  FOR(i,1,n) FOR(j,1,3) f[i][j] = -1e7;
+  FOR(i,1,3) f[i][i] = 1;
+  FOR(i,2,n) {
+    FOR(j,1,min(i,3)) {
+      FOR(k,1,3) {
+        if (f[i-j][k] < 0 || i-j < k) continue;
+        bool ok = k != j;
+        if (!ok) {
+          FOR(x, 0, j-1) {
+            if (s[i-x] != s[i-j-x]) ok = 1;
+          }
+        }
+        if (ok) chkmax(f[i][j], f[i-j][k] + 1);
+      }
+    }
   }
-  a[n] = -114514;
-  for (int i = n-1; i >= 0; --i) {
-    if (s[i] == '1') {
-      a[i] = 1+max(a[i+1],0);
-    } else a[i] = -1+max(a[i+1],0);
-  }
-  O(min(lim-f(lim), lim+1-f(lim+1)));
+  int ans = 0;
+  FOR(i,1,3) chkmax(ans, f[n][i]);
+  O(ans);
 }
 
 int main() {

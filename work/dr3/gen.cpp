@@ -1,10 +1,5 @@
 #include <bits/stdc++.h>
 using namespace std;
-#ifndef MISAKA
-#define OO(x)
-#else
-#define OO(x) cout << __PRETTY_FUNCTION__ << ": " << #x << " : " << (x) << '\n';
-#endif
 template<typename T>
 void rd(T &a) {
   cin >> a;
@@ -32,8 +27,8 @@ typedef pair<int, int> pii;
 #define se second
 #define pb push_back
 #define eb emplace_back
-#define FOR(i, j, k) for (int i = (j); i <= (k); ++i)
-#define ROF(i, j, k) for (int i = (k); i >= (j); --i)
+#define FOR(i, j, k) for (int i = (j); i < (k); ++i)
+#define ROF(i, j, k) for (int i = ((k) - 1); i >= j; --i)
 template<typename T>
 inline void chkmin(T &a, const T b) {
   a = min(a, b);
@@ -43,47 +38,26 @@ inline void chkmax(T &a, const T b) {
   a = max(a, b);
 }
 
-//#define MULTI
-const int N = 1<<16;
-int n, k;
-
-inline void solve() {
-  rd(k, n);
-  int u = 0;
-  FOR(i,1,n) {
-    int x;
-    rd(x);
-    u |= 1 << x;
-  }
-  int m = 1 << k;
-  int S = 1 << m;
-  --S;
-  int ans = 0;
-  for (int c = 1; c <= S; ++c) {
-    if ((c&u) != u) continue;
-    bool ok = 1;
-    FOR(k,0,m-1) if ((c>>k)&1) FOR(j,0,m-1) if ((c>>j)&1) {
-      if (~(c>>(k|j))&1) ok  =0;
-      if (~(c>>(k&j))&1) ok  =0;
-    }
-    ans += ok;
-  }
-  O(ans);
+typedef uniform_int_distribution<int> r32;
+typedef uniform_int_distribution<i64> r64;
+mt19937 rng(chrono::steady_clock().now().time_since_epoch().count());
+inline pii rpii(r32 &e) {
+  int a = e(rng), b = e(rng);
+  if (a > b) swap(a, b);
+  return {a, b};
 }
+#define shuf(BEGIN, END) shuffle(BEGIN, END, rng)
+
+const int l = 1000, r = 1000, n = l + r;
+char s[n];
 
 int main() {
-#ifndef MISAKA
-  //freopen(".in", "r", stdin);
-  //freopen(".out", "w", stdout);
-  ios::sync_with_stdio(0);
-  cin.tie(0);
-#endif
-#ifdef MULTI
-  int T;
-  cin >> T;
-  while (T--)
-#endif
-  solve();
+  O(1);
+  O(1,1,3,r32(0,l)(rng),r32(0,r)(rng));
+  FOR(i,0,n) s[i] = 'R';
+  FOR(i,0,l) s[i] = 'L';
+  shuf(s,s+6);
+  O(s);
   return 0;
 }
 /* Checklist:
@@ -96,4 +70,3 @@ int main() {
  * - memory usage
  * - file IO
  */
-

@@ -44,41 +44,45 @@ inline void chkmax(T &a, const T b) {
 }
 
 //#define MULTI
-const int N = 1e6+5;
-char s[N];
-int a[N];
-int n;
+const int N = 5e5+5;
+int L[N];
+int a[N], b[N], s[N], tl;
+vector<pii> q[N];
+int ans[N];
+int c[N];
+void ins(int x, int v) {
+  for (; x < N; x += x & -x) c[x] += v;
+}
 
-inline int f(int r) {
-  int ans = 0;
-  for (int i = 0, k = 0; i < n; ++i) {
-    if (s[i] == '1') ++k;
-    else if (s[i] == '0') --k;
-    else {
-      if (k+2+a[i] <= r) ++k;
-      else --k;
-    }
-    chkmin(ans, k);
-  }
-  return ans;
+int get(int x) {
+  int ret = 0;
+  for (; x; x -= x & -x) ret += c[x];
+  return ret;
 }
 
 inline void solve() {
-  rd(s);
-  n = strlen(s);
-  int lim = 0;
-  for (int i = 0, k = 0; i < n; ++i) {
-    if (s[i] == '1') ++k;
-    else --k;
-    chkmax(lim, k);
+  int n, Q;
+  rd(n, Q);
+  FOR(i,1,n) rd(a[i]);
+  FOR(i,1,n) rd(b[i]);
+  FOR(i,1,n) {
+    while (tl && (a[s[tl]] == a[i] || b[s[tl]] <= b[i])) --tl;
+    L[i] = s[tl] + 1;
+    s[++tl] = i;
   }
-  a[n] = -114514;
-  for (int i = n-1; i >= 0; --i) {
-    if (s[i] == '1') {
-      a[i] = 1+max(a[i+1],0);
-    } else a[i] = -1+max(a[i+1],0);
+  FOR(i,1,Q) {
+    int l, r;
+    rd(l,r);
+    q[r].eb(l, i);
   }
-  O(min(lim-f(lim), lim+1-f(lim+1)));
+  FOR(i,1,n) {
+    ins(L[i], 1);
+    ins(i+1, -1);
+    for (auto l : q[i]) {
+      ans[l.se] = get(l.fi);
+    }
+  }
+  FOR(i,1,Q) O(ans[i]);
 }
 
 int main() {

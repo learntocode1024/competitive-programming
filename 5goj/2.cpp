@@ -44,41 +44,49 @@ inline void chkmax(T &a, const T b) {
 }
 
 //#define MULTI
-const int N = 1e6+5;
-char s[N];
-int a[N];
-int n;
+const int N = 1005;
+bool G[N][N];
+vector<int> g[N];
+int n, m;
+int c0 = 0, c1 = 0;
+bitset<N> s;
+bool vis[N], c[N];
 
-inline int f(int r) {
-  int ans = 0;
-  for (int i = 0, k = 0; i < n; ++i) {
-    if (s[i] == '1') ++k;
-    else if (s[i] == '0') --k;
-    else {
-      if (k+2+a[i] <= r) ++k;
-      else --k;
-    }
-    chkmin(ans, k);
-  }
-  return ans;
+bool dfs(int u, bool col) {
+  vis[u] = 1;
+  if (col) ++c1;
+  else ++c0;
+  c[u] = col;
+  for (auto v : g[u]) if (!vis[v]) {
+    if (!dfs(v, !col)) return false;
+  } else if (c[v] == col) return false;
+  return true;
 }
 
 inline void solve() {
-  rd(s);
-  n = strlen(s);
-  int lim = 0;
-  for (int i = 0, k = 0; i < n; ++i) {
-    if (s[i] == '1') ++k;
-    else --k;
-    chkmax(lim, k);
+  rd(n, m);
+  FOR(i,1,m) {
+    int u, v;
+    rd(u, v);
+    G[u][v] = G[v][u] = 1;
   }
-  a[n] = -114514;
-  for (int i = n-1; i >= 0; --i) {
-    if (s[i] == '1') {
-      a[i] = 1+max(a[i+1],0);
-    } else a[i] = -1+max(a[i+1],0);
+  FOR(i,1,n) FOR(j,1,n) if (i!=j) {
+    if (!G[i][j]) g[i].pb(j); 
   }
-  O(min(lim-f(lim), lim+1-f(lim+1)));
+  s.set(0);
+  FOR(i,1,n) if (!vis[i]) {
+    c0 = c1 = 0;
+    if (!dfs(i, 0)) {
+      O(-1);
+      return;
+    } else {
+      s = (s << c1) | (s << c0);
+    }
+  }
+  ROF(i,1,n/2) if (s[i]) {
+    O(i);
+    return;
+  }
 }
 
 int main() {

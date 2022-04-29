@@ -1,9 +1,10 @@
 #include <bits/stdc++.h>
 using namespace std;
-template <typename T> inline void O(const T &x) { cout << x << '\n'; }
-template <typename T, typename... W> inline void O(const T &x, const W &...b) {
+template <typename T> inline void wrtln(const T &x) { cout << x << '\n'; }
+template <typename T, typename... W>
+inline void wrtln(const T &x, const W &...b) {
   cout << x << ' ';
-  O(b...);
+  wrtln(b...);
 }
 #ifndef MISAKA
 #define err(...)
@@ -29,10 +30,33 @@ template <typename T> inline void ckmin(T &a, const T &b) { a = min(a, b); }
 template <typename T> inline void ckmax(T &a, const T &b) { a = max(a, b); }
 //#define IOFILE "filename"
 //#define MULTI
-const int N = 0;
+const int N = 100;
+int t[N];
+int a[N];
 
 inline void sol() {
-  //
+  int n, k;
+  cin >> n >> k;
+  t[0] = (1 << k) - 1;
+  int m = (1 << n) - 1;
+  FOR(i,1,n-1) {
+    t[i] = (m & (t[i-1]<<1)) | ((t[i-1] >> (n-1)) & 1);
+  }
+  set<int> s;
+  FOR(i,0,n-1) {
+    s.insert(t[i]);
+    assert(k==__builtin_popcount(t[i]));
+  }
+  assert(s.size() == n);
+  FOR(i,0,n-1) a[i] = t[i];
+  if (k%2==0 || (k > 1 && n == k)) {wrtln("No"); return;}
+  wrtln("Yes");
+  FOR(i,0,m) {
+    int u = i ^ (i >> 1);
+    int cur = 0;
+    FOR(k,0,n-1) if ((u>>k)&1) cur ^= t[k];
+    cout << cur << " \n"[i==m];
+  }
 }
 
 int main() {
@@ -52,3 +76,4 @@ int main() {
     sol();
   return 0;
 }
+

@@ -1,9 +1,10 @@
 #include <bits/stdc++.h>
 using namespace std;
-template <typename T> inline void O(const T &x) { cout << x << '\n'; }
-template <typename T, typename... W> inline void O(const T &x, const W &...b) {
+template <typename T> inline void wrtln(const T &x) { cout << x << '\n'; }
+template <typename T, typename... W>
+inline void wrtln(const T &x, const W &...b) {
   cout << x << ' ';
-  O(b...);
+  wrtln(b...);
 }
 #ifndef MISAKA
 #define err(...)
@@ -29,10 +30,26 @@ template <typename T> inline void ckmin(T &a, const T &b) { a = min(a, b); }
 template <typename T> inline void ckmax(T &a, const T &b) { a = max(a, b); }
 //#define IOFILE "filename"
 //#define MULTI
-const int N = 0;
+const int N = 2e5+5;
+int a[N], b[N];
+set<pii> s;
 
 inline void sol() {
-  //
+  int n;
+  cin >> n;
+  FOR(i,1,n) cin >> a[i], s.insert({a[i], i}), b[i] = -1;
+  FOR(_,1,n/2) {
+    b[s.begin()->se] = 1;
+    s.erase(s.begin());
+  }
+  i64 ans = 0;
+  int k = 1;
+  for (auto v : s) ans += v.fi;
+  FOR(i,2,n) {
+    b[i] += b[i-1];
+    if (b[i] < b[k]) k = i;
+  }
+  wrtln(k%n,ans);
 }
 
 int main() {
@@ -52,3 +69,4 @@ int main() {
     sol();
   return 0;
 }
+

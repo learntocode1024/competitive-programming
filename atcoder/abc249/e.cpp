@@ -29,10 +29,44 @@ template <typename T> inline void ckmin(T &a, const T &b) { a = min(a, b); }
 template <typename T> inline void ckmax(T &a, const T &b) { a = max(a, b); }
 //#define IOFILE "filename"
 //#define MULTI
-const int N = 0;
+const int N = 3010;
+int f[N][N];
 
 inline void sol() {
-  //
+  int n, p;
+  cin >> n >> p;
+  f[0][0] = 1;
+  f[0][1] = p - 1;
+  int ans = 0;
+  FOR(i,0,n-1) {
+    FOR(j,1,n) f[i][j] = (f[i][j-1] + f[i][j]) % p;
+    ans = (ans + f[i][n]) % p;
+    FOR(j,0,n) {
+      int cur = 25ll * f[i][j] % p;
+      if (i == 0) cur = (cur + f[i][j]) % p;
+      if (j + 1 <= n) {
+        f[i+2][j+1] = (f[i+2][j+1] + cur) % p;
+        int r = min(j+10, n+1);
+        f[i+2][r] = (f[i+2][r] + p - cur) % p;
+      }
+      if (j + 10 <= n) {
+        f[i+3][j+10] = (f[i+3][j+10] + cur) % p;
+        int r = min(j+100, n+1);
+        f[i+3][r] = (f[i+3][r] + p - cur) % p;
+      }
+      if (j + 100 <= n) {
+        f[i+4][j+100] = (f[i+4][j+100] + cur) % p;
+        int r = min(j+1000, n+1);
+        f[i+4][r] = (f[i+4][r] + p - cur) % p;
+      }
+      if (j + 1000 <= n) {
+        f[i+5][j+1000] = (f[i+5][j+1000] + cur) % p;
+        int r = min(j+10000, n+1);
+        f[i+5][r] = (f[i+5][r] + p - cur) % p;
+      }
+    }
+  }
+  O(ans);
 }
 
 int main() {
@@ -52,3 +86,4 @@ int main() {
     sol();
   return 0;
 }
+

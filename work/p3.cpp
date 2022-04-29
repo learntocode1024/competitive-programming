@@ -44,41 +44,70 @@ inline void chkmax(T &a, const T b) {
 }
 
 //#define MULTI
-const int N = 1e6+5;
-char s[N];
-int a[N];
-int n;
+const int N = 1e5+5, W = 29;
+const int p = 998244353;
+int n, m;
 
-inline int f(int r) {
-  int ans = 0;
-  for (int i = 0, k = 0; i < n; ++i) {
-    if (s[i] == '1') ++k;
-    else if (s[i] == '0') --k;
-    else {
-      if (k+2+a[i] <= r) ++k;
-      else --k;
-    }
-    chkmin(ans, k);
+struct mat {
+  int a[N];
+  int &operator() (int x, int y) {
+    return a[m*(x-1)+y-1];
   }
+} a;
+
+int a1,a2,a3,a4;
+bool b[N];
+
+inline i64 calc(bool mod = 0) {
+  int j = 0;
+  i64 ans = 0;
+  FOR(i,1,m) {
+    if (b[i]) {
+      ans += i - j;
+    } else j = i;
+  }
+  if (mod) return 1ll * m * (m + 1) / 2 - ans;
   return ans;
 }
 
 inline void solve() {
-  rd(s);
-  n = strlen(s);
-  int lim = 0;
-  for (int i = 0, k = 0; i < n; ++i) {
-    if (s[i] == '1') ++k;
-    else --k;
-    chkmax(lim, k);
+  rd(n,m);
+  if (n <= m) FOR(i,1,n) FOR(j,1,m) rd(a(i,j));
+  else {
+    swap(n, m);
+    FOR(i,1,m) FOR(j,1,n) rd(a(j, i));
   }
-  a[n] = -114514;
-  for (int i = n-1; i >= 0; --i) {
-    if (s[i] == '1') {
-      a[i] = 1+max(a[i+1],0);
-    } else a[i] = -1+max(a[i+1],0);
+  FOR(i,1,n) FOR(j,1,m) {
+    a1 = (a1 + 1ll * i * j * (n - i + 1) % p * (m - j + 1) % p * a(i,j)) % p;
   }
-  O(min(lim-f(lim), lim+1-f(lim+1)));
+  FOR(k,0,W) FOR(i,1,n) {
+    FOR(j,1,m) b[j] = (a(i,j)>>k)&1;
+    a2 = (a2 + (calc() << k)) % p;
+    FOR(j,i+1,n) {
+      FOR(s,1,m) b[s] &= (a(j,s)>>k)&1;
+      a2 = (a2 + (calc() << k)) % p;
+    }
+  }
+  FOR(k,0,W) FOR(i,1,n) {
+    FOR(j,1,m) b[j] = ~(a(i,j)>>k)&1;
+    a3 = (a3 + (calc(1) << k)) % p;
+    FOR(j,i+1,n) {
+      FOR(s,1,m) b[s] &= ~(a(j,s)>>k)&1;
+      a3 = (a3 + ((calc(1) << k))) % p;
+    }
+  }
+  FOR(k,0,W) FOR(i,1,n) {
+    bitset<N> b;
+    bool c = 0;
+    FOR(j,1,m) c ^= (a(i,j)>>k)&1, b[j] = c;
+    a4 = (a4 + 1ll * b.count() * (m + 1 - b.count()) * (1ll << k)) % p;
+    FOR(j,i+1,n) {
+      c = 0;
+      FOR(s,1,m) c ^= ((a(j,s)>>k)&1), b[s] = b[s] ^ c;
+      a4 = (a4 + 1ll * b.count() * (m + 1 - b.count()) * (1ll << k)) % p;
+    }
+  }
+  O(a1,a2,a3,a4);
 }
 
 int main() {

@@ -44,47 +44,53 @@ inline void chkmax(T &a, const T b) {
 }
 
 //#define MULTI
-const int N = 1e6+5;
-char s[N];
-int a[N];
-int n;
+const int N = 2e5+5;
+i64 ans;
+int f[N];
+bool typ[N];
 
-inline int f(int r) {
-  int ans = 0;
-  for (int i = 0, k = 0; i < n; ++i) {
-    if (s[i] == '1') ++k;
-    else if (s[i] == '0') --k;
-    else {
-      if (k+2+a[i] <= r) ++k;
-      else --k;
-    }
-    chkmin(ans, k);
+struct E {
+  int u, v, w;
+  bool operator< (const E& r) const {
+    return w < r.w;
   }
-  return ans;
+} e[N];
+
+int get(int x) {
+  return x == f[x] ? x : f[x] = get(f[x]);
 }
 
 inline void solve() {
-  rd(s);
-  n = strlen(s);
-  int lim = 0;
-  for (int i = 0, k = 0; i < n; ++i) {
-    if (s[i] == '1') ++k;
-    else --k;
-    chkmax(lim, k);
+  int n, m;
+  rd(n,m);
+  int tot = 0;
+  iota(f,f+n+m+1,0);
+  FOR(i,1,n) FOR(j,1,m) {
+    int a;
+    rd(a);
+    e[tot++] = {i,j+n,a};
   }
-  a[n] = -114514;
-  for (int i = n-1; i >= 0; --i) {
-    if (s[i] == '1') {
-      a[i] = 1+max(a[i+1],0);
-    } else a[i] = -1+max(a[i+1],0);
+  sort(e, e + tot);
+  int cnt = n;
+  FOR(i,0,tot-1) {
+    int u = get(e[i].u), v = get(e[i].v);
+    if (u == v) {
+      if (!typ[u]) ans += e[i].w, typ[u] = 1;
+      --cnt;
+    } else {
+      if (typ[u] && typ[v]) continue;
+      f[v] = u;
+      typ[u] |= typ[v];
+      ans += e[i].w;
+    }
   }
-  O(min(lim-f(lim), lim+1-f(lim+1)));
+  O(ans);
 }
 
 int main() {
 #ifndef MISAKA
-  //freopen(".in", "r", stdin);
-  //freopen(".out", "w", stdout);
+  freopen("junior.in", "r", stdin);
+  freopen("junior.out", "w", stdout);
   ios::sync_with_stdio(0);
   cin.tie(0);
 #endif

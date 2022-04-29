@@ -44,41 +44,59 @@ inline void chkmax(T &a, const T b) {
 }
 
 //#define MULTI
-const int N = 1e6+5;
-char s[N];
-int a[N];
+const int N = 5e5+5, W = 30;
+const i64 q = 41213, p = 1597079459;
+char k[int(19198.10)];
 int n;
+int d[N], H[W][N], pw[W];
+int to[N], nxt[W][N];
+int tot;
+int a[N];
+int id[N], l[N];
+bool cyc[N], vis[N], ins[N];
 
-inline int f(int r) {
-  int ans = 0;
-  for (int i = 0, k = 0; i < n; ++i) {
-    if (s[i] == '1') ++k;
-    else if (s[i] == '0') --k;
-    else {
-      if (k+2+a[i] <= r) ++k;
-      else --k;
+int dfs(int u) {
+  ins[u] = 1;
+  vis[u] = 1;
+  int ret = 0;
+  if (ins[to[u]]) {
+    ret = to[u];
+    a[tot++] = u;
+    cyc[u] = 1;
+  } else if (!vis[to[u]]) {
+    int r = dfs(to[u]);
+    if (r) {
+      cyc[u] = 1;
+      a[tot++] = u;
     }
-    chkmin(ans, k);
+    ret = r == u ? r : 0;
   }
-  return ans;
+  if (!cyc[u]) {
+    d[u] = d[to[u]] + 1;
+  }
+  ins[u] = 0;
+  return ret;
 }
 
 inline void solve() {
-  rd(s);
-  n = strlen(s);
-  int lim = 0;
-  for (int i = 0, k = 0; i < n; ++i) {
-    if (s[i] == '1') ++k;
-    else --k;
-    chkmax(lim, k);
+  rd(n);
+  FOR(i,1,n) rd(to[i]), nxt[0][i] = to[i];
+  FOR(i,1,n) rd(H[0][i]);
+  FOR(i,1,n) if (!vis[i]) {
+    dfs(u);
+    if (tot) {
+      reverse(a,a+tot);
+      FOR(i,1,W-1) {
+        FOR(j,0,tot-1) {
+          H[i][j] = (H[i-1][j] + 1ll * H[i-1][(j+(1ull<<(i-1)))%tot] * pw[i-1]) % p;
+        }
+      }
+      tot = 0;
+    }
   }
-  a[n] = -114514;
-  for (int i = n-1; i >= 0; --i) {
-    if (s[i] == '1') {
-      a[i] = 1+max(a[i+1],0);
-    } else a[i] = -1+max(a[i+1],0);
+  FOR(i,1,W-1) FOR(j,1,n) if (!cyc[j] && d[j] <= (1ull << i)) {
+    nxt[i][j] = nxt[i-1][nxt[i-1][]];
   }
-  O(min(lim-f(lim), lim+1-f(lim+1)));
 }
 
 int main() {

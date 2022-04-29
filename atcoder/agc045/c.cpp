@@ -44,41 +44,30 @@ inline void chkmax(T &a, const T b) {
 }
 
 //#define MULTI
-const int N = 1e6+5;
-char s[N];
-int a[N];
-int n;
-
-inline int f(int r) {
-  int ans = 0;
-  for (int i = 0, k = 0; i < n; ++i) {
-    if (s[i] == '1') ++k;
-    else if (s[i] == '0') --k;
-    else {
-      if (k+2+a[i] <= r) ++k;
-      else --k;
-    }
-    chkmin(ans, k);
-  }
-  return ans;
-}
+const int N = 5005;
+const int p = 1e9+7;
+int f[N][2], g[N];
 
 inline void solve() {
-  rd(s);
-  n = strlen(s);
-  int lim = 0;
-  for (int i = 0, k = 0; i < n; ++i) {
-    if (s[i] == '1') ++k;
-    else --k;
-    chkmax(lim, k);
+  int n, a, b;
+  rd(n,a,b);
+  if (a > b) swap(a,b);
+  FOR(i,0,b) {
+    g[i] = 1;
+    FOR(j,a+2,i) g[i] = (g[i] + 1ll * g[i-j+1] * (j-a-1))  % p;
   }
-  a[n] = -114514;
-  for (int i = n-1; i >= 0; --i) {
-    if (s[i] == '1') {
-      a[i] = 1+max(a[i+1],0);
-    } else a[i] = -1+max(a[i+1],0);
+  f[0][0] = f[0][1] = 1;
+  int ans = 1;
+  FOR(i,1,n) ans = (ans<<1)%p;
+  FOR(i,1,n-1) {
+    if (i < a) f[i][0] = 1;
+    if (i < b) f[i][1] = g[i+1];
+    FOR(j,1,min(i,a)-1) f[i][0] = (f[i][0] + f[i-j][1]) % p;
+    FOR(j,1,min(i,b)-1) f[i][1] = (f[i][1] + 1ll * g[j] * f[i-j][0]) % p;
+    if (n-i<a) ans = (ans + p - f[i][1]) % p;
+    if (n-i<b) ans = (ans + p - 1ll * f[i][0] *g[n-i+1]%p)%p;
   }
-  O(min(lim-f(lim), lim+1-f(lim+1)));
+  O(ans);
 }
 
 int main() {

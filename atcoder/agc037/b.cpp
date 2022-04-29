@@ -44,41 +44,54 @@ inline void chkmax(T &a, const T b) {
 }
 
 //#define MULTI
-const int N = 1e6+5;
+const int N = 3e5+5;
+const int p = 998244353;
 char s[N];
-int a[N];
-int n;
-
-inline int f(int r) {
-  int ans = 0;
-  for (int i = 0, k = 0; i < n; ++i) {
-    if (s[i] == '1') ++k;
-    else if (s[i] == '0') --k;
-    else {
-      if (k+2+a[i] <= r) ++k;
-      else --k;
-    }
-    chkmin(ans, k);
-  }
-  return ans;
-}
+int typ[N];
+int c[4];
+map<char,int> mp = {{'R',0},{'G',1},{'B',2}};
 
 inline void solve() {
-  rd(s);
-  n = strlen(s);
-  int lim = 0;
-  for (int i = 0, k = 0; i < n; ++i) {
-    if (s[i] == '1') ++k;
-    else --k;
-    chkmax(lim, k);
+  int n;
+  rd(n);
+  cin >> s + 1;
+  FOR(i,1,n*3) typ[i] = 2;
+  FOR(i,1,n*3) {
+    ++c[mp[s[i]]];
+    int cnt = 0;
+    FOR(i,0,2) cnt += c[i] != 0;
+    if (cnt == 3) {
+      FOR(i,0,2) c[i]--;
+      typ[i] = 3;
+    }
   }
-  a[n] = -114514;
-  for (int i = n-1; i >= 0; --i) {
-    if (s[i] == '1') {
-      a[i] = 1+max(a[i+1],0);
-    } else a[i] = -1+max(a[i+1],0);
+  FOR(i,0,3) c[i] = 0;
+  ROF(i,1,n*3) {
+    ++c[mp[s[i]]];
+    int cnt = 0;
+    FOR(i,0,2) cnt += c[i] != 0;
+    if (cnt == 3) {
+      FOR(i,0,2) c[i]--;
+      typ[i] = 1;
+    }
   }
-  O(min(lim-f(lim), lim+1-f(lim+1)));
+  FOR(i,0,3) c[i] = 0;
+  int ans = 1;
+  FOR(i,2,n) ans = 1ll * ans * i % p;
+  FOR(i,1,n*3) {
+    if (typ[i] == 1)++c[typ[i]];
+    if (typ[i] == 2) {
+      ans = 1ll * ans * (c[1]--) % p;
+    }
+  }
+  FOR(i,0,3) c[i] = 0;
+  ROF(i,1,n*3) {
+    ++c[typ[i]];
+    if (typ[i] == 2) {
+      ans = 1ll * ans * (c[3]--) % p;
+    }
+  }
+  O(ans);
 }
 
 int main() {

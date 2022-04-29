@@ -43,42 +43,34 @@ inline void chkmax(T &a, const T b) {
   a = max(a, b);
 }
 
-//#define MULTI
-const int N = 1e6+5;
-char s[N];
+#define MULTI
+const int N = 2e5+5;
 int a[N];
 int n;
+vector<int> g[N];
+int d[N];
 
-inline int f(int r) {
-  int ans = 0;
-  for (int i = 0, k = 0; i < n; ++i) {
-    if (s[i] == '1') ++k;
-    else if (s[i] == '0') --k;
-    else {
-      if (k+2+a[i] <= r) ++k;
-      else --k;
-    }
-    chkmin(ans, k);
+void dfs(int u, int fa, bool col) {
+  d[u] = g[u].size();
+  if (col) d[u] = -d[u];
+  for (auto v : g[u]) if (v != fa) {
+    dfs(v,u,col^1);
   }
-  return ans;
 }
 
 inline void solve() {
-  rd(s);
-  n = strlen(s);
-  int lim = 0;
-  for (int i = 0, k = 0; i < n; ++i) {
-    if (s[i] == '1') ++k;
-    else --k;
-    chkmax(lim, k);
+  rd(n);
+  FOR(i,1,n-1) {
+    int u, v;
+    rd(u, v);
+    g[u].pb(v);
+    g[v].pb(u);
   }
-  a[n] = -114514;
-  for (int i = n-1; i >= 0; --i) {
-    if (s[i] == '1') {
-      a[i] = 1+max(a[i+1],0);
-    } else a[i] = -1+max(a[i+1],0);
+  FOR(i,1,n) if (g[i].size() == 1) {
+    dfs(i, 0, 0);
+    break;
   }
-  O(min(lim-f(lim), lim+1-f(lim+1)));
+  FOR(i,1,n) O(d[i]);
 }
 
 int main() {

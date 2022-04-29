@@ -1,9 +1,10 @@
 #include <bits/stdc++.h>
 using namespace std;
-template <typename T> inline void O(const T &x) { cout << x << '\n'; }
-template <typename T, typename... W> inline void O(const T &x, const W &...b) {
+template <typename T> inline void wrtln(const T &x) { cout << x << '\n'; }
+template <typename T, typename... W>
+inline void wrtln(const T &x, const W &...b) {
   cout << x << ' ';
-  O(b...);
+  wrtln(b...);
 }
 #ifndef MISAKA
 #define err(...)
@@ -29,10 +30,40 @@ template <typename T> inline void ckmin(T &a, const T &b) { a = min(a, b); }
 template <typename T> inline void ckmax(T &a, const T &b) { a = max(a, b); }
 //#define IOFILE "filename"
 //#define MULTI
-const int N = 0;
+
+const int N = 32768;
+int d[N];
+int qu[N*2], hd, tl;
 
 inline void sol() {
-  //
+  FOR(i,0,N-1) d[i] = N*10;
+  d[0] = 0;
+  hd = tl = 1;
+  while (hd <= tl) {
+    int u = qu[hd++];
+    int v = (u + N - 1) % N;
+    if (d[v] > d[u] + 1) {
+      d[v] = d[u] + 1;
+      qu[++tl] = v;
+    }
+    v = u / 2;
+    if (d[v] > d[u] + 1) {
+      d[v] = d[u] + 1;
+      qu[++tl] = v;
+    }
+    v += N / 2;
+    if (d[v] > d[u] + 1) {
+      d[v] = d[u] + 1;
+      qu[++tl] = v;
+    }
+  }
+  int n;
+  cin >> n;
+  FOR(i,1,n) {
+    int x;
+    cin >> x;
+    cout << d[x] << " \n"[i==n];
+  }
 }
 
 int main() {
@@ -52,3 +83,4 @@ int main() {
     sol();
   return 0;
 }
+

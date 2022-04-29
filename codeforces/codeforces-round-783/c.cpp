@@ -31,8 +31,25 @@ template <typename T> inline void ckmax(T &a, const T &b) { a = max(a, b); }
 //#define MULTI
 const int N = 0;
 
+inline void gen(int n) {
+  O(n);
+  if (~n&1) {
+    O(n,n);
+    --n;
+  }
+  int m = n / 2;
+  FOR(i,1,m) O(i,m+1-i);
+  FOR(i,1,m+1) O(i+m,n-i+1);
+}
+
 inline void sol() {
-  //
+  int n, m;
+  cin >> n;
+  int r = n % 3;
+  if (r) n += 3 - r;
+  m = n / 3 * 2;
+  if (r) --m;
+  gen(m);
 }
 
 int main() {
@@ -52,3 +69,4 @@ int main() {
     sol();
   return 0;
 }
+

@@ -44,47 +44,72 @@ inline void chkmax(T &a, const T b) {
 }
 
 //#define MULTI
-const int N = 1e6+5;
-char s[N];
-int a[N];
+const int N = 5e5+5, W = 40;
+const i64 q = 41213, p = 1597079459;
+char k[int(19198.10)];
 int n;
+int H[W][N], pw[W];
+int nxt[W][N];
+i64 len = 1e10;
 
-inline int f(int r) {
+int to(int u, i64 w) {
+  FOR(i,0,W-1) if ((w>>i)&1) u = nxt[i][u];
+  return H[0][u];
+}
+
+int h(int u, i64 w) {
   int ans = 0;
-  for (int i = 0, k = 0; i < n; ++i) {
-    if (s[i] == '1') ++k;
-    else if (s[i] == '0') --k;
-    else {
-      if (k+2+a[i] <= r) ++k;
-      else --k;
-    }
-    chkmin(ans, k);
+  FOR(i,0,W-1) if ((w>>i)&1) {
+    ans = (H[i][u] + 1ll * pw[i] * ans) % p;
+    u = nxt[i][u];
   }
   return ans;
 }
 
+bool cmp (int x, int y) {
+  i64 l = 0;
+  O(H[0][x], H[0][y]);
+  ROF(i,0,W-1) {
+    if (H[i][x] == H[i][y]) {
+      O(i);
+      l += 1ull << i;
+      x = nxt[i][x], y = nxt[i][y];
+    }
+  }
+  O(l, l >= len);
+  return (l >= len) ? x < y : H[0][x] < H[0][y];
+}
+
+int a[N];
+
 inline void solve() {
-  rd(s);
-  n = strlen(s);
-  int lim = 0;
-  for (int i = 0, k = 0; i < n; ++i) {
-    if (s[i] == '1') ++k;
-    else --k;
-    chkmax(lim, k);
+  rd(n, k);
+  int dd = strlen(k);
+  if (dd < 10) {
+    len = atoi(k);
   }
-  a[n] = -114514;
-  for (int i = n-1; i >= 0; --i) {
-    if (s[i] == '1') {
-      a[i] = 1+max(a[i+1],0);
-    } else a[i] = -1+max(a[i+1],0);
+  len = n;
+  FOR(i,1,n) rd(nxt[0][i]);
+  FOR(i,1,n) rd(H[0][i]);
+  pw[0] = q;
+  FOR(i,1,W-1) pw[i] = 1ll * pw[i-1] * pw[i-1] % p;
+  FOR(i,1,W-1) FOR(j,1,n) {
+    nxt[i][j] = nxt[i-1][nxt[i-1][j]];
+    H[i][j] = (1ll * pw[i-1] * H[i-1][j] + H[i-1][nxt[i-1][j]]) % p;
   }
-  O(min(lim-f(lim), lim+1-f(lim+1)));
+  int u = 110925;
+  FOR(i,1,n) {
+    if (!len) return;
+    cout << H[0][u] << '\n';
+    u = nxt[0][u];
+    --len;
+  }
 }
 
 int main() {
 #ifndef MISAKA
-  //freopen(".in", "r", stdin);
-  //freopen(".out", "w", stdout);
+  freopen("highspec.in", "r", stdin);
+  freopen("highspec.out", "w", stdout);
   ios::sync_with_stdio(0);
   cin.tie(0);
 #endif

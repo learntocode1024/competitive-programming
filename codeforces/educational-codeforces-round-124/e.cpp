@@ -44,41 +44,64 @@ inline void chkmax(T &a, const T b) {
 }
 
 //#define MULTI
-const int N = 1e6+5;
-char s[N];
-int a[N];
-int n;
+const int N = 3005;
+vector<int> g[N];
+int a[N<<1];
+bool vis[N];
+int n, m;
+i64 ans = 0;
 
-inline int f(int r) {
-  int ans = 0;
-  for (int i = 0, k = 0; i < n; ++i) {
-    if (s[i] == '1') ++k;
-    else if (s[i] == '0') --k;
-    else {
-      if (k+2+a[i] <= r) ++k;
-      else --k;
+void dfs(int u) {
+  vis[u] = 1;
+  a[m++] = u;
+  for (auto v : g[u]) if (!vis[v]) dfs(v);
+}
+
+int x[4], y[4];
+
+i64 range(int l, int r, int s, int t) {
+  if (l < s || r < l || t < r) return 0;
+  return 1ll * (l-s+1) * (t-r+1);
+}
+
+inline void ring() {
+  int l1 = n, r1 = 1, l2 = 2*n, r2 = 1;
+  FOR(i,0,m-1) if (a[i]<=n) chkmin(l1,a[i]), chkmax(r1, a[i]); else chkmax(r2,a[i]),chkmin(l2,a[i]);
+  ans += 1ll * (m/2) * l1 * (n-r1+1) * (l2-n) * (2*n-r2+1);
+  FOR(i,m,m*2-1) a[i] = a[i-m];
+  FOR(i,1,m) {
+    l1 = n, r1 = 1, l2 = 2*n, r2 = 1;
+    FOR(j, 1, m-1) {
+      if (a[i+j-1]<=n) chkmin(l1,a[i+j-1]), chkmax(r1, a[i+j-1]);
+      else chkmax(r2,a[i+j-1]-n),chkmin(l2,a[i+j-1]-n);
+      x[0] = 0, x[3] = n+1;
+      y[0] = 0, y[3] = n+1;
+      x[1] = x[2] = y[1] = y[2] = 0;
+      if (a[i-1] <= n) x[1] = a[i-1];
+      else y[1] = a[i-1]-n;
+      if (a[i+j]<= n) x[2] = a[i+j];
+      else y[2] = a[i+j]-n;
+      sort(x,x+4);
+      sort(y,y+4);
+      FOR(p,0,2) FOR(q,0,2)ans += 1ll * (j/2) * range(l1,r1,x[p]+1,x[p+1]-1) * range(l2,r2,y[q]+1,y[q+1]-1);
     }
-    chkmin(ans, k);
   }
-  return ans;
 }
 
 inline void solve() {
-  rd(s);
-  n = strlen(s);
-  int lim = 0;
-  for (int i = 0, k = 0; i < n; ++i) {
-    if (s[i] == '1') ++k;
-    else --k;
-    chkmax(lim, k);
+  rd(n);
+  FOR(i,1,n*2) {
+    int u, v;
+    rd(u,v);
+    g[u].pb(v);
+    g[v].pb(u);
   }
-  a[n] = -114514;
-  for (int i = n-1; i >= 0; --i) {
-    if (s[i] == '1') {
-      a[i] = 1+max(a[i+1],0);
-    } else a[i] = -1+max(a[i+1],0);
+  FOR(i,1,n) if (!vis[i]) {
+    m = 0;
+    dfs(i);
+    ring();
   }
-  O(min(lim-f(lim), lim+1-f(lim+1)));
+  O(ans);
 }
 
 int main() {

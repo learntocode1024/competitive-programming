@@ -43,42 +43,42 @@ inline void chkmax(T &a, const T b) {
   a = max(a, b);
 }
 
-//#define MULTI
-const int N = 1e6+5;
-char s[N];
-int a[N];
-int n;
-
-inline int f(int r) {
-  int ans = 0;
-  for (int i = 0, k = 0; i < n; ++i) {
-    if (s[i] == '1') ++k;
-    else if (s[i] == '0') --k;
-    else {
-      if (k+2+a[i] <= r) ++k;
-      else --k;
-    }
-    chkmin(ans, k);
-  }
-  return ans;
-}
+#define MULTI
+const int N = 5e5+5;
+int c[N];
+map<int,int> s;
+priority_queue<int> pq;
 
 inline void solve() {
-  rd(s);
-  n = strlen(s);
-  int lim = 0;
-  for (int i = 0, k = 0; i < n; ++i) {
-    if (s[i] == '1') ++k;
-    else --k;
-    chkmax(lim, k);
+  int n;
+  rd(n);
+  s.clear();
+  while (pq.size())pq.pop();
+  s[0] = 1;
+  FOR(i,2,n) {
+    int u;
+    rd(u);
+    s[u]++;
   }
-  a[n] = -114514;
-  for (int i = n-1; i >= 0; --i) {
-    if (s[i] == '1') {
-      a[i] = 1+max(a[i+1],0);
-    } else a[i] = -1+max(a[i+1],0);
+  int m = 0;
+  for (auto i : s) {
+    c[++m] = i.se;
   }
-  O(min(lim-f(lim), lim+1-f(lim+1)));
+  int ans = 0;
+  sort(c+1,c+m+1);
+  FOR(i,1,m) {
+    pq.push(c[i] - i);
+  }
+  ans = s.size();
+  int d = 0;
+  while (pq.top() > d) {
+    ++d;
+    ++ans;
+    int u = pq.top();
+    pq.pop();
+    pq.push(u-1);
+  }
+  O(ans);
 }
 
 int main() {

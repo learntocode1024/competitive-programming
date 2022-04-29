@@ -44,41 +44,36 @@ inline void chkmax(T &a, const T b) {
 }
 
 //#define MULTI
-const int N = 1e6+5;
-char s[N];
-int a[N];
-int n;
+const int N = 5e6;
+const int p = 998244353;
+int fac[N], ifac[N], inv[N];
 
-inline int f(int r) {
-  int ans = 0;
-  for (int i = 0, k = 0; i < n; ++i) {
-    if (s[i] == '1') ++k;
-    else if (s[i] == '0') --k;
-    else {
-      if (k+2+a[i] <= r) ++k;
-      else --k;
-    }
-    chkmin(ans, k);
-  }
-  return ans;
+int C(int n, int k) {
+  if (n < 0 || k < 0 || k > n) return 0;
+  return 1ll * fac[n]*ifac[k]%p*ifac[n-k]%p;
+}
+
+int f(int n, int m) {
+  return C(n+m-1,m);
 }
 
 inline void solve() {
-  rd(s);
-  n = strlen(s);
-  int lim = 0;
-  for (int i = 0, k = 0; i < n; ++i) {
-    if (s[i] == '1') ++k;
-    else --k;
-    chkmax(lim, k);
+  int n, m;
+  rd(n,m);
+  fac[0] = fac[1] = ifac[0] = ifac[1] = inv[1] = 1;
+  FOR(i,2,N-1) {
+    inv[i] = 1ll * inv[p%i]*(p-p/i)%p;
+    fac[i] = 1ll * i * fac[i-1]%p;
+    ifac[i] = 1ll * ifac[i-1] * inv[i] % p;
   }
-  a[n] = -114514;
-  for (int i = n-1; i >= 0; --i) {
-    if (s[i] == '1') {
-      a[i] = 1+max(a[i+1],0);
-    } else a[i] = -1+max(a[i+1],0);
+  int ans = f(n,3*m);
+  FOR(i,2*m+1,3*m) {
+    ans = (ans + 1ll * (p-n) * f(n-1,3*m-i)) % p;
   }
-  O(min(lim-f(lim), lim+1-f(lim+1)));
+  for (int i = m + 2; i <= n; i += 2) {
+    ans = (ans + 1ll * (p-1) * C(n,i) % p * f(n,(3*m-i)/2)) % p;
+  }
+  O(ans);
 }
 
 int main() {

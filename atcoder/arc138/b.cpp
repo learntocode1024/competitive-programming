@@ -1,9 +1,10 @@
 #include <bits/stdc++.h>
 using namespace std;
-template <typename T> inline void O(const T &x) { cout << x << '\n'; }
-template <typename T, typename... W> inline void O(const T &x, const W &...b) {
+template <typename T> inline void wrtln(const T &x) { cout << x << '\n'; }
+template <typename T, typename... W>
+inline void wrtln(const T &x, const W &...b) {
   cout << x << ' ';
-  O(b...);
+  wrtln(b...);
 }
 #ifndef MISAKA
 #define err(...)
@@ -29,10 +30,31 @@ template <typename T> inline void ckmin(T &a, const T &b) { a = min(a, b); }
 template <typename T> inline void ckmax(T &a, const T &b) { a = max(a, b); }
 //#define IOFILE "filename"
 //#define MULTI
-const int N = 0;
+deque<bool> q;
 
 inline void sol() {
-  //
+  int n;
+  cin >> n;
+  FOR(i,1,n) {
+    int x;
+    cin >> x;
+    q.push_back(x);
+  }
+  bool z = 0;
+  int cyc = 0;
+  while (q.size()) {
+    if (cyc > n) {
+      wrtln("No");
+      return;
+    }
+    ++cyc;
+    while (q.size() && q.back() == z) q.pop_back();
+    while (q.size() && q.front() == z) {
+      q.pop_front(), z ^= 1;
+      while (q.size() && q.back() == z) q.pop_back();
+    }
+  }
+  wrtln("Yes");
 }
 
 int main() {
@@ -52,3 +74,4 @@ int main() {
     sol();
   return 0;
 }
+

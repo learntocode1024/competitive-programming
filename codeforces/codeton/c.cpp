@@ -43,42 +43,24 @@ inline void chkmax(T &a, const T b) {
   a = max(a, b);
 }
 
-//#define MULTI
-const int N = 1e6+5;
-char s[N];
-int a[N];
-int n;
-
-inline int f(int r) {
-  int ans = 0;
-  for (int i = 0, k = 0; i < n; ++i) {
-    if (s[i] == '1') ++k;
-    else if (s[i] == '0') --k;
-    else {
-      if (k+2+a[i] <= r) ++k;
-      else --k;
-    }
-    chkmin(ans, k);
-  }
-  return ans;
-}
+#define MULTI
+const int N = 0;
+set<int> S;
 
 inline void solve() {
-  rd(s);
-  n = strlen(s);
-  int lim = 0;
-  for (int i = 0, k = 0; i < n; ++i) {
-    if (s[i] == '1') ++k;
-    else --k;
-    chkmax(lim, k);
+  int n;
+  S.clear();
+  rd(n);
+  FOR(i,1,n) {
+    int x;
+    rd(x);
+    S.insert(x);
   }
-  a[n] = -114514;
-  for (int i = n-1; i >= 0; --i) {
-    if (s[i] == '1') {
-      a[i] = 1+max(a[i+1],0);
-    } else a[i] = -1+max(a[i+1],0);
+  bool ok = 1;
+  if (S.find(1) != S.end())for (auto u : S) {
+    if (S.find(u-1)!=S.end()) ok = 0;
   }
-  O(min(lim-f(lim), lim+1-f(lim+1)));
+  O(ok?"YES":"NO");
 }
 
 int main() {

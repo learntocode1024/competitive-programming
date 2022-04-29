@@ -44,41 +44,39 @@ inline void chkmax(T &a, const T b) {
 }
 
 //#define MULTI
-const int N = 1e6+5;
-char s[N];
-int a[N];
-int n;
-
-inline int f(int r) {
-  int ans = 0;
-  for (int i = 0, k = 0; i < n; ++i) {
-    if (s[i] == '1') ++k;
-    else if (s[i] == '0') --k;
-    else {
-      if (k+2+a[i] <= r) ++k;
-      else --k;
-    }
-    chkmin(ans, k);
-  }
-  return ans;
-}
+const int N = 2e5+5;
+int hd[N], lst[N], nxt[N], r[N];
+int a[N], p[N];
 
 inline void solve() {
-  rd(s);
-  n = strlen(s);
-  int lim = 0;
-  for (int i = 0, k = 0; i < n; ++i) {
-    if (s[i] == '1') ++k;
-    else --k;
-    chkmax(lim, k);
+  int n;
+  i64 k;
+  rd(n, k);
+  FOR(i,1,n) rd(a[i]);
+  FOR(i,1,n) {
+    if (!hd[a[i]]) hd[a[i]] = i;
+    nxt[lst[a[i]]] = i;
+    lst[a[i]] = i;
   }
-  a[n] = -114514;
-  for (int i = n-1; i >= 0; --i) {
-    if (s[i] == '1') {
-      a[i] = 1+max(a[i+1],0);
-    } else a[i] = -1+max(a[i+1],0);
+  r[n] = n;
+  ROF(i,1,n-1) {
+    r[i] = nxt[i] ? r[nxt[i]+1] : i;
   }
-  O(min(lim-f(lim), lim+1-f(lim+1)));
+  int m = 0;
+  p[m++] = 1;
+  while (true) {
+    p[m] = hd[a[r[p[m-1]]]]+1;
+    if (p[m] == 1) break;
+    else ++m;
+  }
+  --k;
+  k %= m;
+  if (p[k] == n+1) return;
+  int u = p[k];
+  while (u <= n) {
+    if (nxt[u]) u = nxt[u] + 1;
+    else cout << a[u] << ' ', ++u;
+  }
 }
 
 int main() {

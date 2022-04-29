@@ -44,41 +44,27 @@ inline void chkmax(T &a, const T b) {
 }
 
 //#define MULTI
-const int N = 1e6+5;
-char s[N];
-int a[N];
-int n;
-
-inline int f(int r) {
-  int ans = 0;
-  for (int i = 0, k = 0; i < n; ++i) {
-    if (s[i] == '1') ++k;
-    else if (s[i] == '0') --k;
-    else {
-      if (k+2+a[i] <= r) ++k;
-      else --k;
-    }
-    chkmin(ans, k);
-  }
-  return ans;
-}
+const int N = 1e5+5, M = 15, K = 20;
+const int p = 998244353;
+int n, m, k;
+int a[N][M];
 
 inline void solve() {
-  rd(s);
-  n = strlen(s);
-  int lim = 0;
-  for (int i = 0, k = 0; i < n; ++i) {
-    if (s[i] == '1') ++k;
-    else --k;
-    chkmax(lim, k);
+  rd(n,m,k);
+  FOR(i,1,n) FOR(j,1,m) rd(a[i][j]);
+  int ans = 0;
+  int pw = 1;
+  FOR(u,0,(1<<k)-1) {
+    int cur = 0;
+    FOR(i,1,n) {
+      bool ok = 1;
+      FOR(j,1,m) if (!__builtin_parity(u&a[i][j])) ok = 0;
+      cur += ok;
+    }
+    ans ^= 1ll * pw * cur % p;
+    pw = pw * 3ll % p;
   }
-  a[n] = -114514;
-  for (int i = n-1; i >= 0; --i) {
-    if (s[i] == '1') {
-      a[i] = 1+max(a[i+1],0);
-    } else a[i] = -1+max(a[i+1],0);
-  }
-  O(min(lim-f(lim), lim+1-f(lim+1)));
+  O(ans);
 }
 
 int main() {

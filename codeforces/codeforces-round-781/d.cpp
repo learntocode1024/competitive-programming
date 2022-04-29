@@ -43,51 +43,32 @@ inline void chkmax(T &a, const T b) {
   a = max(a, b);
 }
 
-//#define MULTI
-const int N = 1e6+5;
-char s[N];
-int a[N];
-int n;
+#define MULTI
+const int N = 0;
 
-inline int f(int r) {
-  int ans = 0;
-  for (int i = 0, k = 0; i < n; ++i) {
-    if (s[i] == '1') ++k;
-    else if (s[i] == '0') --k;
-    else {
-      if (k+2+a[i] <= r) ++k;
-      else --k;
-    }
-    chkmin(ans, k);
-  }
-  return ans;
+i64 gcd(i64 x, i64 y) {
+  assert(x!=y);
+  printf("? %lld %lld\n", x, y);
+  fflush(stdout);
+  i64 r;
+  rd(r);
+  return r;
 }
 
 inline void solve() {
-  rd(s);
-  n = strlen(s);
-  int lim = 0;
-  for (int i = 0, k = 0; i < n; ++i) {
-    if (s[i] == '1') ++k;
-    else --k;
-    chkmax(lim, k);
+  i64 ans = 0;
+  FOR(i,0,29) {
+    i64 pw = 1 << i;
+    i64 a = pw - ans;
+    i64 b = a + (pw << 1);
+    i64 ret = gcd(a, b) >> i;
+    ans |= (~ret & 1) << i;
   }
-  a[n] = -114514;
-  for (int i = n-1; i >= 0; --i) {
-    if (s[i] == '1') {
-      a[i] = 1+max(a[i+1],0);
-    } else a[i] = -1+max(a[i+1],0);
-  }
-  O(min(lim-f(lim), lim+1-f(lim+1)));
+  printf("! %lld\n", ans);
+  fflush(stdout);
 }
 
 int main() {
-#ifndef MISAKA
-  //freopen(".in", "r", stdin);
-  //freopen(".out", "w", stdout);
-  ios::sync_with_stdio(0);
-  cin.tie(0);
-#endif
 #ifdef MULTI
   int T;
   cin >> T;

@@ -28,11 +28,37 @@ mt19937_64 rng(chrono::steady_clock::now().time_since_epoch().count());
 template <typename T> inline void ckmin(T &a, const T &b) { a = min(a, b); }
 template <typename T> inline void ckmax(T &a, const T &b) { a = max(a, b); }
 //#define IOFILE "filename"
-//#define MULTI
-const int N = 0;
+#define MULTI
+const int N = 2e5+5;
+int a[N];
 
 inline void sol() {
-  //
+  int n, x;
+  cin >> n >> x;
+  FOR(i,1,n) cin >> a[i];
+  int mn = *min_element(a+1,a+1+n);
+  int mx = *max_element(a+1,a+1+n);
+  i64 ans = 0;
+  FOR(i,2,n) ans += abs(a[i]-a[i-1]);
+  if (mn > 1) {
+    int cur = 1e9;
+    ckmin(cur, mn-2+a[1]-1);
+    ckmin(cur, a[1]-1);
+    ckmin(cur, mn*2-2);
+    ckmin(cur, mn-2+a[n]-1);
+    ckmin(cur, mn-2+a[n]-mn+1);
+    ans += cur;
+  }
+  if (mx < x) {
+    int cur = 1e9;
+    ckmin(cur, x - mx-1 + x - a[1]);
+    ckmin(cur, x - a[1]);
+    ckmin(cur, (x-mx)*2);
+    ckmin(cur, x-mx-1+x-a[n]);
+    ckmin(cur, x - a[n]);
+    ans += cur;
+  }
+  O(ans);
 }
 
 int main() {
@@ -52,3 +78,4 @@ int main() {
     sol();
   return 0;
 }
+

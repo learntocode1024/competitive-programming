@@ -43,42 +43,30 @@ inline void chkmax(T &a, const T b) {
   a = max(a, b);
 }
 
-//#define MULTI
-const int N = 1e6+5;
-char s[N];
-int a[N];
-int n;
+#define MULTI
+const int N = 0;
 
-inline int f(int r) {
-  int ans = 0;
-  for (int i = 0, k = 0; i < n; ++i) {
-    if (s[i] == '1') ++k;
-    else if (s[i] == '0') --k;
-    else {
-      if (k+2+a[i] <= r) ++k;
-      else --k;
-    }
-    chkmin(ans, k);
+bool comp(int x) {
+  if (x <= 3) return 0;
+  for (int i = 2; i * i <= x; ++i) {
+    if (x % i == 0) return 1;
   }
-  return ans;
+  return 0;
 }
 
 inline void solve() {
-  rd(s);
-  n = strlen(s);
-  int lim = 0;
-  for (int i = 0, k = 0; i < n; ++i) {
-    if (s[i] == '1') ++k;
-    else --k;
-    chkmax(lim, k);
+  int x, d;
+  rd(x,d);
+  bool ans = 1;
+  int k = 0;
+  while (x % d == 0) x /= d, ++k;
+  if (k == 1) ans = 0;
+  else {
+    if (!comp(x) && !comp(d)) ans = 0;
+    else if (k == 2 && !comp(x)) ans = 0;
+    else if (k == 3 && !comp(x) && x * x == d) ans = 0;
   }
-  a[n] = -114514;
-  for (int i = n-1; i >= 0; --i) {
-    if (s[i] == '1') {
-      a[i] = 1+max(a[i+1],0);
-    } else a[i] = -1+max(a[i+1],0);
-  }
-  O(min(lim-f(lim), lim+1-f(lim+1)));
+  O(ans?"Yes":"No");
 }
 
 int main() {

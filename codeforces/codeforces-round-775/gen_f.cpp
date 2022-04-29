@@ -10,13 +10,22 @@ void rd(A &a, B& ...b) {
   rd(b...);
 }
 template<typename A>
-void O(const A& a) {
+void print(const A& a) {
+  cout << a;
+}
+template<typename A, typename... B>
+void print(const A& a, const B& ...b) {
+  cout << a;
+  print(b...);
+}
+template<typename A>
+void println(const A& a) {
   cout << a << '\n';
 }
 template<typename A, typename... B>
-void O(const A& a, const B& ...b) {
+void println(const A& a, const B& ...b) {
   cout << a << ' ';
-  O(b...);
+  println(b...);
 }
 typedef long long i64;
 typedef unsigned long long u64;
@@ -48,10 +57,16 @@ inline pii rpii(r32 &e) {
 }
 #define shuf(BEGIN, END) shuffle(BEGIN, END, rng)
 
-const int N = 0;
+const int n = 5, m = 5, inf = 10;
 
 int main() {
-
+  println(n,m);
+  r32 e{-inf,inf}, ee{1,inf},f{1,n};
+  FOR(j,0,3)FOR(i,0,n) cout << e(rng) << " \n"[i==n-1];
+  FOR(i,0,m) {
+    int l = f(rng), r = f(rng);
+    println(min(l,r),max(l,r),ee(rng));
+  }
   return 0;
 }
 /* Checklist:

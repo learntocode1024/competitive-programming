@@ -44,41 +44,34 @@ inline void chkmax(T &a, const T b) {
 }
 
 //#define MULTI
-const int N = 1e6+5;
-char s[N];
+const int N = 2005;
 int a[N];
 int n;
+typedef list<int> vi;
+bool vis[N];
 
-inline int f(int r) {
-  int ans = 0;
-  for (int i = 0, k = 0; i < n; ++i) {
-    if (s[i] == '1') ++k;
-    else if (s[i] == '0') --k;
-    else {
-      if (k+2+a[i] <= r) ++k;
-      else --k;
-    }
-    chkmin(ans, k);
+vi dfs(int u) {
+  vis[u] = 1;
+  vi ret;
+  FOR(i,1,n) if (!vis[i] && (!u ||  __gcd(a[i], a[u]) > 1)) {
+    auto v = dfs(i);
+    vi tmp;
+    insert_iterator<list<int> > it(tmp, tmp.begin());
+    merge(begin(ret), end(ret), begin(v), end(v), it, greater<int>{});
+    ret.swap(tmp);
   }
-  return ans;
+  ret.push_front(a[u]);
+  return ret;
 }
 
 inline void solve() {
-  rd(s);
-  n = strlen(s);
-  int lim = 0;
-  for (int i = 0, k = 0; i < n; ++i) {
-    if (s[i] == '1') ++k;
-    else --k;
-    chkmax(lim, k);
+  rd(n);
+  FOR(i,1,n) rd(a[i]);
+  sort(a + 1, a + n + 1);
+  for (auto i : dfs(0)) {
+    if (i) cout << i << ' ';
   }
-  a[n] = -114514;
-  for (int i = n-1; i >= 0; --i) {
-    if (s[i] == '1') {
-      a[i] = 1+max(a[i+1],0);
-    } else a[i] = -1+max(a[i+1],0);
-  }
-  O(min(lim-f(lim), lim+1-f(lim+1)));
+  cout << '\n';
 }
 
 int main() {

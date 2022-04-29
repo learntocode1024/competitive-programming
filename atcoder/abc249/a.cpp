@@ -30,9 +30,15 @@ template <typename T> inline void ckmax(T &a, const T &b) { a = max(a, b); }
 //#define IOFILE "filename"
 //#define MULTI
 const int N = 0;
+int w(int b, int a, int c, int x) {
+  int r = x / (b+c) * b + min(x%(b+c), b);
+  return r * a;
+}
 
 inline void sol() {
-  //
+  int a, b, c, d, e, f, x;
+  cin >> a >> b >> c >> d >> e >> f >> x;
+  O(w(a,b,c,x) == w(d,e,f,x) ? "Draw" : (w(a,b,c,x) > w(d,e,f,x) ? "Takahashi" : "Aoki"));
 }
 
 int main() {
@@ -52,3 +58,4 @@ int main() {
     sol();
   return 0;
 }
+

@@ -31,8 +31,22 @@ template <typename T> inline void ckmax(T &a, const T &b) { a = max(a, b); }
 //#define MULTI
 const int N = 0;
 
+i64 nxt(i64 x, int t) {
+  i64 y = ((x >> t) | 1) << t;
+  if (y > x) return y;
+  return (((x>>(t+1))+1)<<1|1) << t;
+}
+
 inline void sol() {
-  //
+  int n;
+  i64 x = 0;
+  cin >> n;
+  while (n--) {
+    int t;
+    cin >> t;
+    x = nxt(x, t);
+  }
+  O(x);
 }
 
 int main() {
@@ -52,3 +66,4 @@ int main() {
     sol();
   return 0;
 }
+

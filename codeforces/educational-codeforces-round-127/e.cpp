@@ -29,10 +29,36 @@ template <typename T> inline void ckmin(T &a, const T &b) { a = min(a, b); }
 template <typename T> inline void ckmax(T &a, const T &b) { a = max(a, b); }
 //#define IOFILE "filename"
 //#define MULTI
-const int N = 0;
+const int N = 18;
+string s[1<<N];
+const int p = 998244353;
+char c[1<<N];
+int f[1<<N];
+int mx;
+
+void dfs(int u) {
+  s[u].pb(c[u]);
+  if (u >= mx) {
+    f[u] = 1;
+    return;
+  }
+  dfs(u<<1);
+  dfs(u<<1|1);
+    f[u] = 1ll * f[u<<1] * f[u<<1|1] % p;
+  if (s[u<<1] != s[u<<1|1]) {
+    f[u] = f[u] * 2 % p;
+  }
+  if (s[u<<1] <= s[u<<1|1]) s[u] += s[u<<1], s[u] += s[u<<1|1];
+  else s[u] += s[u<<1|1], s[u] += s[u<<1];
+}
 
 inline void sol() {
-  //
+  int n;
+  cin >> n;
+  mx = 1 << (n-1);
+  cin >> c+1;
+  dfs(1);
+  O(f[1]);
 }
 
 int main() {
@@ -52,3 +78,4 @@ int main() {
     sol();
   return 0;
 }
+

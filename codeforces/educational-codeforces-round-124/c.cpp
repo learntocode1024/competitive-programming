@@ -43,42 +43,53 @@ inline void chkmax(T &a, const T b) {
   a = max(a, b);
 }
 
-//#define MULTI
-const int N = 1e6+5;
-char s[N];
-int a[N];
-int n;
-
-inline int f(int r) {
-  int ans = 0;
-  for (int i = 0, k = 0; i < n; ++i) {
-    if (s[i] == '1') ++k;
-    else if (s[i] == '0') --k;
-    else {
-      if (k+2+a[i] <= r) ++k;
-      else --k;
-    }
-    chkmin(ans, k);
-  }
-  return ans;
-}
+#define MULTI
+const int N = 2e5+5;
+i64 a[N], b[N];
 
 inline void solve() {
-  rd(s);
-  n = strlen(s);
-  int lim = 0;
-  for (int i = 0, k = 0; i < n; ++i) {
-    if (s[i] == '1') ++k;
-    else --k;
-    chkmax(lim, k);
-  }
-  a[n] = -114514;
-  for (int i = n-1; i >= 0; --i) {
-    if (s[i] == '1') {
-      a[i] = 1+max(a[i+1],0);
-    } else a[i] = -1+max(a[i+1],0);
-  }
-  O(min(lim-f(lim), lim+1-f(lim+1)));
+  int n;
+  rd(n);
+  FOR(i,1,n) rd(a[i]);
+  FOR(i,1,n) rd(b[i]);
+  i64 ans = 0, a2 = abs(a[1]-b[1]), a3 = abs(a[n]-b[n]), a4 = abs(a[1]-b[n]), a5 = abs(a[n]-b[1]);
+  i64 x = INT_MAX;
+  FOR(i,1,n) chkmin(x, abs(a[1]-b[i]));
+  ans += x;
+  x = INT_MAX;
+  FOR(i,1,n) chkmin(x, abs(a[n]-b[i]));
+  ans += x;
+  x = INT_MAX;
+  FOR(i,1,n) chkmin(x, abs(b[1]-a[i]));
+  ans += x;
+  x = INT_MAX;
+  FOR(i,1,n) chkmin(x, abs(b[n]-a[i]));
+  ans += x;
+  x = INT_MAX;
+  FOR(i,1,n) chkmin(x, abs(a[1]-b[i]));
+  a3 += x;
+  x = INT_MAX;
+  FOR(i,1,n) chkmin(x, abs(a[n]-b[i]));
+  a2 += x;
+  x = INT_MAX;
+  FOR(i,1,n) chkmin(x, abs(b[1]-a[i]));
+  a3 += x;
+  x = INT_MAX;
+  FOR(i,1,n) chkmin(x, abs(b[n]-a[i]));
+  a2 += x;
+  x = INT_MAX;
+  FOR(i,1,n) chkmin(x, abs(a[1]-b[i]));
+  a5 += x;
+  x = INT_MAX;
+  FOR(i,1,n) chkmin(x, abs(a[n]-b[i]));
+  a4 += x;
+  x = INT_MAX;
+  FOR(i,1,n) chkmin(x, abs(b[1]-a[i]));
+  a4 += x;
+  x = INT_MAX;
+  FOR(i,1,n) chkmin(x, abs(b[n]-a[i]));
+  a5 += x;
+  O(min({min(ans,min(a2,min(a3,abs(a[1]-b[1])+abs(a[n]-b[n])))), abs(a[1]-b[n])+abs(a[n]-b[1]),a4,a5}));
 }
 
 int main() {

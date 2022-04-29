@@ -44,41 +44,37 @@ inline void chkmax(T &a, const T b) {
 }
 
 //#define MULTI
-const int N = 1e6+5;
-char s[N];
+const int N = 2e5+5;
 int a[N];
-int n;
-
-inline int f(int r) {
-  int ans = 0;
-  for (int i = 0, k = 0; i < n; ++i) {
-    if (s[i] == '1') ++k;
-    else if (s[i] == '0') --k;
-    else {
-      if (k+2+a[i] <= r) ++k;
-      else --k;
-    }
-    chkmin(ans, k);
-  }
-  return ans;
-}
+int b[N];
+priority_queue<pii> pq;
 
 inline void solve() {
-  rd(s);
-  n = strlen(s);
-  int lim = 0;
-  for (int i = 0, k = 0; i < n; ++i) {
-    if (s[i] == '1') ++k;
-    else --k;
-    chkmax(lim, k);
+  int n;
+  rd(n);
+  FOR(i,0,n-1) rd(a[i]);
+  FOR(i,0,n-1) rd(b[i]);
+  FOR(i,0,n-1) if (a[i] > b[i]) {
+    O(-1);
+    return;
+  } else if (a[i] < b[i]) {
+    pq.push({b[i], i});
   }
-  a[n] = -114514;
-  for (int i = n-1; i >= 0; --i) {
-    if (s[i] == '1') {
-      a[i] = 1+max(a[i+1],0);
-    } else a[i] = -1+max(a[i+1],0);
+  i64 ans = 0;
+  while (!pq.empty()) {
+    auto x = pq.top();
+    pq.pop();
+    int r = b[(x.se+1)%n] + b[(x.se+n-1)%n];
+    int q = (b[x.se] - a[x.se]) / r;
+    if (b[x.se]<r || !q) {
+      O(-1);
+      return;
+    }
+    b[x.se] -= q * r;
+    ans += q;
+    if (b[x.se] > a[x.se]) pq.push({b[x.se], x.se});
   }
-  O(min(lim-f(lim), lim+1-f(lim+1)));
+  O(ans);
 }
 
 int main() {

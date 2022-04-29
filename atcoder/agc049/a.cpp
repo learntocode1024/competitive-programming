@@ -44,41 +44,24 @@ inline void chkmax(T &a, const T b) {
 }
 
 //#define MULTI
-const int N = 1e6+5;
-char s[N];
-int a[N];
+const int N = 105;
+char s[N][N];
+int vis[N];
 int n;
 
-inline int f(int r) {
-  int ans = 0;
-  for (int i = 0, k = 0; i < n; ++i) {
-    if (s[i] == '1') ++k;
-    else if (s[i] == '0') --k;
-    else {
-      if (k+2+a[i] <= r) ++k;
-      else --k;
-    }
-    chkmin(ans, k);
-  }
+int dfs(int u, int typ) {
+  vis[u] = typ;
+  int ans = 1;
+  FOR(i,1,n) if (s[i][u] == '1' && vis[i] != typ) ans += dfs(i,typ);
   return ans;
 }
 
 inline void solve() {
-  rd(s);
-  n = strlen(s);
-  int lim = 0;
-  for (int i = 0, k = 0; i < n; ++i) {
-    if (s[i] == '1') ++k;
-    else --k;
-    chkmax(lim, k);
-  }
-  a[n] = -114514;
-  for (int i = n-1; i >= 0; --i) {
-    if (s[i] == '1') {
-      a[i] = 1+max(a[i+1],0);
-    } else a[i] = -1+max(a[i+1],0);
-  }
-  O(min(lim-f(lim), lim+1-f(lim+1)));
+  rd(n);
+  FOR(i,1,n) cin >> s[i] + 1;
+  long double ans = 0;
+  FOR(i,1,n) ans += 1.0l / dfs(i,i);
+  cout << setprecision(15) << ans << '\n';
 }
 
 int main() {
