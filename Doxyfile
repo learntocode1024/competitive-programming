@@ -357,7 +357,7 @@ AUTOLINK_SUPPORT       = YES
 # diagrams that involve STL classes more complete and accurate.
 # The default value is: NO.
 
-BUILTIN_STL_SUPPORT    = NO
+BUILTIN_STL_SUPPORT    = YES
 
 # If you use Microsoft's C++/CLI language, you should set this option to YES to
 # enable parsing support.
@@ -843,7 +843,7 @@ WARN_NO_PARAMDOC       = NO
 # Possible values are: NO, YES and FAIL_ON_WARNINGS.
 # The default value is: NO.
 
-WARN_AS_ERROR          = FAIL_ON_WARNINGS
+WARN_AS_ERROR          = NO
 
 # The WARN_FORMAT tag determines the format of the warning messages that doxygen
 # can produce. The string should contain the $file, $line, and $text tags, which
