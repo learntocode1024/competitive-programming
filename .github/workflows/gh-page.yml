@@ -28,5 +28,13 @@ jobs:
           submodules: recursive
       - name: Doxygen Action
         uses: mattnotmitt/doxygen-action@1.9.3
-
+      - name: Push to gh-page
+        uses: ptienchuan/deploy-github-pages-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          source-directory: "docs/html"
+          target-branch: "gh-pages"
+          user-name: "deploy[bot]"
+          user-email: "deploy[bot]@noreply.github.com"
       
