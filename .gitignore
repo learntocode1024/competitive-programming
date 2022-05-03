@@ -10,3 +10,6 @@ main
 template/current.cpp
 bin
 a.out
+
+# generated docs
+/docs
