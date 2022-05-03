@@ -1,7 +1,13 @@
-# competitive-programming
-Code Contests
+# misaka-cp
+misaka18931's OI code base. (with solutions)
 
-## Max poi☆poi poi poi！
+## About
+Solutions for code after May 3, 2022 will be documented here.
+I have no plan on migrating previous solutions on my blog here.
+
+## misc
+Those are from when I was a newbie(on CF).
+### Max poi☆poi poi poi！
 
 [M]poi?
 
@@ -66,6 +72,8 @@ Code Contests
 [M]po po po po po po po po po po po po po po po po po po po po 
 
 [M]poi poi poi poi poi poi
+
+### and an anime girl
 
 ⣿⣷⡄⠙⠿⠏⢸⣷⣶⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣾⣽⢿⣿⣿⣿⣿⣿⣿⣿⣿⣷⡆⠄⠄⢴⣾⣿⣿⣿⣿⣿⣿⣿⣿⣦⣍⠷⣎⠸⢄⠸⣿⣇⢐⠸⡿⠏⡐⢐⢄⠹⣿⣮⡹⢿⣿⣿⣿⣯⡹⣷  
 ⣿⣿⣿⠄⠄⠄⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣮⡹⢿⣿⣿⣿⣿⣿⠏⠁⠄⣼⣷⣶⣍⡻⢿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣎⡳⣎⡡⢌⠻⡆⡃⠃⠘⠄⢀⡐⣗⠸⢿⣷⣎⢻⣿⣿⣿⣇⡸  
