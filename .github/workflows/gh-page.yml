@@ -29,12 +29,7 @@ jobs:
       - name: Doxygen Action
         uses: mattnotmitt/doxygen-action@1.9.3
       - name: Push to gh-page
-        uses: ptienchuan/deploy-github-pages-action@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: JamesIves/github-pages-deploy-action@v4.3.3
         with:
-          source-directory: "docs/html"
-          target-branch: "gh-pages"
-          user-name: "deploy[bot]"
-          user-email: "deploy[bot]@noreply.github.com"
-      
+          branch: gh-pages # The branch the action should deploy to.
+          folder: docs/html # The folder the action should deploy.
