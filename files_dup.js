@@ -9,6 +9,5 @@ var files_dup =
     [ "loj", "dir_c4d746c4bef98be468719e6c98bdb0ab.html", "dir_c4d746c4bef98be468719e6c98bdb0ab" ],
     [ "luogu", "dir_47db2ff0d15a919fa474192c55dc7ef7.html", "dir_47db2ff0d15a919fa474192c55dc7ef7" ],
     [ "pboj", "dir_a45f4b860f7033e24e2608f64cc2d88c.html", "dir_a45f4b860f7033e24e2608f64cc2d88c" ],
-    [ "template", "dir_dfacb4c4bbd4233d3d500b32c7cc4486.html", "dir_dfacb4c4bbd4233d3d500b32c7cc4486" ],
-    [ "work", "dir_8e37b9d33140d6009518b7a0bb5633b7.html", "dir_8e37b9d33140d6009518b7a0bb5633b7" ]
+    [ "template", "dir_dfacb4c4bbd4233d3d500b32c7cc4486.html", "dir_dfacb4c4bbd4233d3d500b32c7cc4486" ]
 ];
