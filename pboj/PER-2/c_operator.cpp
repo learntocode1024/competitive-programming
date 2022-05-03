@@ -1,4 +1,6 @@
 #include <bits/stdc++.h>
+#include "operator.h"
+namespace {
 using namespace std;
 template <typename T> inline void O(const T &x) { cout << x << '\n'; }
 template <typename T, typename... W> inline void O(const T &x, const W &...b) {
@@ -34,26 +36,46 @@ template <typename T> inline void ckmin(T &a, const T &b) { a = min(a, b); }
 template <typename T> inline void ckmax(T &a, const T &b) { a = max(a, b); }
 //#define IOFILE "filename"
 //#define MULTI
-const int N = 0;
 
-inline void sol() {
-  //
+const int a[16] = {0,242409326,307274348,869671415,66746939,771487115,190657859,421741849,957930937,956231038,243819937,691787647,698223205,539227763,498803434,405420617};
+const int P = 1e9+7;
+map<int,int> S;
+inline bool calc() {
+  S.clear();
+  FOR(u,0,1<<(16-1)) {
+    int x = a[0];
+    FOR(i,0,16-2) {
+      if ((u>>i)&1) x = 1ll * x * a[i+1] % P;
+      else x = (x + a[i+1]) % P;
+    }
+    S[x] = u;
+  }
+  err("%ld\n", S.size());
+  return S.size() == (1<<(16-1));
+}
+int n;
+vector<int> ans;
+void ask(int l, int r) {
+  vector<int> f(n+1);
+  for (int i = r + 1; i < n; ++i) {
+    f[i+1] = ans[i];
+  }
+  for (int i = r; i >= max(l, 0); --i) {
+    f[i+1] = a[15 + i - r];
+  }
+  int u = S[query(f)];
+  for (int i = r; i >= max(l, 0); --i) {
+    ans[i] = (u>>(14-r+i))&1;
+  }
+}
 }
 
-int main() {
-#ifndef MISAKA
-#ifdef IOFILE
-  freopen(IOFILE ".in", "r", stdin);
-  freopen(IOFILE ".out", "w", stdout);
-#endif
-  ios::sync_with_stdio(0);
-  cin.tie(0);
-#endif
-#ifdef MULTI
-  int T;
-  cin >> T;
-  while (T--)
-#endif
-    sol();
-  return 0;
+std::vector <int> solve(int _n) {
+  assert(calc());
+  ans.resize(_n);
+  n = _n;
+  for (int i = n - 1; i >= 0; i -= 15) {
+    ask(i-14, i);
+  }
+  return ans;
 }

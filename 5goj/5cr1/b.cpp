@@ -5,11 +5,6 @@ template <typename T, typename... W> inline void O(const T &x, const W &...b) {
   cout << x << ' ';
   O(b...);
 }
-template <typename T> inline void rd(const T &x) { cin >> x; }
-template <typename T, typename... W> inline void rd(const T &x, const W &...b) {
-  cin >> x;
-  rd(b...);
-}
 #ifndef MISAKA
 #define err(...)
 #else
@@ -34,10 +29,35 @@ template <typename T> inline void ckmin(T &a, const T &b) { a = min(a, b); }
 template <typename T> inline void ckmax(T &a, const T &b) { a = max(a, b); }
 //#define IOFILE "filename"
 //#define MULTI
-const int N = 0;
+const int N = 1005;
+char s[N][N];
+int a[N][N];
 
 inline void sol() {
-  //
+  int n, m;
+  int q;
+  cin >> n >> m >> q;
+  FOR(i,1,n) cin >> s[i] + 1;
+  FOR(i,1,n) FOR(j,1,m) {
+    if (s[i][j] == '1') {
+      FOR(x,0,1) FOR(y,0,1) a[i-x][j-y] ^= 1;
+    }
+  }
+  FOR(i,0,n) a[i][0] = 0;
+  FOR(i,0,m) a[0][i] = 0;
+  FOR(i,1,n) FOR(j,1,m) a[i][j] ^= a[i-1][j] ^ a[i-1][j-1] ^ a[i][j-1];
+  while (q--) {
+    int x1, y1, x2, y2;
+    cin >> x1 >> y1 >> x2 >> y2;
+    bool ok = a[x2][y2] ^ a[x1-1][y1-1] ^ a[x1-1][y2] ^ a[x2][y1-1];
+    if (x2 < n) {
+      FOR(j,1,m) if (s[x2+1][j] == '1') FOR(o,0,1) if (j-o>=y1 && j-o <= y2) ok ^= 1;
+    }
+    if (y2 < m) {
+      FOR(i,1,x2) if (s[i][y2+1] == '1') FOR(o,0,1) if (i-o>=x1 && i-o<=x2) ok ^= 1;
+    }
+    O(ok?"Yes":"No");
+  }
 }
 
 int main() {
@@ -57,3 +77,4 @@ int main() {
     sol();
   return 0;
 }
+

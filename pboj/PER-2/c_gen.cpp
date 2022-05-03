@@ -34,10 +34,32 @@ template <typename T> inline void ckmin(T &a, const T &b) { a = min(a, b); }
 template <typename T> inline void ckmax(T &a, const T &b) { a = max(a, b); }
 //#define IOFILE "filename"
 //#define MULTI
-const int N = 0;
+const int N = 16;
+const int P = 1e9+7;
+int a[N];
+unordered_map<int, int> S;
+
+inline bool calc() {
+  S.clear();
+  FOR(u,0,1<<(N-1)) {
+    int x = a[0];
+    FOR(i,0,N-2) {
+      if ((u>>i)&1) x = 1ll * x * a[i+1] % P;
+      else x = (x + a[i+1]) % P;
+    }
+    S[x] = u;
+  }
+  err("%ld\n", S.size());
+  return S.size() == (1<<(N-1));
+}
 
 inline void sol() {
-  //
+  do {
+    FOR(i,1,N-1) a[i] = r32(1,P-1)(rng);
+  } while (!calc());
+  cout << "const int a[16] = {";
+  FOR(i,0,N-1) cout << a[i] << ",}"[i==N-1];
+  cout << ";\n";
 }
 
 int main() {
@@ -57,3 +79,4 @@ int main() {
     sol();
   return 0;
 }
+

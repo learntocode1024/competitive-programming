@@ -1,4 +1,5 @@
 #include <bits/stdc++.h>
+namespace {
 using namespace std;
 template <typename T> inline void O(const T &x) { cout << x << '\n'; }
 template <typename T, typename... W> inline void O(const T &x, const W &...b) {
@@ -34,26 +35,10 @@ template <typename T> inline void ckmin(T &a, const T &b) { a = min(a, b); }
 template <typename T> inline void ckmax(T &a, const T &b) { a = max(a, b); }
 //#define IOFILE "filename"
 //#define MULTI
-const int N = 0;
-
-inline void sol() {
-  //
 }
-
-int main() {
-#ifndef MISAKA
-#ifdef IOFILE
-  freopen(IOFILE ".in", "r", stdin);
-  freopen(IOFILE ".out", "w", stdout);
-#endif
-  ios::sync_with_stdio(0);
-  cin.tie(0);
-#endif
-#ifdef MULTI
-  int T;
-  cin >> T;
-  while (T--)
-#endif
-    sol();
-  return 0;
+int Query(int S, int F, int L, std::vector <int> P, std::vector <int> Q) {
+  FOR(i,0,L-1) {
+    if ((S > P[i]) ^ F ^ Q[i]) return P[i];
+  }
+  return S;
 }

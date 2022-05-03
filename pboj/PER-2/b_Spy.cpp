@@ -1,4 +1,5 @@
 #include <bits/stdc++.h>
+namespace {
 using namespace std;
 template <typename T> inline void O(const T &x) { cout << x << '\n'; }
 template <typename T, typename... W> inline void O(const T &x, const W &...b) {
@@ -34,26 +35,21 @@ template <typename T> inline void ckmin(T &a, const T &b) { a = min(a, b); }
 template <typename T> inline void ckmax(T &a, const T &b) { a = max(a, b); }
 //#define IOFILE "filename"
 //#define MULTI
-const int N = 0;
-
-inline void sol() {
-  //
+vector<vector<int> > g;
+vector<int> ans;
+void dfs(int u, int fa) {
+  ans[u-1] = ans[fa-1];
+  if (u < fa) ans[u-1] ^= 1;
+  for (auto v : g[u]) if (v != fa) dfs(v, u);
 }
-
-int main() {
-#ifndef MISAKA
-#ifdef IOFILE
-  freopen(IOFILE ".in", "r", stdin);
-  freopen(IOFILE ".out", "w", stdout);
-#endif
-  ios::sync_with_stdio(0);
-  cin.tie(0);
-#endif
-#ifdef MULTI
-  int T;
-  cin >> T;
-  while (T--)
-#endif
-    sol();
-  return 0;
+}
+std::vector <int> Init(int N, int T, std::vector <int> A, std::vector <int> B) {
+  g.resize(N+1);
+  ans.resize(N);
+  FOR(i,0,N-2) {
+    g[A[i]].pb(B[i]);
+    g[B[i]].pb(A[i]);
+  }
+  dfs(T, T);
+  return ans;
 }
