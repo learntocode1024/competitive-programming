@@ -25,11 +25,12 @@
 var NAVTREE =
 [
   [ "misaka-cp", "index.html", [
-    [ "About", "index.html#autotoc_md1", null ],
-    [ "misc", "index.html#autotoc_md2", [
-      [ "Max poi☆poi poi poi！", "index.html#autotoc_md3", null ],
-      [ "and an anime girl", "index.html#autotoc_md4", null ]
+    [ "About", "index.html#autotoc_md2", null ],
+    [ "misc", "index.html#autotoc_md3", [
+      [ "Max poi☆poi poi poi！", "index.html#autotoc_md4", null ],
+      [ "and an anime girl", "index.html#autotoc_md5", null ]
     ] ],
+    [ "Tags", "modules.html", "modules" ],
     [ "Files", "files.html", [
       [ "File List", "files.html", "files_dup" ]
     ] ]
@@ -40,10 +41,11 @@ var NAVTREEINDEX =
 [
 "001_8cpp_source.html",
 "a-alexey-and-train_8cpp_source.html",
-"atcoder_2arc120_2d_8cpp_source.html",
-"codeforces_2codeforces-round-543-div-1_2c_8cpp_source.html",
-"d2p1_8cpp_source.html",
-"dir_f14ec53b5dc494ab42d972a9d3296db3.html"
+"atcoder_2arc120_2c_8cpp_source.html",
+"codeforces_2codeforces-round-543-div-1_2b_8cpp_source.html",
+"d1p3_8cpp_source.html",
+"dir_ee2d8add218703cbcdb8a7a331cda4a6.html",
+"transfer_8cpp_source.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
