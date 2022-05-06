@@ -23,13 +23,13 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - name: install dependency(perl)
-        run: sudo apt install perl -y
       - uses: actions/checkout@v3
         with:
           submodules: recursive
       - name: Doxygen Action
         uses: mattnotmitt/doxygen-action@1.9.3
+        with:
+          additional-packages: perl
       - name: Push to gh-page
         uses: JamesIves/github-pages-deploy-action@v4.3.3
         with:
