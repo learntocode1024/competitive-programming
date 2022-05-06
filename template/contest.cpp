@@ -10,8 +10,8 @@ template <typename T, typename... W> inline void O(const T &x, const W &...b) {
   cout << x << ' ';
   O(b...);
 }
-template <typename T> inline void rd(const T &x) { cin >> x; }
-template <typename T, typename... W> inline void rd(const T &x, const W &...b) {
+template <typename T> inline void rd(T &x) { cin >> x; }
+template <typename T, typename... W> inline void rd(T &x, W &...b) {
   cin >> x;
   rd(b...);
 }

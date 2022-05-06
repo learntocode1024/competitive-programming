@@ -1,7 +1,12 @@
 /** @file
  * @ingroup segtree binary_lifting
-
-
+记录每一条鱼能吃到的区间，这些区间有如下性质
+1. 区间之间只能包含或不交。
+2. 对于在一个区间对应的任意一条鱼， 其能吃到的区间一定也包含在该区间中
+3. 每一条鱼至多被包含在$O(\log \max A)$个区间中
+修改：暴力删除该位置对应的区间，线段树上二分，分别查找新形成的区间可能的左右端点，并检查这$O(log^2 \max A)$个区间的合法性，进行插入。
+查询：
+由于是区间查询，将在区间截断处额外产生一些区间，同样找出可能的左/右端点，排除掉即可。
  */
 #include <bits/stdc++.h>
 using namespace std;
@@ -270,7 +275,6 @@ inline void upd(int x, i64 _y) {
 inline int qry(int l, int r) {
   pre(r);
   suf(l);
-  i64 sr = sp.get(r), sl = sp.get(l-1);
   FOR(i,1,cr) {
     if (R[i] <= r) ckmax(l, R[i]);
   }
@@ -317,4 +321,3 @@ int main() {
     sol();
   return 0;
 }
-

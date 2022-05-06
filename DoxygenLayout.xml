@@ -4,7 +4,7 @@
   <navindex>
     <tab type="mainpage" visible="yes" title=""/>
     <tab type="pages" visible="yes" title="" intro=""/>
-    <tab type="modules" visible="yes" title="algo" intro="algorithms"/>
+    <tab type="modules" visible="yes" title="Tags" intro="Algorithms &amp; Tricks"/>
     <tab type="namespaces" visible="yes" title="">
       <tab type="namespacelist" visible="yes" title="" intro=""/>
       <tab type="namespacemembers" visible="yes" title="" intro=""/>
@@ -161,12 +161,13 @@
 
   <!-- Layout definition for a group page -->
   <group>
-    <briefdescription visible="yes"/>
+    <briefdescription visible="no"/>
+    <detaileddescription title="Notes"/>
     <groupgraph visible="$GROUP_GRAPHS"/>
     <memberdecl>
-      <nestedgroups visible="yes" title=""/>
+      <nestedgroups visible="yes" title="Tags"/>
       <dirs visible="yes" title=""/>
-      <files visible="yes" title=""/>
+      <files visible="yes" title="Problemset"/>
       <namespaces visible="yes" title=""/>
       <concepts visible="yes" title=""/>
       <classes visible="yes" title=""/>
@@ -187,7 +188,6 @@
       <friends title=""/>
       <membergroups visible="yes"/>
     </memberdecl>
-    <detaileddescription title=""/>
     <memberdef>
       <pagedocs/>
       <inlineclasses title=""/>
