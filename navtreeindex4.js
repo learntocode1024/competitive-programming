@@ -1,7 +1,5 @@
 var NAVTREEINDEX4 =
 {
-"d1p3_8cpp_source.html":[2,0,3,7,2],
-"d2-painting-the-array-ii_8cpp_source.html":[2,0,2,26,4],
 "d2p1_8cpp_source.html":[2,0,3,7,3],
 "d2p2_8cpp_source.html":[2,0,3,7,4],
 "dango3_8cpp_source.html":[2,0,3,12,3,0],
@@ -207,6 +205,7 @@ var NAVTREEINDEX4 =
 "dir_bfa32856830bb108bd39de342a505ba3.html":[2,0,1,43],
 "dir_c04c8b539df02456808dfd28a11451be.html":[2,0,2,82],
 "dir_c1b77d8bd6317cb0108d21af626401e6.html":[2,0,2,35],
+"dir_c23e340df590645e4819e7c6dc078610.html":[2,0,3,23],
 "dir_c4d746c4bef98be468719e6c98bdb0ab.html":[2,0,6],
 "dir_c5b02348ccbe2acab016eecc8d000afa.html":[2,0,5,0,0],
 "dir_c9a884192dff02ed8ee96aa28cd41a49.html":[2,0,2,3,0],
@@ -249,5 +248,6 @@ var NAVTREEINDEX4 =
 "dir_eb1cc7e899fd635b8632c3427cc4c7de.html":[2,0,2,6,3],
 "dir_ebd90658431d807ae8a9c92e7db72932.html":[2,0,2,3,2],
 "dir_ebfed7c9420c889b068d0dd525ab6d42.html":[2,0,3,20],
-"dir_ee2d8add218703cbcdb8a7a331cda4a6.html":[2,0,2,22]
+"dir_ee2d8add218703cbcdb8a7a331cda4a6.html":[2,0,2,22],
+"dir_ef7c16f89e5a26f42a005113d2c06ce7.html":[2,0,1,1]
 };

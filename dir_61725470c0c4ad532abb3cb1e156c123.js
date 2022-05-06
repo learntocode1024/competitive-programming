@@ -23,6 +23,7 @@ var dir_61725470c0c4ad532abb3cb1e156c123 =
     [ "WC2022", "dir_ebfed7c9420c889b068d0dd525ab6d42.html", "dir_ebfed7c9420c889b068d0dd525ab6d42" ],
     [ "XXII-OpenCup-GP-of-IMO", "dir_9c13f5d0b6875e1d44fe36e1570b80dd.html", "dir_9c13f5d0b6875e1d44fe36e1570b80dd" ],
     [ "XXII-OpenCup-GP-of-Korea", "dir_8a3e40d40e6d0a7900110c1f29518ac0.html", "dir_8a3e40d40e6d0a7900110c1f29518ac0" ],
+    [ "ZJOI-2022", "dir_c23e340df590645e4819e7c6dc078610.html", "dir_c23e340df590645e4819e7c6dc078610" ],
     [ "poj1769.cpp", "poj1769_8cpp_source.html", null ],
     [ "SPOJ-TRANSP.cpp", "SPOJ-TRANSP_8cpp_source.html", null ],
     [ "TIOJ-2216.cpp", "TIOJ-2216_8cpp_source.html", null ]

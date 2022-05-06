@@ -1,21 +1,18 @@
 var indexSectionsWithContent =
 {
-  0: "acfm",
-  1: "acf",
-  2: "m"
+  0: "m",
+  1: "m"
 };
 
 var indexSectionNames =
 {
   0: "all",
-  1: "files",
-  2: "pages"
+  1: "pages"
 };
 
 var indexSectionLabels =
 {
   0: "All",
-  1: "Files",
-  2: "Pages"
+  1: "Pages"
 };
 

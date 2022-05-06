@@ -1,6 +1,5 @@
 var NAVTREEINDEX3 =
 {
-"codeforces_2codeforces-round-543-div-1_2b_8cpp_source.html":[2,0,2,19,1],
 "codeforces_2codeforces-round-543-div-1_2c_8cpp_source.html":[2,0,2,19,2],
 "codeforces_2codeforces-round-543-div-1_2d_8cpp_source.html":[2,0,2,19,3],
 "codeforces_2codeforces-round-556-div-1_2a_8cpp_source.html":[2,0,2,20,0],
@@ -204,7 +203,6 @@ var NAVTREEINDEX3 =
 "codeforces_2technocup-2022-elimination-round-3_2e_8cpp_source.html":[2,0,2,87,2],
 "codeforces_2technocup-2022-elimination-round-3_2f_8cpp_source.html":[2,0,2,87,3],
 "codeforces_8cpp_source.html":[2,0,9,2],
-"contest_8cpp.html":[2,0,9,3],
 "contest_8cpp_source.html":[2,0,9,3],
 "copypaste3_8cpp_source.html":[2,0,3,12,1,0],
 "count_8cpp_source.html":[2,0,3,0,0],
@@ -249,5 +247,7 @@ var NAVTREEINDEX3 =
 "d-xenolith-hippodrome_8cpp_source.html":[2,0,2,10,3],
 "d1-painting-the-array-i_8cpp_source.html":[2,0,2,26,3],
 "d1p1_8cpp_source.html":[2,0,3,7,0],
-"d1p2_8cpp_source.html":[2,0,3,7,1]
+"d1p2_8cpp_source.html":[2,0,3,7,1],
+"d1p3_8cpp_source.html":[2,0,3,7,2],
+"d2-painting-the-array-ii_8cpp_source.html":[2,0,2,26,4]
 };

@@ -40,10 +40,10 @@ var NAVTREEINDEX =
 [
 "001_8cpp_source.html",
 "a-alexey-and-train_8cpp_source.html",
-"atcoder_2arc120_2c_8cpp_source.html",
-"codeforces_2codeforces-round-543-div-1_2b_8cpp_source.html",
-"d1p3_8cpp_source.html",
-"dir_ef7c16f89e5a26f42a005113d2c06ce7.html"
+"atcoder_2arc120_2d_8cpp_source.html",
+"codeforces_2codeforces-round-543-div-1_2c_8cpp_source.html",
+"d2p1_8cpp_source.html",
+"dir_f14ec53b5dc494ab42d972a9d3296db3.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

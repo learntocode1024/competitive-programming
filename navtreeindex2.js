@@ -1,6 +1,5 @@
 var NAVTREEINDEX2 =
 {
-"atcoder_2arc120_2c_8cpp_source.html":[2,0,1,39,2],
 "atcoder_2arc120_2d_8cpp_source.html":[2,0,1,39,3],
 "atcoder_2arc120_2e_8cpp_source.html":[2,0,1,39,4],
 "atcoder_2arc120_2f2_8cpp_source.html":[2,0,1,39,6],
@@ -249,5 +248,6 @@ var NAVTREEINDEX2 =
 "codeforces_2codeforces-round-500-div-1_2b_8cpp_source.html":[2,0,2,18,1],
 "codeforces_2codeforces-round-500-div-1_2d_8cpp_source.html":[2,0,2,18,2],
 "codeforces_2codeforces-round-500-div-1_2e_8cpp_source.html":[2,0,2,18,3],
-"codeforces_2codeforces-round-543-div-1_2a_8cpp_source.html":[2,0,2,19,0]
+"codeforces_2codeforces-round-543-div-1_2a_8cpp_source.html":[2,0,2,19,0],
+"codeforces_2codeforces-round-543-div-1_2b_8cpp_source.html":[2,0,2,19,1]
 };

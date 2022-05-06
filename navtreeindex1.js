@@ -37,7 +37,6 @@ var NAVTREEINDEX1 =
 "a-two-choices-editorial_8cpp_source.html":[2,0,4,6,0],
 "a-wizard-of-orz_8cpp_source.html":[2,0,2,23,0],
 "a-yet-another-string-game_8cpp_source.html":[2,0,2,26,0],
-"a__points_8cpp.html":[2,0,8,1,0],
 "a__points_8cpp_source.html":[2,0,8,1,0],
 "abc139__f_8cpp_source.html":[2,0,1,54],
 "abc218__g_8cpp_source.html":[2,0,1,55],
@@ -249,5 +248,6 @@ var NAVTREEINDEX1 =
 "atcoder_2arc119_2e_8cpp_source.html":[2,0,1,38,4],
 "atcoder_2arc119_2f_8cpp_source.html":[2,0,1,38,5],
 "atcoder_2arc120_2a_8cpp_source.html":[2,0,1,39,0],
-"atcoder_2arc120_2b_8cpp_source.html":[2,0,1,39,1]
+"atcoder_2arc120_2b_8cpp_source.html":[2,0,1,39,1],
+"atcoder_2arc120_2c_8cpp_source.html":[2,0,1,39,2]
 };
