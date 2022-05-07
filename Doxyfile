@@ -261,8 +261,8 @@ TAB_SIZE               = 2
 # with the commands \{ and \} for these it is advised to use the version @{ and
 # @} or use a double escape (\\{ and \\})
 
-ALIASES                =
-
+ALIASES                += loj{1}="\brief [LibreOJ #\1](https://loj.ac/p/\1)^^"
+ALIASES                += oj{2}="\biref [\1](\2)^^"
 # Set the OPTIMIZE_OUTPUT_FOR_C tag to YES if your project consists of C sources
 # only. Doxygen will then generate output that is more tailored for C. For
 # instance, some of the names that are used will be different. The list of all

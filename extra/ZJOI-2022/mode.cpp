@@ -1,5 +1,6 @@
 /** @file
  * @ingroup sqrt-division
+@loj{3707}
 对于$\# \ge B$的数， $O(n)$处理其与其他数组合。
 对于小块之间的组合： 枚举替代区间的端点，离线更新答案。（区间众数可以$O(\max len)$更新，并双指针$O(len + \max len)$查询）.
  */
