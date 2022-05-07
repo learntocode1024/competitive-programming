@@ -40,12 +40,12 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "001_8cpp_source.html",
-"a-alexey-and-train_8cpp_source.html",
-"atcoder_2arc120_2c_8cpp_source.html",
-"codeforces_2codeforces-round-543-div-1_2b_8cpp_source.html",
-"d1p3_8cpp_source.html",
-"dir_ee2d8add218703cbcdb8a7a331cda4a6.html",
-"transfer_8cpp_source.html"
+"a-abc-string_8cpp_source.html",
+"atcoder_2arc119_2f_8cpp_source.html",
+"codeforces_2codeforces-round-500-div-1_2d_8cpp_source.html",
+"d1-painting-the-array-i_8cpp_source.html",
+"dir_eb1cc7e899fd635b8632c3427cc4c7de.html",
+"telegrah_8cpp_source.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

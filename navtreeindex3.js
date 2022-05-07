@@ -1,5 +1,8 @@
 var NAVTREEINDEX3 =
 {
+"codeforces_2codeforces-round-500-div-1_2d_8cpp_source.html":[3,0,2,18,2],
+"codeforces_2codeforces-round-500-div-1_2e_8cpp_source.html":[3,0,2,18,3],
+"codeforces_2codeforces-round-543-div-1_2a_8cpp_source.html":[3,0,2,19,0],
 "codeforces_2codeforces-round-543-div-1_2b_8cpp_source.html":[3,0,2,19,1],
 "codeforces_2codeforces-round-543-div-1_2c_8cpp_source.html":[3,0,2,19,2],
 "codeforces_2codeforces-round-543-div-1_2d_8cpp_source.html":[3,0,2,19,3],
@@ -246,8 +249,5 @@ var NAVTREEINDEX3 =
 "d-strange-definition_8cpp_source.html":[3,0,2,22,3],
 "d-sum-of-paths_8cpp_source.html":[3,0,2,23,3],
 "d-two-chandeliers_8cpp_source.html":[3,0,2,32,3],
-"d-xenolith-hippodrome_8cpp_source.html":[3,0,2,10,3],
-"d1-painting-the-array-i_8cpp_source.html":[3,0,2,26,3],
-"d1p1_8cpp_source.html":[3,0,3,7,0],
-"d1p2_8cpp_source.html":[3,0,3,7,1]
+"d-xenolith-hippodrome_8cpp_source.html":[3,0,2,10,3]
 };

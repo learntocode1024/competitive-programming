@@ -1,5 +1,8 @@
 var NAVTREEINDEX4 =
 {
+"d1-painting-the-array-i_8cpp_source.html":[3,0,2,26,3],
+"d1p1_8cpp_source.html":[3,0,3,7,0],
+"d1p2_8cpp_source.html":[3,0,3,7,1],
 "d1p3_8cpp_source.html":[3,0,3,7,2],
 "d2-painting-the-array-ii_8cpp_source.html":[3,0,2,26,4],
 "d2p1_8cpp_source.html":[3,0,3,7,3],
@@ -246,8 +249,5 @@ var NAVTREEINDEX4 =
 "dir_e96d0b19e3377910af2d00186fd914c7.html":[3,0,6,1],
 "dir_e9c49bc2de64a174613023b9246f452b.html":[3,0,1,6],
 "dir_ea03bbb38a1a8f70465f5f2d2d1ed050.html":[3,0,2,40],
-"dir_ea5dd4faf8037a9da429f0edc008bd9f.html":[3,0,2,2,0],
-"dir_eb1cc7e899fd635b8632c3427cc4c7de.html":[3,0,2,6,3],
-"dir_ebd90658431d807ae8a9c92e7db72932.html":[3,0,2,3,2],
-"dir_ebfed7c9420c889b068d0dd525ab6d42.html":[3,0,3,20]
+"dir_ea5dd4faf8037a9da429f0edc008bd9f.html":[3,0,2,2,0]
 };
