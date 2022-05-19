@@ -1,5 +1,5 @@
 /** @file
- * @ingroup MST amortized
+ * @ingroup MST complexity
 1. 注意到每条边存在的时间是一段区间
 2. 暴力求出每一条边的存在时间（当排序后其左侧/右侧的边能够使$A_i$，$B_i$连通时）
 时间： $O(NM\log(n))$.
