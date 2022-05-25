@@ -1,0 +1,8 @@
+@defgroup matrix matrix
+
+@defgroup max_plus_matrix (max, +) matrix
+@ingroup matrix
+$(max, +)$ matrix
+@defgroup min_plus_matrix (min, +) matrix
+@ingroup matrix
+$(min, +)$ matrix
